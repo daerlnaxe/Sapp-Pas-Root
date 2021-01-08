@@ -938,6 +938,16 @@
         "frameworkReferences": [
           "Microsoft.WindowsDesktop.App.WPF"
         ]
+      },
+      "Hermes/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/Hermes.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Hermes.dll": {}
+        }
       }
     }
   },
@@ -2981,12 +2991,18 @@
       "type": "project",
       "path": "../../DxTBoxCore/Sources/DxTBoxCore.csproj",
       "msbuildProject": "../../DxTBoxCore/Sources/DxTBoxCore.csproj"
+    },
+    "Hermes/1.0.0": {
+      "type": "project",
+      "path": "../../Hermes/Sources/Hermes.csproj",
+      "msbuildProject": "../../Hermes/Sources/Hermes.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "DxPaths >= 1.0.0",
-      "DxTBoxCore >= 1.0.0"
+      "DxTBoxCore >= 1.0.0",
+      "Hermes >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -3025,6 +3041,9 @@
             },
             "E:\\Programmation\\Git-Hub\\DxTBoxCore\\Sources\\DxTBoxCore.csproj": {
               "projectPath": "E:\\Programmation\\Git-Hub\\DxTBoxCore\\Sources\\DxTBoxCore.csproj"
+            },
+            "E:\\Programmation\\Git-Hub\\Hermes\\Sources\\Hermes.csproj": {
+              "projectPath": "E:\\Programmation\\Git-Hub\\Hermes\\Sources\\Hermes.csproj"
             }
           }
         }
