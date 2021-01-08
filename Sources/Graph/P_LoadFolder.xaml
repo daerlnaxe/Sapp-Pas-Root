@@ -1,0 +1,61 @@
+﻿<Page x:Class="SPR.Graph.P_LoadFolder"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:t="clr-namespace:SPR.Languages"
+      xmlns:comm="clr-namespace:SPR.Graph.Commands"
+      xmlns:local="clr-namespace:SPR.Graph"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="P_LoadFolder">
+
+    <Page.CommandBindings>
+        <CommandBinding Command="comm:ComCommands.Browse" CanExecute="Browse_CanExecute" Executed="Browse_Executed"/>
+    </Page.CommandBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>            
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Margin" Value="0,3,3,3"/>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="3,3,3,40"/>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="3"/>
+                <Setter Property="Padding" Value="3"/>
+                <Setter Property="Height" Value="30"/>
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+        </Grid.Resources>
+        <!-- Message -->
+        <TextBlock Grid.ColumnSpan="3" TextWrapping="Wrap"
+               Text="{Binding Info}"/>
+        <!-- Avec fenêtre -->
+        <Label Grid.Row="1"
+               Content="{x:Static t:SPRLang.Select_Folder}"/>
+        <Button Grid.Row="1" Grid.Column="1" Content="{x:Static t:SPRLang.Browse}"
+                Command="comm:ComCommands.Browse" CommandParameter="Destination" HorizontalAlignment="Left"/>
+        <!-- Or -->
+        <Label Grid.Row="2" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+               Content="{x:Static t:SPRLang.Or}" ContentStringFormat="- {0} -"/>
+        <!-- Manuellement -->
+        <Label Grid.Row="3"
+               Content="{x:Static t:SPRLang.Use_TextBox}"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding ResultFolder}" />
+    </Grid>
+</Page>

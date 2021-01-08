@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Additionnal_App_Paths" xml:space="preserve">
+    <value>Additionnal Applications</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Additionnal_Options" xml:space="preserve">
+    <value>Additionnal Options</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Choose_Dest_Folder" xml:space="preserve">
+    <value>Select the destination folder of your system.
+By example you can select "E:\Platforms\Games\Nintendo Entertainment System".</value>
+  </data>
+  <data name="Choose_Platform" xml:space="preserve">
+    <value>Choose a Platform</value>
+    <comment>Utilisé dans PlatformList</comment>
+  </data>
+  <data name="Choose_Source_Folder" xml:space="preserve">
+    <value>Select the source folder of your system containing your datas.
+By example you can select "E:\Launchbox\Games\Nintendo Entertainment System".</value>
+  </data>
+  <data name="Configure_Destination" xml:space="preserve">
+    <value>Configure Destination</value>
+  </data>
+  <data name="Configure_Paths" xml:space="preserve">
+    <value>Configure paths</value>
+  </data>
+  <data name="Configure_Source" xml:space="preserve">
+    <value>Configure Source</value>
+  </data>
+  <data name="Configure_SubFolders" xml:space="preserve">
+    <value>Configure sub folders</value>
+  </data>
+  <data name="Destination" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="Destination_Folder" xml:space="preserve">
+    <value>Destination Folder</value>
+    <comment>Utilisé dans Migrate, PlatformPaths</comment>
+  </data>
+  <data name="Destination_Folders" xml:space="preserve">
+    <value>Destination folders</value>
+    <comment>Utilisé dans Migrate</comment>
+  </data>
+  <data name="Dest_Games" xml:space="preserve">
+    <value>Games destination</value>
+  </data>
+  <data name="Dest_Sub" xml:space="preserve">
+    <value>Destination subfolders</value>
+  </data>
+  <data name="DirDontExist" xml:space="preserve">
+    <value>Directory doesn't exist</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Err_FinishSlash" xml:space="preserve">
+    <value>The paths mustn't end with a '\'</value>
+  </data>
+  <data name="Err_MustRelat" xml:space="preserve">
+    <value>Must be a relative link</value>
+  </data>
+  <data name="Err_SelectMode" xml:space="preserve">
+    <value>Select a mode</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Files_Migration" xml:space="preserve">
+    <value>Files migration</value>
+  </data>
+  <data name="Folders" xml:space="preserve">
+    <value>Folders</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Forced_Mode" xml:space="preserve">
+    <value>Forced Mode</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Games" xml:space="preserve">
+    <value>Games</value>
+  </data>
+  <data name="Game_Folder" xml:space="preserve">
+    <value>Game Folder</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Hard_Path" xml:space="preserve">
+    <value>Hard Path</value>
+  </data>
+  <data name="Help_Migrate" xml:space="preserve">
+    <value>Migrate will use paths you give to determinate how to copy datas, last directory of paths is always used to keep datas in the folder you want to use. 
+Structure will look like as "..\Platforms\Games\MySytemName", "..\Platforms\Manuals\MySystemName", etc... 
+You can use personnalized subfolders to change name of manuals, games, images, videos, musics directories. </value>
+  </data>
+  <data name="Hidden_Games" xml:space="preserve">
+    <value>Hidden Games</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Images</value>
+  </data>
+  <data name="Images_Folder" xml:space="preserve">
+    <value>Images Folder</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Infos_Platform" xml:space="preserve">
+    <value>Infos Platform</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Interpreted_Current_Main_Path" xml:space="preserve">
+    <value>Interpreted current Main Path</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="IReset_Factory" xml:space="preserve">
+    <value>Follow the normal step now to reinitialize</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Keep_SubFolder_Mode" xml:space="preserve">
+    <value>Keep SubFolder Mode</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="Manuals" xml:space="preserve">
+    <value>Manuals</value>
+  </data>
+  <data name="Manual_Folder" xml:space="preserve">
+    <value>Manual Folder</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Migrate_Files" xml:space="preserve">
+    <value>Migrate Files</value>
+  </data>
+  <data name="Migration" xml:space="preserve">
+    <value>Migration</value>
+    <comment>Utilisé dans PlatformsList</comment>
+  </data>
+  <data name="Modify_Games_Path" xml:space="preserve">
+    <value>Modify Games paths</value>
+    <comment>Utilisé dans PlatformList</comment>
+  </data>
+  <data name="Modify_Platform_Path" xml:space="preserve">
+    <value>Modify Platform paths</value>
+    <comment>Utilisé dans PlatformList</comment>
+  </data>
+  <data name="Musics" xml:space="preserve">
+    <value>Musics</value>
+  </data>
+  <data name="Musics_Folder" xml:space="preserve">
+    <value>Musics Folder</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Name_of_Folders" xml:space="preserve">
+    <value>Name of Folders</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Open_In_Explorer" xml:space="preserve">
+    <value>Open in Explorer</value>
+    <comment>Utilisé dans une commande</comment>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>Or</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="Paths_Modified" xml:space="preserve">
+    <value>Paths modified</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Paths_Not_Modified" xml:space="preserve">
+    <value>Paths Not modified</value>
+  </data>
+  <data name="Path_D_Exist" xml:space="preserve">
+    <value>Path doesn't exist</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Platform</value>
+  </data>
+  <data name="Platform_Folder_Name" xml:space="preserve">
+    <value>Platform Folder Name</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Please_Select_Mode" xml:space="preserve">
+    <value>Please Select a mode</value>
+    <comment>Utilisé dans GamePaths</comment>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="Preview_Modifications" xml:space="preserve">
+    <value>Preview modifications</value>
+    <comment>Utilisé dans Migrate</comment>
+  </data>
+  <data name="Process" xml:space="preserve">
+    <value>Process</value>
+  </data>
+  <data name="QChange_GamesPaths" xml:space="preserve">
+    <value>Would you want to change Games paths too ?</value>
+    <comment>Utilisé dans PlatformsList</comment>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="Relative_Path" xml:space="preserve">
+    <value>Relative Path</value>
+  </data>
+  <data name="Reset_Factory" xml:space="preserve">
+    <value>Reset Factory</value>
+  </data>
+  <data name="Root" xml:space="preserve">
+    <value>Root</value>
+  </data>
+  <data name="Root_Folder" xml:space="preserve">
+    <value>Root folder</value>
+    <comment>Utilisé dans Migrate</comment>
+  </data>
+  <data name="Select_Folder" xml:space="preserve">
+    <value>Select a folder in the windows</value>
+  </data>
+  <data name="SimuFail" xml:space="preserve">
+    <value>Simulation Fail...</value>
+  </data>
+  <data name="Simulate" xml:space="preserve">
+    <value>Simulate</value>
+  </data>
+  <data name="Simulation" xml:space="preserve">
+    <value>Simulation</value>
+  </data>
+  <data name="SimuSuccess" xml:space="preserve">
+    <value>Simulation Success...</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="Source_Folder" xml:space="preserve">
+    <value>Source folder</value>
+    <comment>Utilisé dans Migrate</comment>
+  </data>
+  <data name="Source_Games" xml:space="preserve">
+    <value>Games source</value>
+  </data>
+  <data name="Source_Sub" xml:space="preserve">
+    <value>Source subfolders</value>
+  </data>
+  <data name="Transfert_Fail" xml:space="preserve">
+    <value>Transfert errors</value>
+  </data>
+  <data name="Transfert_Success" xml:space="preserve">
+    <value>Transfert successfull</value>
+  </data>
+  <data name="TT_Destination_Folder" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="TT_Folders" xml:space="preserve">
+    <value>You can parameter wich sub folder will be used for destination paths</value>
+  </data>
+  <data name="TT_ListView" xml:space="preserve">
+    <value>Double click to edit a plaform, right click for menu.</value>
+    <comment>Utilisé dans PlatformsList</comment>
+  </data>
+  <data name="TT_Migrate_Destination" xml:space="preserve">
+    <value>Choose the futur folder of the system (ex: "..\..\Platforms\Games\Master System")</value>
+  </data>
+  <data name="TT_Migrate_Source" xml:space="preserve">
+    <value>Choose the folder of the system (ex ".\Games\Master System").</value>
+  </data>
+  <data name="TT_PlaformFolder" xml:space="preserve">
+    <value>To define the name of the folder that will be used in each section.</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="TT_SelectFolder" xml:space="preserve">
+    <value>Hit enter to validate manually your path or click on browse to select a folder</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="TT_Sub" xml:space="preserve">
+    <value>You can change subfolders used to determinate paths</value>
+  </data>
+  <data name="Use_TextBox" xml:space="preserve">
+    <value>Use the textbox then hit 'Enter'</value>
+  </data>
+  <data name="Verif" xml:space="preserve">
+    <value>Verification</value>
+  </data>
+  <data name="Videos" xml:space="preserve">
+    <value>Videos</value>
+  </data>
+  <data name="Videos_Folder" xml:space="preserve">
+    <value>Videos Folder</value>
+    <comment>Utilisé dans PlatformPaths</comment>
+  </data>
+  <data name="Waiting" xml:space="preserve">
+    <value>Waiting...</value>
+  </data>
+  <data name="Warning_Music" xml:space="preserve">
+    <value>Pay attention to the Launchbox music folder:</value>
+  </data>
+  <data name="W_Music_Message" xml:space="preserve">
+    <value>This folder is named "Music", without 's'. Think to change it, in 'Source Sub Folder' if your migrate files from this location.</value>
+  </data>
+</root>

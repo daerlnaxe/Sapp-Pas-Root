@@ -1,0 +1,150 @@
+﻿<Page x:Class="SPR.Graph.P_SubFolders"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SPR.Graph"
+      xmlns:t="clr-namespace:SPR.Languages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="400"
+      Title="P_SubFolders">
+    <Page.Resources>
+        <!-- Validation error template -->
+        <ControlTemplate x:Key="ValidationErrorTemplate" >
+            <DockPanel LastChildFill="true" >
+                <Border  Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
+                        >
+                    <!-- 
+                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                    
+                    -->
+                    <Border.Style >
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="False">
+                                    <Setter Property="ToolTip" Value="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <!--            
+                    -->
+                    <!-- 
+                    <Border.ToolTip>
+                        <ItemsControl ItemsSource="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0]}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding }"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border.ToolTip>
+                    -->
+                    <TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white">
+                    </TextBlock>
+                </Border>
+                <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                    <Border BorderBrush="red" BorderThickness="1" />
+                </AdornedElementPlaceholder>
+            </DockPanel>
+        </ControlTemplate>
+    </Page.Resources>
+    <DockPanel>
+        <Label DockPanel.Dock="Top" FontWeight="Bold"
+            Content="{Binding Info}"
+            ToolTip="{Binding ToolTipInfo}"
+               />
+        <Grid>
+            <Grid.Resources>
+                <Style TargetType="TextBox">
+                    <Setter Property="Width" Value="100"/>
+                    <Setter Property="Grid.Column" Value="1"/>
+                    <Setter Property="Margin" Value="3"/>
+                    <Setter Property="IsUndoEnabled" Value="True"/>
+                    <!--
+                                            <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationErrorTemplate}"/>
+                                            -->
+                </Style>
+            </Grid.Resources>
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF6AB3D4" Offset="1"/>
+                    <GradientStop Color="#FF3E6081" Offset="0.38"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Cheatcodes -->
+            <Label Grid.Row="1" Grid.Column="0">
+                <Label.Content >
+                    <TextBlock Text="Cheatss Folder:" TextDecorations="Strikethrough"/>
+                </Label.Content>
+            </Label>
+            <TextBox Grid.Row="1" IsEnabled="False"/>
+            <!-- Games Folder -->
+            <Label Content="{x:Static t:SPRLang.Game_Folder}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0"/>
+            <TextBox Grid.Row="2"
+                 Text="{Binding GamesFName, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                 Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"
+                 />
+            <!--
+        Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"    
+        IsEnabled="{Binding ActiveBox, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+        -->
+            <!--
+        behav:TextBoxBehav.IsFolderInput="True"
+        -->
+            <!-- Manuals Folder -->
+            <Label Content="{x:Static t:SPRLang.Manual_Folder}"  ContentStringFormat="{}{0}:" Grid.Row="3"/>
+            <TextBox Grid.Row="3"
+                 Text="{Binding ManualsFName, UpdateSourceTrigger=PropertyChanged}"
+                 Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"
+                 IsEnabled="{Binding ActiveBox, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                 />
+            <!-- 
+        Apparemment ça sert plus à rien, en tout cas property changed semble suffire
+        ValidatesOnDataErrors=True,
+        ValidatesOnExceptions=True,
+        ValidatesOnNotifyDataErrors=True,
+        NotifyOnValidationError=True,
+        NotifyOnTargetUpdated=True,
+        NotifyOnSourceUpdated=True,
+        -->
+            <!-- Images Folder -->
+            <Label Content="{x:Static t:SPRLang.Images_Folder}"  ContentStringFormat="{}{0}:" Grid.Row="4"/>
+            <TextBox Grid.Row="4"
+                 Text="{Binding ImagesFName, UpdateSourceTrigger=PropertyChanged}"
+                 Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"                 
+                 IsEnabled="{Binding ActiveBox, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                 />
+            <!-- Musics Folder -->
+            <Label Content="{x:Static t:SPRLang.Musics_Folder}"  ContentStringFormat="{}{0}:" Grid.Row="5"/>
+            <TextBox Grid.Row="5"
+                 Text="{Binding MusicsFName, UpdateSourceTrigger=PropertyChanged}"
+                 Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"
+                 IsEnabled="{Binding ActiveBox, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                 />
+            <!-- Videos Folder -->
+            <Label Content="{x:Static t:SPRLang.Videos_Folder}" ContentStringFormat="{}{0}:" Grid.Row="6"/>
+            <TextBox Grid.Row="6"
+                 Text="{Binding VideosFName, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"
+                 Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"                 
+                 IsEnabled="{Binding ActiveBox, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                 />
+        </Grid>
+
+    </DockPanel>
+</Page>

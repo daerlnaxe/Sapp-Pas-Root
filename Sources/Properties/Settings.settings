@@ -1,0 +1,39 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SPR.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="CheatsCodesFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Cheats</Value>
+    </Setting>
+    <Setting Name="AppsFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Games</Value>
+    </Setting>
+    <Setting Name="ManualsFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Manuals</Value>
+    </Setting>
+    <Setting Name="MusicsFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Musics</Value>
+    </Setting>
+    <Setting Name="ImagesFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Images</Value>
+    </Setting>
+    <Setting Name="VideosFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Videos</Value>
+    </Setting>
+    <Setting Name="LastKPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Debug" Type="System.UInt16" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="LogFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Logs</Value>
+    </Setting>
+    <Setting Name="LogFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">SappPasRoot.log</Value>
+    </Setting>
+    <Setting Name="ConfigFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">SPR.cfg</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

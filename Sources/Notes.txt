@@ -1,0 +1,54 @@
+Removed:
+	- Doublic click on listplatform
+Todo General:
+	* Au niveau des matriochka s'assurer peut être via un check que l'on peut poursuivre jusqu'à la sauvegarde
+	* Réfléchir quand on traite le hardlink et relatlink lorsqu'on charge l'interface de la plateforme,
+	si on vérifie que le dossier existe (Peut être au moins mettre une couleur)
+	* Voir la gestion avec les '/'
+	* Rajouter la possibilité de proposer au last path visité le chemin de la plateforme si le last path visité est null( ca y était avant) 
+	* Des choses à voir dans la classe mvfolder
+	* Juste après la fenêtre pour éditer la plateforme on a peut être moyen de voir pour utiliser l'old path du model au liue de créer une nouvelle variable
+	* rajouter theme video à l'édit des jeux
+	* Interrogations par exemple sur les videos si la balise en comprend, dans le code de launchbox on peut avoir plusieurs videos...
+	etrange, il me semblait que c'était plus basé sur l'exploration du dossier et de relever les videos en rapport
+	- Réfléchir pour les chemins relatifs si on met null ou le chemin absolu dans le cas où les lecteurs seraient différents.
+
+Todo list Plateformes:
+	* Un container avec cast pour les iplatform
+	* Dans la liste indiquer si le dossier existe.
+
+Todo Plateformes:
+	* voir s'il sera nécessaire de mettre un système de modif de la taille du bandeau pour les chemins
+	* Attention sur le relat link dans le panel de gauche, voir si il colle avec la forme que l'on attend.
+	* Faire un reset possible sur les plateformes, il existe un résetfactory pour remettre comme Launchbox fait
+	* Revoir le system pour les / \
+
+Todo Games:
+	* Le gamepath ne gère pas les images pour le moment	
+	* Apparemment j'ai jamais traité les include hidden, ils sont toujours pris.
+	* Est que l'on peut certifier quand le lien n'est pas hard que la reconstruction en hard est valable ?
+	Logiquement, non. Mais en même temps si le launchboxpath n'a pas bougé ça reste valable.
+	* Il faudrait voir pour theme videopath
+	* Pas sur, à voir: quand on switch entre les modes ça ne remet pas à 0 le check, peut être que ça devrait le faire.
+
+Observations:
+	- Quand on demande d'avoir la liste des plateformes Launchbox renvoie des tableaux qui ne seront jamais les mêmes:
+		Choix: Il est donc opté pour faire un refresh quand on simule
+		Choix apply: pour le moment on refresh pas vu que l'utilisateur validerait quelque chose qu'il n'a pas demandé.
+	- Quand une plateforme a plusieurs dossiers:
+		- L'appli ne garde que le dossier "Games" qui est dans sa root
+		- Par contre les roms sont ajoutées par ces dossiers, elles peuvent être déplacées
+		- Si elles ne sont pas déplacées le lien sera fait pour chaque jeu et ça sera visible dans le fichier xml
+		qui porte le nom de la plateforme.
+		- Les nouvelles roms ne seront pas ajoutées si c'est fait dans ces dossiers là !
+		- Les subs à ces dossiers sont gardés et analysés pour détecter des nouvelles roms si le dossier game
+		root est correctement entré.
+
+	- Le chemin de l'app semble ramener Core: G:\Frontend\LaunchBox - Test\Core\
+	- J'ai été obligé de passer le system drawning common en 4.7.0.0 dans le fichier projet sinon ça ne passait pas 
+	(De base il est en 5.0.0.0)
+	
+
+
+Fait:
+	- Voir le bug dans le panneau des path de plateforme sur les / \ bouton radio

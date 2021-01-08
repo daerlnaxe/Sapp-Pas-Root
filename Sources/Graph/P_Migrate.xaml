@@ -1,0 +1,166 @@
+﻿<Page x:Class="SPR.Graph.P_Migrate"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SPR.Graph"
+      xmlns:t="clr-namespace:SPR.Languages"
+      xmlns:comm="clr-namespace:SPR.Graph.Commands"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="P_Migrate">
+    <Page.CommandBindings>
+        <CommandBinding Command="local:P_Migrate.Preview" Executed="SetPage_Null"/>
+        <CommandBinding Command="local:P_Migrate.Open_ConfSrcPath" Executed="Load_ConfigSrc"/>
+        <CommandBinding Command="local:P_Migrate.Open_ConfDestPath" Executed="Load_ConfigDest"/>
+        <CommandBinding Command="local:P_Migrate.Open_ConfSrcSub" CanExecute="Can_ShowSrcSub" Executed="Load_ConfigSrcSub"/>
+        <CommandBinding Command="local:P_Migrate.Open_ConfDestSub" CanExecute="Can_ShowDestSub" Executed="Load_ConfigDestSub"/>
+        <CommandBinding Command="comm:ComCommands.Simulate" CanExecute="Can_Simulate" Executed="Exec_Simulate"/>
+        <CommandBinding Command="comm:ComCommands.Apply" CanExecute="Can_Apply" Executed="Exec_Apply"/>
+    </Page.CommandBindings>
+    <Page.Resources>
+
+    </Page.Resources>
+
+    <DockPanel>
+        <DockPanel.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="3,10,3,10"/>
+                <Setter Property="Margin" Value="2"/>
+                <Setter Property="MinWidth" Value="75"/>
+            </Style>
+        </DockPanel.Resources>
+        <Label Content="{x:Static t:SPRLang.Migrate_Files}" DockPanel.Dock="Top"/>
+        <!-- Menu -->
+        <StackPanel DockPanel.Dock="Left">
+            <StackPanel.Resources>
+                
+            </StackPanel.Resources>
+            <Button Content="{x:Static t:SPRLang.Preview}" Command="local:P_Migrate.Preview"/>
+            <Button Content="{x:Static t:SPRLang.Source}" Command="local:P_Migrate.Open_ConfSrcPath"/>
+            <Button Content="{x:Static t:SPRLang.Destination}" Command="local:P_Migrate.Open_ConfDestPath"/>
+            <Button Content="{x:Static t:SPRLang.Source_Sub}" Command="local:P_Migrate.Open_ConfSrcSub"/>
+            <Button Content="{x:Static t:SPRLang.Dest_Sub}" Command="local:P_Migrate.Open_ConfDestSub"/>
+            <Button Click="test"/> 
+        </StackPanel>
+        <!-- Process -->
+        <StackPanel DockPanel.Dock="Right" Background="#FF001A72" >
+            <Button Content="{x:Static t:SPRLang.Verif}"
+                    Command="comm:ComCommands.Simulate"
+                    />
+            <Button Content="{x:Static t:SPRLang.Process}"
+                    Command="comm:ComCommands.Apply"
+                    />
+        </StackPanel>
+        <!-- Centre -->
+        <Grid Margin="10,0,10,0" >
+            <Grid.RowDefinitions>
+                <RowDefinition  Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+            <Grid.Resources>
+                <Style TargetType="local:CC_Game">
+                    <!-- 
+                    En mettant le validation control à null j'évite un contour rouge inutile 
+                    car géré en interne
+                    -->
+                    <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
+                    <!-- Labels -->
+ 
+                </Style>
+            </Grid.Resources>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="{Binding TopHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:P_Migrate}}">
+                <StackPanel>
+                    <!-- Games -->
+                    <local:CC_PairPaths
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                        
+                        DataContext="{Binding GamesPaths}"
+                        
+                        Title="{Binding Title}"
+                        Source="{Binding Source}"            
+                        SecondPath="{Binding Destination}"
+                        />
+                    <!-- Manuels -->
+                    <local:CC_PairPaths 
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                                                
+                        DataContext="{Binding ManualsPaths}"
+                        Title="{Binding Title}"
+                        Source="{Binding Source}"            
+                        SecondPath="{Binding Destination}"
+                        />
+                    <!-- Images -->
+                    <local:CC_PairPaths
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                        
+                        DataContext="{Binding ImagesPaths}"
+                        
+                        Title="{Binding Title}"
+                        Source="{Binding Source, 
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            ValidatesOnExceptions=True,
+                            ValidatesOnNotifyDataErrors=True}"
+                        SecondPath="{Binding Destination}"
+
+                        />
+                    <!-- Musics -->
+                    <local:CC_PairPaths
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                        
+                        DataContext="{Binding MusicsPaths}"
+                        
+                        Title="{Binding Title}"
+                        Source="{Binding Source, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
+                        SecondPath="{Binding Destination}"
+                        />
+                    <!-- Videos -->
+                    <local:CC_PairPaths
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                                                
+                        DataContext="{Binding VideosPaths}"
+
+                        Title="{Binding Title}"
+                        Source="{Binding Source}"
+                        SecondPath="{Binding Destination}"
+                        />
+
+                </StackPanel>
+            </ScrollViewer>
+            <DockPanel Grid.Row="1" >
+                <DockPanel.Style>
+                    <Style TargetType="DockPanel">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ActivePage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+                <Rectangle Fill="#FF4C68E2" Height="1" VerticalAlignment="Center" DockPanel.Dock="Top" Margin="0,0,0,10" />
+                <Frame Grid.Row="2" NavigationUIVisibility="Hidden"
+                    Content="{Binding ActivePage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" >
+                    <Frame.Style>
+                        <Style TargetType="Frame">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActivePage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Frame.Style>
+                </Frame>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Page>

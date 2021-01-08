@@ -1,0 +1,55 @@
+﻿<Page x:Class="SPR.Graph.P_Migrate_More"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SPR.Graph"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Page1">
+    <Page.Resources>
+        <!-- Validation error template -->
+        <ControlTemplate x:Key="ValidationErrorTemplate" >
+            <DockPanel LastChildFill="true" >
+                <Border  Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
+                        >
+                    <!-- 
+                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                    
+                    -->
+                    <Border.Style >
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="False">
+                                    <Setter Property="ToolTip" Value="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <!--            
+                    -->
+                    <!-- 
+                    <Border.ToolTip>
+                        <ItemsControl ItemsSource="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0]}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding }"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border.ToolTip>
+                    -->
+                    <TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white">
+                    </TextBlock>
+                </Border>
+                <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                    <Border BorderBrush="red" BorderThickness="1" />
+                </AdornedElementPlaceholder>
+            </DockPanel>
+        </ControlTemplate>
+
+    </Page.Resources>
+    <Grid>
+
+    </Grid>
+</Page>

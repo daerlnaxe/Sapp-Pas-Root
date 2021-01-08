@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="SPR.Graph.CC_Game"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SPR.Graph"
+             mc:Ignorable="d" >
+    <Border CornerRadius="4" BorderBrush="Black" BorderThickness="1">
+        <Border.Background>
+            <LinearGradientBrush EndPoint="0,0" StartPoint="1,0">
+                <GradientStop Color="#FFCED1E4" Offset="0"/>
+                <GradientStop Color="#FF5B68B4" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <StackPanel>
+            <!--
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="35"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="35"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="1" HorizontalContentAlignment="Center"  VerticalAlignment="Center" FontSize="16" FontWeight="Bold"
+                    Content="{Binding Title, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+
+                <Image Grid.Column="2" Margin="5" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       >
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Validity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
+                                    <Setter Property="Source" Value="/SPR;component/Resources/cross_256.png"/>                                    
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Validity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="True">
+                                    <Setter Property="Source" Value="/SPR;component/Resources/check_256.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+              
+            </Grid>
+            <!--
+                
+        -->
+            <!--
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+
+
+        </StackPanel>
+        -->
+            <!-- Contenu -->
+
+            <Grid Grid.Row="1" x:Name="InfosSup" Background="White"
+                  HorizontalAlignment="Stretch" >
+                <Grid.Style>
+                    <Style TargetType="Grid">
+
+                        <Setter Property="Visibility" Value="Collapsed"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding PanelOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="true">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                        </Grid.Style>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!-- Old Hard Link -->
+                        <Label Grid.Column="1" Grid.Row="0" Content="{Binding OHardLink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
+                        <!-- Old Relat Link -->
+                        <Label Grid.Column="1" Grid.Row="1" Content="{Binding ORelatLink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                        <!-- Image -->
+                        <Label Grid.Row="2" Grid.RowSpan="2" Content="ret"/>
+                        <!-- New Hard Link -->
+                        <Label Grid.Column="1" Grid.Row="2" Content="{Binding NHardLink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Background="#FF5CA611"/>
+                        <!-- New Relat Link -->
+                        <Label Grid.Column="1" Grid.Row="3" Content="{Binding NRelatLink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+
+            </Grid>
+            <!-- Barre de séparation -->
+            <Rectangle Height="1" Fill="White" />
+            <!-- button -->
+            <Button Click="Button_Click" BorderThickness="0" Background="{x:Null}"  >
+                <Button.Content >
+                    <Image Source="/SPR;component/Resources/arrow bas3.png" 
+                       Stretch="Fill" Height="15"  Width="100"
+                       StretchDirection="Both" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button.Content>
+            </Button>
+        </StackPanel>
+    </Border>
+</UserControl>
