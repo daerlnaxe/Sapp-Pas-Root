@@ -5,6 +5,7 @@
 # Versions:
 ### 1.0.0.0 (Alpha)
 - Based on previous plugin created with Forms
+- .Net Core/.Net Standart
 - Migration methods for files added, this part is in testing.
 - Use the lastet official plugin library of Launchbox.
 - Use a hash calculator to verify files are same before to ask to the user what to do (if different) or pass.
@@ -13,7 +14,7 @@
 # Dependencies
 - HashCalc (Hash Calculator)
 - DxLocalTransf for copy core (testing) 
-- DxTBoxCore (common windows, some parts still in progress)
+- DxTBoxCore (common wpf windows, some parts still in progress)
 - DxPaths - relative and hardware link makers (modification on algorithms because of previous bugs)
 - Hermes - new system for log (still in progress and testing)
 
