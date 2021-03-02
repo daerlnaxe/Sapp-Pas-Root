@@ -105,7 +105,7 @@ namespace SPR.Graph
 
             // Configuration des pages
 
-            _Model = new MigrateModel();
+            _Model = new MigrateModel(this);
             _Model.Initialize();
 
 
@@ -255,7 +255,7 @@ namespace SPR.Graph
 
         private void Exec_Apply(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_Model.Apply())
+            if (_Model.Apply() == true)
             {
                 DxMBox.ShowDial(SPRLang.Transfert_Success);
             }
@@ -281,55 +281,5 @@ namespace SPR.Graph
         {
             e.CanExecute = ActiveApply;
         }
-
-        DxAsCollecProgress db2;
-        private void test(object sender, System.Windows.RoutedEventArgs e)
-        {
-
-            db2 = new DxAsCollecProgress(DxTBLang.File)
-            {
-
-                /*TaskToRun = new Maou<bool>()
-                {
-                    ToRun = Foo
-
-                },*/
-                TaskToRun = new TestProgressCollec(),
-
-
-        };
-            
-
-            //db2.Execute_Code();
-            //db2.Show();
-             db2.ShowDialog();
-        //    db2.Model.TaskRunning.Wait();
-
-        }
-
-        /// <summary>
-        /// A method just to show
-        /// </summary>
-        /// <param name="tP">Used by the model implemented</param>
-        /// <returns>
-        /// What you need, Maou is generic
-        /// </returns>
-        private bool Foo(I_ASBase tP)
-        {
-            while (!tP.CancelToken.IsCancellationRequested)
-            {
-                while (tP.IsPaused)
-                {
-                    Debug.WriteLine("I stop the world and melt with you");
-                    Thread.Sleep(100);
-                }
-                Debug.WriteLine("Moving forward using all my breath");
-                Thread.Sleep(100);
-            }
-
-            Debug.WriteLine("Dream of better lives the kind which never hates");
-            return true;
-        }
     }
-
 }

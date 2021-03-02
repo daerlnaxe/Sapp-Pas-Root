@@ -10,6 +10,17 @@ using System.Runtime.CompilerServices;
 using Unbroken.LaunchBox.Plugins.Data;
 using SPR.Enums;
 using DxTBoxCore.Box_Progress;
+using System.Threading;
+using HashCalc;
+using System.Security.Cryptography;
+using DxLocalTransf;
+using System.Windows;
+using SPR.Graph;
+using System.Windows.Controls;
+using DxTBoxCore.MBox;
+using DxTBoxCore.Box_Decisions;
+using DxTBoxCore.Common;
+using DxLocalTransf.Cont;
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -71,6 +82,12 @@ namespace SPR.Models
         #endregion Avec Notifications
 
         #region Sans Notif
+        /// <summary>
+        /// Blocks copying and summing of destination files
+        /// </summary>
+       // private bool _NotSimul;
+
+
         SubFolderModel _srcSub;
         /// <summary>
         /// Modele contenant les infos des subfolders de la source
@@ -92,6 +109,7 @@ namespace SPR.Models
         /// Modele contenant les infos des subfolders de la destination
         /// </summary>
         SubFolderModel _destSub;
+
         public SubFolderModel DestSub
         {
             get { return _destSub; }
@@ -105,6 +123,7 @@ namespace SPR.Models
             }
         }
         #endregion
+
 
         /// <summary>
         /// Représente les chemins principaux
@@ -283,10 +302,16 @@ namespace SPR.Models
         #endregion Verifications
 
         #region Application
-        internal bool Apply()
+        internal bool? Apply()
         {
-            List<string> files = new List<string>();
+            List<ModelSD> files = new List<ModelSD>();
+            files.Add(GamesPaths);
+            files.Add(ManualsPaths);
+            files.Add(ImagesPaths);
+            files.Add(MusicsPaths);
+            files.Add(VideosPaths);
 
+            /*
             // Liste des fichiers
             string[] fsGames = Directory.GetFiles(GamesPaths.Source, "*.*", SearchOption.AllDirectories);
             string[] fsManuals = Directory.GetFiles(ManualsPaths.Source, "*.*", SearchOption.AllDirectories);
@@ -296,11 +321,20 @@ namespace SPR.Models
 
             // Nombre total de fichiers
             int TotalFiles = fsGames.Length + fsManuals.Length + fsImages.Length + fsMusics.Length + fsVideos.Length;
+            */
 
             DxAsCollecProgress dxApply = new DxAsCollecProgress(SPRLang.Files_Migration)
             {
-                
+                TaskToRun = new Maou<List<ModelSD>, object>()
+                {
+                    ToRun = Categ_Apply,
+                    Param = files
+                },
             };
+
+            return dxApply.ShowDialog();
+
+
             return true;
 
             /*
@@ -318,57 +352,179 @@ namespace SPR.Models
             }*/
         }
 
-        private void Task_Apply()
-        {
 
+        private Page IHM;
+
+        public MigrateModel(Page w)
+        {
+            IHM = w;
         }
 
-        private void Categ_Apply(ModelSD dPaths)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tP"></param>
+        /// <param name="models"></param>
+        /// <returns></returns>
+        private object Categ_Apply(I_ASBaseC tP, List<ModelSD> models)
         {
+            Maou<List<ModelSD>, object> encaps = (Maou<List<ModelSD>, object>)tP;
+            /*
+                - Je veux dissocier les tâches une List String ne me le permet pas.
+                - Ce que je veux faire apparaitre c'est le nombre de fichier pour chaque catégorie
+                - Il faudrait considérer la copie comme un tiers du travail, et la comparaison comme deux tiers.    
+
+            */
+
+            Dictionary<ModelSD, string[]> tasksOnFiles = new Dictionary<ModelSD, string[]>();
+            int TotalFiles = 0;
+
+
+            encaps.SayUpdateStatusT("Initialize the list of files");
+            foreach (ModelSD mSD in models)
+            {
+                string[] tmp = Directory.GetFiles(mSD.Source, "*.*", SearchOption.AllDirectories);
+                tasksOnFiles.Add(mSD, tmp);
+                TotalFiles += tmp.Count();
+            }
+
+            // Nombre total de fichiers
+            //  int TotalFiles = fsGames.Length + fsManuals.Length + fsImages.Length + fsMusics.Length + fsVideos.Length;
+
+            // Signaler le maximum pour la barre du Total
+            encaps.SayMaximumProgressT(models.Count);
+
+            // Préparation du système de vérification
+            OpDFilesExt opfSys = new OpDFilesExt();
+            opfSys.NotSimul = true;
+            opfSys.AskToUser += this.AskWhatToDo;
+            opfSys.SumError += this.InformErrorSum;
+            opfSys.SignalProgression += (x, y) => encaps.SayUpdateProgress(y);
+
+            int i = 0; // Là selon on pourrait changer un peu la progression
+
+            // On va lire tous les fichiers donc de 0 au nombre total
+            //for (int i = 0; i < tasksOnFiles.Count; i++)
+            foreach (var tof in tasksOnFiles)
+            {
+                //ModelSD Element = tasksOnFiles[i];
+                ModelSD Element = tof.Key;
+                string[] files = tof.Value;
+
+
+                // Signal position 0 & statuts pour la progression totale
+                encaps.SayUpdateProgressT(i);
+                encaps.SayUpdateStatusT(Element.Title);
+
+                // Signal paramétrage de progress part
+                encaps.SayUpdateProgress(0);
+                encaps.SayMaximumProgress(files.Length * 3);
+
+                // Pour chaque portion on va lire chaque fichier
+                for (int j = 0; j < files.Length; j++)
+                {
+                    // Raz
+                    opfSys.RazSums();
+
+                    Thread.Sleep(500);
+
+                    string sourceFile = files[j];
+
+                    // Transformation du fichier
+                    string destFile = sourceFile.Replace(Element.Source, Element.Destination);
+
+                    encaps.SayUpdateStatus(sourceFile);
+                    encaps.SayUpdateProgress(j * 3);
+
+                    // On met en pause (pourquoi ?)
+                    tP.Pause();
+
+                    // Gestion de l'état stop
+                    if (opfSys.DecisionByDefault == E_Decision.Stop || opfSys.DecisionByDefault == E_Decision.PassAll)
+                        tP.TokenSource.Cancel();
+
+                    // On arrête
+                    if (tP.CancelToken.IsCancellationRequested)
+                        return null;
+
+                    opfSys.ManageCopy(sourceFile, destFile, j * 3);
+
+                }
+
+            }
+
+            encaps.SayUpdateProgressT(models.Count);
+            encaps.SayUpdateStatusT("Finished");
             /* 
             * On décide de conserver par défaut toutes les structures filles des dossiers
-            * Quand il y a collision on fait un test de somme:
-                - Si le fichier est <= à 100 Mo
-                    + Si c'est similaire on passe, si ça ne l'est pas on demande
-                - Si le fichier est supérieur à 100Mo on demande si test de somme/écraser/passer
             */
-            if (dPaths.Source == null )
-                return;
-                        
 
 
-            /*
-            string dest;
-            foreach (string f in files)
+            return null;
+        }
+
+
+
+        /// <summary>
+        /// Affiche une fenêtre pour demander quoi faire en cas de conflit
+        /// </summary>
+        /// <param name="opSender"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        private E_Decision AskWhatToDo(OpDFiles opSender, EFileResult state, FileArgs srcFA, FileArgs destFA)
+        {
+            string m= string.Empty;
+
+
+            if (state == EFileResult.DifferentSize)
             {
-                dest = f.Replace(dPaths.Source, dPaths.Destination);
-
-                // Test si le fichier existe
-                bool replace;
-                if (File.Exists(dest))
-                {
-                    Check_File(f, dest);
-                }
+                m = "Files have different size";
             }
-            */
-        }
+            else if (state == EFileResult.DifferentHash)
+            {
+                m = "Files have different hash sum but same size";
+            }
 
-        private void Check_File(string source, string destination)
+            E_Decision decis = E_Decision.None;
+            Func<E_Decision> box = delegate ()
+            {
+                MBDecision window = new MBDecision()
+                {
+                    Model = new M_Decision()
+                    {
+                        Message = m,
+                        SourceInfo = $"Size: {srcFA.Length}",
+                        DestInfo = $"Size: {destFA.Length}"
+                    }
+                };
+                if (window.ShowDialog() == true)
+                    return window.Model.Decision;
+                else
+                    return E_Decision.Stop;
+            };
+
+            //() =>  MBDecision.Get_Answer();
+
+            return decis = IHM.Dispatcher.Invoke(box);
+            /*( System.Windows.Threading.DispatcherPriority.Normal,
+box
+
+);*/
+            //ThreadStart threadDelegate = new ThreadStart
+
+            //return decis;
+        }
+        private void InformErrorSum(OpDFiles opSender, string message)
         {
-            // --- 
-            
-
+            IHM.Dispatcher.Invoke(
+                () => DxMBox.ShowDial("Copy problem", "Error", E_DxButtons.Ok, optMessage: message));
 
         }
+
+
+
         #endregion
 
-        #region Application
-        internal void Application()
-        {
-            // Todo voir pour laisser un choix 
-        }
-
-        #endregion
 
         public void Dispose()
         {
@@ -386,6 +542,8 @@ namespace SPR.Models
         /// All Errors
         /// </summary>
         private readonly Dictionary<string, List<string>> _erreurs = new Dictionary<string, List<string>>();
+
+
 
         public bool HasErrors => _erreurs.Any() || SrcSub.HasErrors || DestSub.HasErrors;
 

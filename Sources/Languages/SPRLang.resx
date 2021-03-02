@@ -328,6 +328,12 @@ You can use personnalized subfolders to change name of manuals, games, images, v
   <data name="Question" xml:space="preserve">
     <value>Question</value>
   </data>
+  <data name="Q_WichMode" xml:space="preserve">
+    <value>Would you want to use advanced verification ?</value>
+  </data>
+  <data name="Q_WichMode2" xml:space="preserve">
+    <value>It uses hash calculation to garantee files are exactly the same but 3x more longer than a simple mode.</value>
+  </data>
   <data name="Relative_Path" xml:space="preserve">
     <value>Relative Path</value>
   </data>

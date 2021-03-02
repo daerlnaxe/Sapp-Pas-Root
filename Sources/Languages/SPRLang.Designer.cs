@@ -587,6 +587,24 @@ namespace SPR.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Would you want to use advanced verification ?.
+        /// </summary>
+        public static string Q_WichMode {
+            get {
+                return ResourceManager.GetString("Q_WichMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à It uses hash calculation to garantee files are exactly the same but 3x more longer than a simple mode..
+        /// </summary>
+        public static string Q_WichMode2 {
+            get {
+                return ResourceManager.GetString("Q_WichMode2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Would you want to change Games paths too ?.
         /// </summary>
         public static string QChange_GamesPaths {

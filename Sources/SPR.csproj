@@ -105,7 +105,9 @@ Free of distribution and using.
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Clouds\GDrive - Dx\Programmation\CSharp\DxPaths\DxPaths.csproj" />
+    <ProjectReference Include="..\..\DxLocalTrans\DxLocalTrans\DxLocalTransf.csproj" />
     <ProjectReference Include="..\..\DxTBoxCore\Sources\DxTBoxCore.csproj" />
+    <ProjectReference Include="..\..\HashCalc\Source\HashCalc.csproj" />
     <ProjectReference Include="..\..\Hermes\Sources\Hermes.csproj" />
   </ItemGroup>
 

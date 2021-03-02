@@ -28,7 +28,7 @@ namespace SPR.Graph
 
         public W_Migrate(IPlatform selectedPlatform)
         {
-            _Model = new MigrateModel()
+            _Model = new MigrateModel(new Page())
             {
 
             };

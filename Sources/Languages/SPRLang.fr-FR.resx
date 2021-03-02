@@ -296,6 +296,14 @@
   <data name="Question" xml:space="preserve">
     <value>Question</value>
   </data>
+  <data name="Q_WichMode" xml:space="preserve">
+    <value>Voulez vous utiliser le mode avancé de vérification ?</value>
+    <comment>Probablement inutile</comment>
+  </data>
+  <data name="Q_WichMode2" xml:space="preserve">
+    <value>It uses hash calculation to garantee files are exactly the same but 3x more longer than a simple mode.</value>
+    <comment>Probablement inutile</comment>
+  </data>
   <data name="Relative_Path" xml:space="preserve">
     <value>Chemin Relatif</value>
   </data>
