@@ -3,9 +3,9 @@
 - .Net Core / WPF 
 
 # Versions:
-### 1.0.0.0 (Alpha)
+### 2.0.0.0 (Alpha)
 - Based on previous plugin created with Forms
-- .Net Core/.Net Standart
+- .Net Core/.Net Standard / WPF
 - Migration methods for files added, this part is in testing.
 - Use the lastet official plugin library of Launchbox.
 - Use a hash calculator to verify files are same before to ask to the user what to do (if different) or pass.
