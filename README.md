@@ -10,6 +10,7 @@
 - Use the lastet official plugin library of Launchbox.
 - Use a hash calculator to verify files are same before to ask to the user what to do (if different) or pass.
 - Use a hash calculator to verify if files are same after copy, except if size is null (fake files to have a library of games only based on material stuff).
+- Can be used as Executable to simulate actions.
 
 # Dependencies
 - HashCalc (Hash Calculator)
