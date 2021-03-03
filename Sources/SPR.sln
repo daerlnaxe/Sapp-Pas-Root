@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DlnxLocalTransfert", "..\..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DxLocalTransf", "..\..\DxLocalTrans\DxLocalTrans\DxLocalTransf.csproj", "{1A6D4C67-97A0-46CE-B6C4-81B0EAD37FB4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DxCCtrl", "..\..\DxCoreControls\Source\DxCCtrl.csproj", "{396DFD5A-2472-48F5-BBA4-C17D67C998E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{1A6D4C67-97A0-46CE-B6C4-81B0EAD37FB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A6D4C67-97A0-46CE-B6C4-81B0EAD37FB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A6D4C67-97A0-46CE-B6C4-81B0EAD37FB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396DFD5A-2472-48F5-BBA4-C17D67C998E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396DFD5A-2472-48F5-BBA4-C17D67C998E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396DFD5A-2472-48F5-BBA4-C17D67C998E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396DFD5A-2472-48F5-BBA4-C17D67C998E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

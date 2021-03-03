@@ -184,7 +184,7 @@ namespace SPR.Graph
 
                 // Si la plateforme n'a pas le même dossier on va proposer une reconstruction pour les jeux
                 if (!oldPath.Equals(_Model.SelectedPlatform.Folder) &&
-                    DxMBox.ShowDial(SPRLang.QChange_GamesPaths, SPRLang.Question, E_DxButtons.Yes | E_DxButtons.No) == true)
+    DxMBox.ShowDial(SPRLang.QChange_GamesPaths, SPRLang.Question, E_DxButtons.Yes | E_DxButtons.No) == true)
                 {
                     W_GamePaths wGP = new W_GamePaths(_Model.SelectedPlatform);
                     wGP.ShowDialog();
@@ -238,6 +238,7 @@ namespace SPR.Graph
         private void CommandMigrate_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // Avertissement
+
             DxMBox.ShowDial(SPRLang.Warning_Music, DxTBLang.Warning, optMessage: SPRLang.W_Music_Message);
             Main_Window mw = new Main_Window();
             mw.ShowDialog();

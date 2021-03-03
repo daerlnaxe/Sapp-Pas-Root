@@ -241,7 +241,7 @@ namespace SPR.Graph
             ActivePage = null;
             if (_Model.Verifications())
             {
-                DxMBox.ShowDial(SPRLang.SimuSuccess);
+                  DxMBox.ShowDial(SPRLang.SimuSuccess);
                 ActiveApply = true;
             }
             else
@@ -257,12 +257,12 @@ namespace SPR.Graph
         {
             if (_Model.Apply() == true)
             {
-                DxMBox.ShowDial(SPRLang.Transfert_Success);
+                    DxMBox.ShowDial(SPRLang.Transfert_Success);
             }
 
             else
             {
-                DxMBox.ShowDial(SPRLang.Transfert_Fail);
+                  DxMBox.ShowDial(SPRLang.Transfert_Fail);
             }
 
             // Todo afficher un relevé d'informations

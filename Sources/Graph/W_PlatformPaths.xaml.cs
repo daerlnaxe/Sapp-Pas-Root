@@ -206,7 +206,7 @@ namespace SPR.Graph
 
         private void CommandBrowse_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // ChooseFolder cf = new ChooseFolder()
+            // ChooseFolder cf = new ChooseFolder()            
             TreeChoose tf = new TreeChoose
             {
                 Model = new M_ChooseFolder()
@@ -222,7 +222,7 @@ namespace SPR.Graph
 
             if (tf.ShowDialog() != true)
                 return;
-
+            
             /*
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.Description = Lang.FB_Description;*/
@@ -232,12 +232,15 @@ namespace SPR.Graph
             // fait if (fbd.ShowDialog() != DialogResult.OK) return;*/
 
             // Memorisation lastKnowPath
+            
+            
             string tmpPath;
             Properties.Settings.Default.LastKPath = tmpPath = tf.Model.LinkResult;
             Properties.Settings.Default.Save();
 
             // Assignation 
             Model.ChosenFolder = tf.Model.LinkResult;
+            
             /*
             this.tbMainPath.Text = _NewRoot = tmpPath;
 */
@@ -288,7 +291,7 @@ namespace SPR.Graph
                 ActiveBox = true;
                 //
                 SimulationOk = false;
-                DxMBox.ShowDial(SPRLang.SimuFail);
+                 DxMBox.ShowDial(SPRLang.SimuFail);
 
             }
 

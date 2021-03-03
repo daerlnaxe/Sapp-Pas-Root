@@ -36,11 +36,10 @@ namespace SPR
         /// <summary>
         /// Icone de la dll pour le menu
         /// </summary>
-        public Image IconImage => null; // Mouais
+        public Image IconImage => null;
 
         public void OnSelected()
         {
-
             Directory.SetCurrentDirectory(Global.LaunchBoxPath);
 
             Global.InitializeConfig();
@@ -67,6 +66,7 @@ namespace SPR
                 meSL.ActivateFileLog(Path.Combine(Global.LaunchBoxRoot, Sett.Default.LogFolder, Sett.Default.LogFile));
 
                 HeTrace.AddLogger("Logger", meSL);
+                HeTrace.WriteLine("Init ok", callerName: "Logger");
 
                 //PluginHelper. .LaunchBoxMainForm.FormClosing += new FormClosingEventHandler(Fermeture);
 
@@ -79,7 +79,7 @@ namespace SPR
             {
                 MessageBox.Show(e.ToString());
                 // Trace.WriteLine(e);
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@".././Logs/#err.txt"))
+                using (StreamWriter file = new StreamWriter(@".././Logs/#err.txt"))
                 {
                     file.WriteLine(e);
                 }

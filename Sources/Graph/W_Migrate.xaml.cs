@@ -1,5 +1,4 @@
 ﻿using DxTBoxCore.BoxChoose;
-using DxTBoxCore.Languages;
 using SPR.Languages;
 using SPR.Models;
 using System;

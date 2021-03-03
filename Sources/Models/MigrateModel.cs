@@ -9,18 +9,18 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Unbroken.LaunchBox.Plugins.Data;
 using SPR.Enums;
-using DxTBoxCore.Box_Progress;
 using System.Threading;
 using HashCalc;
 using System.Security.Cryptography;
-using DxLocalTransf;
 using System.Windows;
 using SPR.Graph;
 using System.Windows.Controls;
+using DxLocalTransf;
+using DxLocalTransf.Cont;
+using DxTBoxCore.Box_Progress;
 using DxTBoxCore.MBox;
 using DxTBoxCore.Box_Decisions;
 using DxTBoxCore.Common;
-using DxLocalTransf.Cont;
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -323,6 +323,7 @@ namespace SPR.Models
             int TotalFiles = fsGames.Length + fsManuals.Length + fsImages.Length + fsMusics.Length + fsVideos.Length;
             */
 
+
             DxAsCollecProgress dxApply = new DxAsCollecProgress(SPRLang.Files_Migration)
             {
                 TaskToRun = new Maou<List<ModelSD>, object>()
@@ -473,7 +474,7 @@ namespace SPR.Models
         /// <returns></returns>
         private E_Decision AskWhatToDo(OpDFiles opSender, EFileResult state, FileArgs srcFA, FileArgs destFA)
         {
-            string m= string.Empty;
+            string m = string.Empty;
 
 
             if (state == EFileResult.DifferentSize)
@@ -488,6 +489,7 @@ namespace SPR.Models
             E_Decision decis = E_Decision.None;
             Func<E_Decision> box = delegate ()
             {
+
                 MBDecision window = new MBDecision()
                 {
                     Model = new M_Decision()
@@ -516,8 +518,8 @@ box
         }
         private void InformErrorSum(OpDFiles opSender, string message)
         {
-            IHM.Dispatcher.Invoke(
-                () => DxMBox.ShowDial("Copy problem", "Error", E_DxButtons.Ok, optMessage: message));
+              IHM.Dispatcher.Invoke(
+              () => DxMBox.ShowDial("Copy problem", "Error", E_DxButtons.Ok, optMessage: message));
 
         }
 

@@ -13,11 +13,16 @@ Free of distribution and using.
     <Company>Daerlnaxe Software</Company>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -42,22 +47,22 @@ Free of distribution and using.
 
   <ItemGroup>
     <Resource Include="Resources\arrow bas.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\arrow bas2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\arrow bas3.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\button_right_blue.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\check_256.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\cross_256.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 
@@ -106,14 +111,19 @@ Free of distribution and using.
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.7.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\..\Clouds\GDrive - Dx\Programmation\CSharp\DxPaths\DxPaths.csproj" />
     <ProjectReference Include="..\..\DxLocalTrans\DxLocalTrans\DxLocalTransf.csproj" />
-    <ProjectReference Include="..\..\DxTBoxCore\Sources\DxTBoxCore.csproj" />
-    <ProjectReference Include="..\..\HashCalc\Source\HashCalc.csproj" />
     <ProjectReference Include="..\..\Hermes\Sources\Hermes.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DxTBoxCore">
+      <HintPath>..\..\DxTBoxCore\Packages\DxTBoxCore - Core3.1 - Comp 3.1.1\DxTBoxCore.dll</HintPath>
+    </Reference>
     <Reference Include="Unbroken.LaunchBox.Plugins">
       <HintPath>G:\Frontend\LaunchBox - Test\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
     </Reference>
