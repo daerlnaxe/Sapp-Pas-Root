@@ -244,6 +244,9 @@
     <value>Dossier Musiques</value>
     <comment>Utilisé dans PlatformPaths</comment>
   </data>
+  <data name="M_DefaultForced" xml:space="preserve">
+    <value>Mode est sur "Forcé" par défaut.</value>
+  </data>
   <data name="Name_of_Folders" xml:space="preserve">
     <value>Nom des Dossiers</value>
     <comment>Utilisé dans PlatformPaths</comment>

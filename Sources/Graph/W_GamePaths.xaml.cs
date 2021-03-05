@@ -289,8 +289,10 @@ namespace SPR.Graph
 
         private void cbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            _Model.CheckAllGames();
             _ActiveSimulate = true;
             _ActiveApply = false;
+            
         }
     }
 }

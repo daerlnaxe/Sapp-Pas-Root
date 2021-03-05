@@ -276,6 +276,9 @@ You can use personnalized subfolders to change name of manuals, games, images, v
     <value>Musics Folder</value>
     <comment>Utilisé dans PlatformPaths</comment>
   </data>
+  <data name="M_DefaultForced" xml:space="preserve">
+    <value>Mode is set on "Forced" by default.</value>
+  </data>
   <data name="Name_of_Folders" xml:space="preserve">
     <value>Name of Folders</value>
     <comment>Utilisé dans PlatformPaths</comment>

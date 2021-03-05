@@ -188,9 +188,10 @@
                     <GroupBox Header="Modes" Grid.Column="2">
                         <StackPanel >
                             <ComboBox x:Name="cbModes" VerticalAlignment="Top" HorizontalAlignment="Left" Width="150"
-                                      SelectedIndex="{Binding ChosenMode, Converter={StaticResource gmConv}}"
+                                      SelectedIndex="{Binding ChosenMode, Converter={StaticResource gmConv}}"                                      
+                                      Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"
+                                      SelectionChanged="cbModes_SelectionChanged"                                      
                                       
-                                      Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}" SelectionChanged="cbModes_SelectionChanged"                                      
                                       >
                                 <ComboBoxItem Content="{x:Static t:SPRLang.Please_Select_Mode}" ContentStringFormat="{}{0}..." />
                                 <ComboBoxItem Content="Forced Mode" ToolTip="Use a path without subfolders"/>

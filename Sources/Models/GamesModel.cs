@@ -185,7 +185,6 @@ namespace SPR.Models
         public GamesModel()
         {
 
-
         }
 
 
@@ -397,6 +396,7 @@ namespace SPR.Models
         /// </summary>
         public void CheckAllGames()
         {
+
             HeTrace.WriteLine("--- Check Validity of Games ---");
 
             foreach (C_Game game in ExtPlatformGames)
@@ -472,8 +472,8 @@ namespace SPR.Models
         /// <summary>
         /// Teste la validité d'un chemin en fonction d'un référent
         /// </summary>
-        /// <param name="referent"></param>
-        /// <param name="toTest"></param>
+        /// <param name="referent">La racine</param>
+        /// <param name="toTest">Le chemin vers le fichier</param>
         /// <returns></returns>
         bool Test_Path(string referent, string toTest)
         {
@@ -486,13 +486,45 @@ namespace SPR.Models
                 return false;
             }
 
+            /* 05/03/2021
             if (toTest.Contains(referent))
             {
                 HeTrace.WriteLine($"\t\tResult: true", 10);
                 return true;
+            }*/
+            #region 05/03/2021
+            // dans le cas forcé on n'accepte pas les sous dossiers
+            if(ChosenMode == GamePathMode.Forced)
+            {
+                HeTrace.WriteLine("\t\tForced Mode", 10);
+                string predictedP = $@"{referent}\{Path.GetFileName(toTest)}";
+                if (toTest.Equals(predictedP))
+                {
+                    HeTrace.WriteLine($"\t\tResult: true", 10);
+                    return true;
+                }
+                
             }
+            // Dans le cas des keepsubfolders on accepte les mix
+            else if(ChosenMode == GamePathMode.KeepSubFolders)
+            {
+                HeTrace.WriteLine("\t\tForced Mode", 10);
+                if (toTest.Contains(referent))
+                {
+                    HeTrace.WriteLine($"\t\tResult: true", 10);
+                    return true;
+                }
+                
+            }
+            else
+            {
+                HeTrace.WriteLine($"\t\tResult: false - ChosenMode is set on None", 10);
+                return false;
 
-            HeTrace.WriteLine($"\t\tResult: false - path doesn't contain referent", 10);
+            }
+            #endregion 05/03/2021
+
+            HeTrace.WriteLine($"\t\tResult: false ?", 10);
             return false;
         }
 

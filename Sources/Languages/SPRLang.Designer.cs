@@ -389,6 +389,15 @@ namespace SPR.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mode is set on &quot;Forced&quot; by default..
+        /// </summary>
+        public static string M_DefaultForced {
+            get {
+                return ResourceManager.GetString("M_DefaultForced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Main.
         /// </summary>
         public static string Main {

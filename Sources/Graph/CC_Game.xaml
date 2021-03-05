@@ -33,6 +33,11 @@
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
+                                <!--
+                                <DataTrigger Binding="{Binding Validity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:CC_Game}}" Value="{x:Null}">
+                                    <Setter Property="Source" Value="/SPR;component/Resources/question.png"/>
+                                </DataTrigger>
+                                -->
                                 <DataTrigger Binding="{Binding Validity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
                                     <Setter Property="Source" Value="/SPR;component/Resources/cross_256.png"/>                                    
                                 </DataTrigger>
