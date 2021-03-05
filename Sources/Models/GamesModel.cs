@@ -334,7 +334,6 @@ namespace SPR.Models
                     continue;
 
 
-
                 // Travail sur la chaine à remplacer
                 // Ne convient pas, trop de problèmes.
                 /*
@@ -355,7 +354,6 @@ namespace SPR.Models
 
                     return;
                 }
-
 
                 // Voir si dossier null 
                 // On récupère le nom du dernier dossier de la plateforme
@@ -526,8 +524,6 @@ namespace SPR.Models
                 return;
             }
 
-
-
             #region remplace alterpath
             // say mode
             HeTrace.WriteLine($"Mode: {ChosenMode}");
@@ -541,19 +537,26 @@ namespace SPR.Models
             HeTrace.WriteLine("Refresh for game Paths"); // NewLine
             this.InitializeGames();
 
+            HeTrace.WriteLine("Simulation in progress...");
             // Modification des chemins
             foreach (C_Game game in ExtPlatformGames)
             {
                 // Trace.WriteLine($@"{game.Title}:");
                 HeTrace.WriteLine($"-- {game.Title}"); // NewLine
 
-                // Vérification que le jeu n'est pas déjà valide.
+                // Vérification que le jeu n'est pas déjà valide (retiré, bloque l'analyse)
                 #region 24/12/2020
+                /*
                 if (game.IsValide)
                 {
                     HeTrace.WriteLine($"\tGame already valid -> Simulation avoided: {game.Title}");
                     continue;
-                }
+                }*/
+                #endregion
+
+                #region 04/03/2021
+                // On va profiter à chaque fois pour vérifier s'il y a validité
+                bool gameValidity = true;
                 #endregion
 
                 //   Trace.Indent();
@@ -582,11 +585,6 @@ namespace SPR.Models
                     //HeTrace.WriteLine($"\tModification for {pathO.Type}: {pathO.OldRelatPath}"); // NewLine
 
 
-                    #region 24/12/2020
-                    #endregion
-
-
-
                     // Assignation du root path pour reconstruire
                     string rootPath = "";
 
@@ -595,7 +593,7 @@ namespace SPR.Models
 
                     switch (pathO.Type)
                     {
-                        // On peut utiliser le keep
+                        // On peut utiliser le keep ou le forcer grâce à AppPathsBuilder
                         case nameof(PathType.ApplicationPath):
                             rootPath = DicSystemPaths[MediaType.Application].RelatPath;
                             AppPathsBuilder(pathO, rootPath, ChosenMode);
@@ -661,6 +659,9 @@ namespace SPR.Models
 
                     }
 
+
+
+
                     // Création des chemins
 
                     #region viré pour une méthode
@@ -696,59 +697,103 @@ namespace SPR.Models
 
 
                     #endregion remplace Alterpath
+
+                    #region 04/03/2021
+                    //Check_IfModifyNeeded(pathO);
+                    gameValidity &= !pathO.ToModify;
+
+                    #endregion
                 }
+
 
                 #region 2020
 
-                // Si la fonction pour modifier aussi les romx mixed n'est pas activée on passe
-                if (AddAppPaths != true || game.AddiRomPaths.Count == 0)
-                    continue;
 
-                HeTrace.WriteLine($"2020: Additionnal App Path Managing  -----"); // NewLine
-                // Modifications sur les chemins des roms mixed
-                foreach (AAppPath addiApp in game.AddiRomPaths)
+                if (AddAppPaths == true && game.AddiRomPaths.Count > 0)
                 {
-                    HeTrace.WriteLine($"\t-- AdditionnalApplication: {addiApp.RelatPath}");
+                    HeTrace.WriteLine($"2020: Additionnal App Path Managing  -----"); // NewLine
 
-                    // Conversions des / en \
-                    //addiApp.Paths.OldRelatPath = addiApp.Paths.OldRelatPath.Replace('/', '\\');
-                    addiApp.RelatPath = addiApp.RelatPath.Replace('/', '\\');
-                    //addiApp.Paths.OldHardPath = addiApp.Paths.OldHardPath.Replace('/', '\\');
-                    addiApp.HardPath = addiApp.HardPath.Replace('/', '\\');
-
-                    // Assignation du root
-                    //PathsBuilder(addiApp.Paths, DicSystemPaths["Application"], mode);
-                    AppPathsBuilder(addiApp, DicSystemPaths[MediaType.Application].RelatPath, ChosenMode);
-                    //rootPath = Path.Combine(dicSystemPaths["Application"], fichier);
-
-                    /*
-                    // modes
-                    string fichier = "";    // Récupération du nom du fichier ?
-                    if (rbForced.Checked)       // mode forcé
+                    // Modifications sur les chemins des roms mixed
+                    foreach (AAppPath addiApp in game.AddiRomPaths)
                     {
-                        int pos = addiAppPath.Original_RLink.LastIndexOf('\\');
-                        fichier = addiAppPath.Original_RLink.Substring(pos + 1); //+1 pour lever le \
+                        HeTrace.WriteLine($"\t-- AdditionnalApplication: {addiApp.RelatPath}");
+
+                        // Conversions des / en \
+                        //addiApp.Paths.OldRelatPath = addiApp.Paths.OldRelatPath.Replace('/', '\\');
+                        addiApp.RelatPath = addiApp.RelatPath.Replace('/', '\\');
+                        //addiApp.Paths.OldHardPath = addiApp.Paths.OldHardPath.Replace('/', '\\');
+                        addiApp.HardPath = addiApp.HardPath.Replace('/', '\\');
+
+                        // Assignation du root
+                        //PathsBuilder(addiApp.Paths, DicSystemPaths["Application"], mode);
+                        AppPathsBuilder(addiApp, DicSystemPaths[MediaType.Application].RelatPath, ChosenMode);
+                        //rootPath = Path.Combine(dicSystemPaths["Application"], fichier);
+
+                        /*
+                        // modes
+                        string fichier = "";    // Récupération du nom du fichier ?
+                        if (rbForced.Checked)       // mode forcé
+                        {
+                            int pos = addiAppPath.Original_RLink.LastIndexOf('\\');
+                            fichier = addiAppPath.Original_RLink.Substring(pos + 1); //+1 pour lever le \
+                        }
+                        else if (rbKeepSub.Checked) // Mode conservant les sous-dossiers 
+                        {
+                            int pos = addiAppPath.Original_RLink.IndexOf($@"\{PlatformName}\");
+                            fichier = addiAppPath.Original_RLink.Substring(pos + PlatformName.Length + 2);
+                        }*/
+
+                        //HeTrace.WriteLine($"$2020 : {fichier}";
+                        //  addiApp.Destination_RLink = fileDest;
+                        //addiApp.Destination_HLink = Path.GetFullPath(Path.Combine(AppPath, fileDest));
+
+                        //HeTrace.WriteLine($"2020 Additionnal App: {addiApp.Paths.OldRelatPath} => {addiApp.Paths.NewRelatPath}"); // NewLine
+                        #region 04/03/2021
+                        //Check_IfModifyNeeded(addiApp);
+                        gameValidity &= !addiApp.ToModify; //addiApp.Test_Validity();
+
+                        #endregion
                     }
-                    else if (rbKeepSub.Checked) // Mode conservant les sous-dossiers 
-                    {
-                        int pos = addiAppPath.Original_RLink.IndexOf($@"\{PlatformName}\");
-                        fichier = addiAppPath.Original_RLink.Substring(pos + PlatformName.Length + 2);
-                    }*/
-
-                    //HeTrace.WriteLine($"$2020 : {fichier}";
-                    //  addiApp.Destination_RLink = fileDest;
-                    //addiApp.Destination_HLink = Path.GetFullPath(Path.Combine(AppPath, fileDest));
-
-                    //HeTrace.WriteLine($"2020 Additionnal App: {addiApp.Paths.OldRelatPath} => {addiApp.Paths.NewRelatPath}"); // NewLine
-
-                }
+                } // End additional app
                 #endregion --- 2020
 
+
+                HeTrace.WriteLine("Check validity of games");
+                #region 04/03/2021
+                HeTrace.WriteLine($"Validity test {game.Title}:  {gameValidity}");
+                game.IsValide = gameValidity;
+                #endregion
                 //   Trace.Unindent();
-            }
+            }       // Fin du parcours des jeux;
+
 
             HeTrace.WriteLine("End of Simulation"); // NewLine
         }
+
+        /// <summary>
+        /// Compare vieux paths avec nouveau et détermine s'il y aura une modification à faire.
+        /// </summary>
+        /// <param name="pathO"></param>
+        [Obsolete]
+        private void Check_IfModifyNeeded(C_PathsDouble pathO)
+        {
+            HeTrace.WriteLine($"\tHPath: {pathO.HardPath}", 10);
+            HeTrace.WriteLine($"\tNewHPath: {pathO.NewHardPath}", 10);
+            HeTrace.WriteLine($"\tRPath: {pathO.RelatPath}", 10);
+            HeTrace.WriteLine($"\tNewRPath: {pathO.NewRelatPath}", 10);
+
+            // Si les paths sont égaux pas besoin de modifier
+            pathO.ToModify = !pathO.Test_Validity();
+            HeTrace.WriteLine($"\tTestIMN: {pathO.ToModify}", 10);
+
+            // On montre que les données n'ont pas besoin d'être modifiées
+            if (!pathO.ToModify)
+            {
+                pathO.NewHardPath = SPRLang.No_Modif;
+                pathO.NewRelatPath = SPRLang.No_Modif;
+            }
+        }
+
 
 
         /// <summary>
@@ -768,6 +813,8 @@ namespace SPR.Models
         {
             HeTrace.WriteLine($"\tUtilisation du rootpath {rootPath}", 10); // NewLine
 
+
+
             // modes
             if (mode == GamePathMode.Forced)
             {
@@ -776,28 +823,35 @@ namespace SPR.Models
             else if (mode == GamePathMode.KeepSubFolders)
             // Mode conservant les sous-dossiers - Doit fonctionner normalement avec les fichiers à la racine aussi
             {
+                KeepSubFolderMode(pathO, rootPath);
+                /*
                 #region 24/12/2020
                 // On vérifie que la chaine contient le dossier enfant
                 if (pathO.RelatPath.Contains(ToReplace))
                 {
                     KeepSubFolderMode(pathO, rootPath);
                 }
+                #endregion 04/03/2021
+                #region 05/03/2021
+                else
+                {
+                    pathO.NewRelatPath = pathO.RelatPath;
+                    pathO.NewHardPath = pathO.HardPath;
+                }
+                #endregion 05/03/2021*/
                 /*
                 else
                 {
                     ForcedMode(pathO, ToReplace);
                 }*/
 
-                #endregion
             }
 
 
             if (!pathO.ToModify)
-                HeTrace.WriteLine($"\tAppPathsBuilder no Simulation: {pathO.RelatPath} ");
+                HeTrace.WriteLine($"\tAppPathsBuilder no modification: {pathO.RelatPath} ");
 
         }
-
-
 
         /// <summary>
         /// Mode forcé on ne va récupérer que le nom du fichier
@@ -806,6 +860,21 @@ namespace SPR.Models
         /// <param name="rootPath"></param>
         private void ForcedMode(C_PathsDouble pathO, string rootPath)
         {
+            #region 05/03/2021
+            // Dans les deux cas si le chemin contient déjà l'ancien rootpath on passe puisque c'est ce par quoi on remplacerait
+            if (pathO.RelatPath.Contains(rootPath))
+            {
+                HeTrace.WriteLine($"\tPath contains already rootpath ({pathO.RelatPath})");
+                pathO.ToModify = false;
+                pathO.NewHardPath = SPRLang.No_Modif;
+                pathO.NewRelatPath = SPRLang.No_Modif;
+                return;
+            }
+
+            pathO.ToModify = true;
+            #endregion 05/03/2021
+
+
             string tmp = Path.Combine(rootPath, Path.GetFileName(pathO.RelatPath));
 
             // Recherche du lien réel + remise en forme en passant
@@ -813,7 +882,7 @@ namespace SPR.Models
             pathO.NewRelatPath = DxPath.To_Relative(Global.LaunchBoxRoot, pathO.NewHardPath);
 
             #region 24/12/2020
-            pathO.ToModify = true;
+            // 05/03/2021 pathO.ToModify = true;
             #endregion
 
             HeTrace.WriteLine($"\tForcedMode: {pathO.NewRelatPath}");
@@ -826,20 +895,54 @@ namespace SPR.Models
         /// <param name="rootPath"></param>
         private void KeepSubFolderMode(C_PathsDouble pathO, string rootPath)
         {
+            HeTrace.WriteLine($"\tKeepSubFolderMode, trying to replace '{ToReplace}'");
+
+            #region 05/03/2021
+            // Si le chemin contient déjà l'ancien rootpath ou qu'il ne contient pas ce qu'on doit remplacer on passe
+            bool cond1 = pathO.RelatPath.Contains(rootPath);
+            bool cond2 = pathO.RelatPath.Contains(ToReplace);
+            if (cond1 || !cond2)
+            {
+                pathO.ToModify = false;
+                pathO.NewHardPath = SPRLang.No_Modif;
+                pathO.NewRelatPath = SPRLang.No_Modif;
+            }
+
+            if (cond1)
+            {
+                HeTrace.WriteLine($"\tPath contains already rootpath ({pathO.RelatPath})");
+                return;
+            }
+
+            if (!cond2)
+            {
+                HeTrace.WriteLine($"\tPath doesn't contains ToReplace");
+                return;
+            }
+
+
+            pathO.ToModify = true;
+            #endregion 05/03/2021
+
+
+
             string mee = pathO.RelatPath.Replace($"{ToReplace}", "");
+            string tmp = Path.Combine(rootPath, mee.Substring(1));
             //int pos = pathO.OldRelatPath.IndexOf($@"\{PlatformName}\");
 
             //string tmp = pathO.OldRelatPath.Substring(pos + PlatformName.Length + 2);
-
-            pathO.NewHardPath = Path.Combine(rootPath, mee.Substring(1));
+            pathO.NewHardPath = Path.GetFullPath(tmp, Global.LaunchBoxRoot);
             pathO.NewRelatPath = DxPath.To_Relative(Global.LaunchBoxRoot, pathO.NewHardPath);
 
             #region 24/12/2020
-            pathO.ToModify = true;
+            // 05/03/2021 pathO.ToModify = true;
             #endregion 
 
+            HeTrace.WriteLine($"\tKeepSubFolderMode: {pathO.NewHardPath}");
             HeTrace.WriteLine($"\tKeepSubFolderMode: {pathO.NewRelatPath}");
         }
+
+
 
         /// <summary>
         /// Apply changes
@@ -906,12 +1009,14 @@ namespace SPR.Models
                 return;
             }
 
-            //  A totalement modifier car ne gère pas le "tomodify"
+            #region 04/03/2021
+            /*//  A totalement modifier car ne gère pas le "tomodify"
             if (!game.ApplicationPath.ToModify)
             {
                 HeTrace.WriteLine("\t\tGame not modified (because of simulation method)");
                 return;
-            }
+            }*/
+            #endregion 04/03/2021
 
             // Jeux                
             //originalGame.ApplicationPath = game.ApplicationPath == null ? null : game.ApplicationPath.NewRelatPath;
@@ -931,6 +1036,13 @@ namespace SPR.Models
                 if (collecOPaths == null)
                 {
                     HeTrace.WriteLine($"Path object is null");
+                    continue;
+                }
+
+                // S'il n'y a pas d'utilité de cette partie modifier
+                if (!collecOPaths.ToModify)
+                {
+                    HeTrace.WriteLine($"\t\t{collecOPaths.Type} Path not modified (Same as original)");
                     continue;
                 }
 
@@ -967,6 +1079,8 @@ namespace SPR.Models
 
             // Uniquement si la box est cochée
             if (AddAppPaths == true)
+            {
+                HeTrace.WriteLine("\t\tModifications for the Additionnal Apps");
                 foreach (IAdditionalApplication oMixedRoms in originalGame.GetAllAdditionalApplications())
                 {
                     // Récupération des informations des chemins pour la mixes rom
@@ -975,19 +1089,27 @@ namespace SPR.Models
                     if (appPaths == null)
                     {
                         HeTrace.WriteLine("\t\tAdditionnal application not found");
-                        return;
+                        continue;
+                    }
+
+                    // S'il n'y a pas d'utilité de cette partie modifier
+                    if (!appPaths.ToModify)
+                    {
+                        HeTrace.WriteLine($"\t\t{appPaths.RelatPath} Path not modified (Same as Original)");
+                        continue;
                     }
 
 
                     //MessageBox.Show($"{paths.ID} {paths.Destination_HLink} - {paths.Destination_RLink}");
 
                     //
-                    // oMixedRoms.ApplicationPath = paths.Destination_RLink;
+                     oMixedRoms.ApplicationPath = appPaths.NewRelatPath;
                     //
                     appPaths.RelatPath = appPaths.NewRelatPath;
                     appPaths.HardPath = appPaths.NewHardPath;
                     appPaths.Raz_NewPaths();
                 }
+            }
             #endregion
 
         }

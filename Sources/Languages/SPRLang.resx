@@ -280,6 +280,9 @@ You can use personnalized subfolders to change name of manuals, games, images, v
     <value>Name of Folders</value>
     <comment>Utilisé dans PlatformPaths</comment>
   </data>
+  <data name="No_Modif" xml:space="preserve">
+    <value>No modification needed for this path</value>
+  </data>
   <data name="Open_In_Explorer" xml:space="preserve">
     <value>Open in Explorer</value>
     <comment>Utilisé dans une commande</comment>

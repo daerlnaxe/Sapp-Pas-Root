@@ -197,6 +197,7 @@ namespace SPR.Containers
         /// </returns>
         public void BuildPaths(IGame game)
         {
+            HeTrace.WriteLine($"[BuildPaths]Game path: {game.ApplicationPath}");
             /*
              * Rajouter
              * Hidden ?

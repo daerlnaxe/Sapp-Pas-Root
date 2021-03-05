@@ -479,6 +479,15 @@ namespace SPR.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à No modification needed for this path.
+        /// </summary>
+        public static string No_Modif {
+            get {
+                return ResourceManager.GetString("No_Modif", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Open in Explorer.
         /// </summary>
         public static string Open_In_Explorer {

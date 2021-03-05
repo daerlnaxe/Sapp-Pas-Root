@@ -1,4 +1,5 @@
 ﻿using SPR.Languages;
+using System;
 
 namespace SPR.Containers
 {
@@ -81,6 +82,15 @@ namespace SPR.Containers
         internal void Raz_NewPaths()
         {
             NewHardPath = NewRelatPath = SPRLang.Waiting;
+        }
+
+        /// <summary>
+        /// Test if path are similars
+        /// </summary>
+        /// <returns></returns>
+        internal bool Test_Validity()
+        {
+            return HardPath.Equals(NewHardPath) && RelatPath.Equals(NewRelatPath);
         }
     }
 }
