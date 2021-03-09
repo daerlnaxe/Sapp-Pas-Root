@@ -21,6 +21,7 @@ using DxTBoxCore.Box_Progress;
 using DxTBoxCore.MBox;
 using DxTBoxCore.Box_Decisions;
 using DxTBoxCore.Common;
+using Hermes;
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -304,6 +305,8 @@ namespace SPR.Models
         #region Application
         internal bool? Apply()
         {
+            HeTrace.WriteLine($"\nMigrating files");
+
             List<ModelSD> files = new List<ModelSD>();
             files.Add(GamesPaths);
             files.Add(ManualsPaths);
@@ -332,7 +335,7 @@ namespace SPR.Models
                     Param = files
                 },
             };
-
+            dxApply.TaskToRun.UpdateStatus += (x) => HeTrace.WriteLine(x);
             return dxApply.ShowDialog();
 
 
@@ -401,6 +404,7 @@ namespace SPR.Models
             opfSys.AskToUser += this.AskWhatToDo;
             opfSys.SumError += this.InformErrorSum;
             opfSys.SignalProgression += (x, y) => encaps.SayUpdateProgress(y);
+            opfSys.IWriteLine += (x) => encaps.SayUpdateStatus(x);
 
             int i = 0; // Là selon on pourrait changer un peu la progression
 
@@ -427,18 +431,19 @@ namespace SPR.Models
                     // Raz
                     opfSys.RazSums();
 
-                    Thread.Sleep(500);
-
                     string sourceFile = files[j];
 
                     // Transformation du fichier
                     string destFile = sourceFile.Replace(Element.Source, Element.Destination);
+                    
+                    //HeTrace.WriteLine($"\tSrcFile: '{sourceFile}'");
+                    //HeTrace.WriteLine($"\tDestFile: '{destFile}'");
 
                     encaps.SayUpdateStatus(sourceFile);
                     encaps.SayUpdateProgress(j * 3);
 
                     // On met en pause (pourquoi ?)
-                    tP.Pause();
+                    tP.Pause(10);
 
                     // Gestion de l'état stop
                     if (opfSys.DecisionByDefault == E_Decision.Stop || opfSys.DecisionByDefault == E_Decision.PassAll)
@@ -448,7 +453,8 @@ namespace SPR.Models
                     if (tP.CancelToken.IsCancellationRequested)
                         return null;
 
-                    opfSys.ManageCopy(sourceFile, destFile, j * 3);
+                    bool ff = opfSys.ManageCopy(sourceFile, destFile, j * 3);
+                    //HeTrace.WriteLine($"Result: {ff}");
 
                 }
 

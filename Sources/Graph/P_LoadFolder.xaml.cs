@@ -69,8 +69,7 @@ namespace SPR.Graph
                 {
                     HideWindowsFolder = true,
                     PathCompareason = System.StringComparison.CurrentCultureIgnoreCase,
-                    StartingFolder = System.IO.Path.Combine(
-                                        Global.LaunchBoxRoot, Properties.Settings.Default.AppsFolder)
+                    StartingFolder = Properties.Settings.Default.LastKPath
 
                 }
             };
@@ -80,7 +79,8 @@ namespace SPR.Graph
             if (cf.DialogResult == true)
             {
                 ResultFolder = cf.Model.LinkResult;
-
+                Properties.Settings.Default.LastKPath = ResultFolder;
+                Properties.Settings.Default.Save();
             }
             /*
             if (cf.DialogResult == true && e.Parameter.Equals("Source"))

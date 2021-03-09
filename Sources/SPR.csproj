@@ -11,7 +11,7 @@ Free of distribution and using.
 </Description>
     <NeutralLanguage>en</NeutralLanguage>
     <Company>Daerlnaxe Software</Company>
-    <AssemblyVersion>2.0.0.3</AssemblyVersion>
+    <AssemblyVersion>2.0.0.4</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
