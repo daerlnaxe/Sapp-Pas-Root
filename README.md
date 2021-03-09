@@ -3,6 +3,12 @@
 - .Net Core / WPF 
 
 # Versions:
+### 2.0.0.3 (Alpha)
+- Corrections on the part to modify game paths:
+  * Additionnal paths modified
+  * Correction to verify path validity for Forced Mode
+  * Various corrections
+
 ### 2.0.0.1 (Alpha)
 - BugFix: Launchbox uses a 4.7.2 of Drawing.Common.dll DxTBoxCore uses 5.0.0. Recompilation of DxTBoxCore with a previous version of the Compatibility package (3.1.1) and installation of the nugget System.Drawing.Common for the plugin in 4.7.2 version.
 
@@ -22,5 +28,5 @@
 - DxPaths - relative and hardware link makers (modification on algorithms because of previous bugs)
 - Hermes - new system for log (still in progress and testing)
 
-#
-- 
+# Todo
+- [ ] Add a new mode for games paths 'Forced SubFolders', validity wrong if path point to the root for app folders and/or additionnal apps.
