@@ -33,5 +33,6 @@
 - [ ] When stop copy, say copy successfull.
 - [ ] L'upgrade total ne se fait pas
 - [ ] See if 100ms pause is useful
-- [x] Modified starting folder for migration
-- [x] Remove 500ms pause on migration part.
+- [x] Modified starting folder for migration (2.0.0.4)
+- [x] Remove 500ms pause on migration part. (2.0.0.4)
+- [x] Correction for DxLocalTransf, there were an error for special char in the path (2.0.0.4)
