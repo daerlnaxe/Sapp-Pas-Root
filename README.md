@@ -31,4 +31,4 @@
 # Todo
 - [ ] Add a new mode for games paths 'Forced SubFolders', validity wrong if path point to the root for app folders and/or additionnal apps.
 - [ ] When stop copy, say copy successfull.
-- [ ] Remove 500ms pause on migration part.
+- [x] Remove 500ms pause on migration part.
