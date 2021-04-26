@@ -45,6 +45,13 @@ namespace SPR.Models
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
         internal void Initialize()
         {
             //

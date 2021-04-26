@@ -7,6 +7,7 @@
       xmlns:t="clr-namespace:SPR.Languages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="400"
+      Loaded="Page_Loaded"
       Title="P_SubFolders">
     <Page.Resources>
         <!-- Validation error template -->

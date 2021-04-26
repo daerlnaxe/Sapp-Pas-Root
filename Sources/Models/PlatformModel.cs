@@ -1,5 +1,5 @@
 ﻿using DxPaths.Windows;
-using DxTBoxCore.MBox;
+using DxTBoxCore.Box_MBox;
 using Hermes;
 using Hermes.Messengers;
 using SPR.Containers;
@@ -478,7 +478,7 @@ namespace SPR.Models
 
 
         /// <summary>
-        /// Initialize with parameters needed entries
+        /// Initialize with parameters Required entries
         /// </summary>
         [Obsolete]
         private void NormalInit()

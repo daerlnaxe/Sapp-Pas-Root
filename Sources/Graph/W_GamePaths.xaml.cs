@@ -21,11 +21,6 @@ namespace SPR.Graph
         /// </summary>
         private CC_Game _ChosenPanel;
 
-        /// <summary>
-        /// Apply mode activated
-        /// </summary>
-        private bool _ActiveApply { get; set; }
-        private bool _ActiveSimulate { get; set; } = true;
 
         /*  private bool _activeCtrl = true;
           public bool ActiveCtrl
@@ -125,8 +120,8 @@ namespace SPR.Graph
         private void ModesChecked(object sender, RoutedEventArgs e)
         {
             // Reinitialisation pour la simulation
-            _ActiveSimulate = true;
-            _ActiveApply = false;
+            _Model.ActiveSimulate = true;
+            _Model.ActiveApply = false;
 
             // Recherche du dossier pivot pour déterminer ce que l'on garde
             /*
@@ -158,7 +153,7 @@ namespace SPR.Graph
 
         private void Simulate_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _ActiveSimulate && !_Model.HasErrors;
+            e.CanExecute = _Model.ActiveSimulate && !_Model.HasErrors;
         }
 
         private void Simulate_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -174,8 +169,8 @@ namespace SPR.Graph
             _Model.Simulation();
 
             // ---
-            _ActiveSimulate = false;
-            _ActiveApply = true;
+            _Model.ActiveSimulate = false;
+            _Model.ActiveApply = true;
         }
         #endregion Simulate
 
@@ -183,15 +178,15 @@ namespace SPR.Graph
 
         private void Apply_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _ActiveApply;
+            e.CanExecute = _Model.ActiveApply;
         }
 
         private void Apply_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             _Model.ApplyChanges();
 
-            _ActiveSimulate = true;
-            _ActiveApply = false;
+            _Model.ActiveSimulate = true;
+            _Model.ActiveApply = false;
         }
         #endregion Apply
 
@@ -216,8 +211,8 @@ namespace SPR.Graph
         private void HidGames_Checked(object sender, RoutedEventArgs e)
         {
             _ActiveRescan = true;
-            _ActiveSimulate = true;
-            _ActiveApply = false;
+            _Model.ActiveSimulate = true;
+            _Model.ActiveApply = false;
 
         }
 
@@ -234,8 +229,8 @@ namespace SPR.Graph
             /*if (ChosenMode == 0)
                 return;*/
 
-            _ActiveSimulate = true;
-            _ActiveApply = false;
+            _Model.ActiveSimulate = true;
+            _Model.ActiveApply = false;
         }
 
         private void AAP_UnChecked(object sender, RoutedEventArgs e)
@@ -246,8 +241,8 @@ namespace SPR.Graph
             /*  if (ChosenMode == 0)
                   return;*/
 
-            _ActiveSimulate = true;
-            _ActiveApply = false;
+            _Model.ActiveSimulate = true;
+            _Model.ActiveApply = false;
         }
 
         /// <summary>
@@ -258,8 +253,8 @@ namespace SPR.Graph
         private void tbReplace_KeyDown(object sender, KeyEventArgs e)
         {
             RemoveLastASlash((TextBox)sender);
-            _ActiveSimulate = true;
-            _ActiveApply = false;
+            _Model.ActiveSimulate = true;
+            _Model.ActiveApply = false;
         }
 
         /// <summary>
@@ -289,9 +284,10 @@ namespace SPR.Graph
 
         private void cbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
             _Model.CheckAllGames();
-            _ActiveSimulate = true;
-            _ActiveApply = false;
+            _Model.ActiveSimulate = true;
+            _Model.ActiveApply = false;
             
         }
     }

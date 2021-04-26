@@ -7,5 +7,7 @@ namespace SPR.Models
     interface I_ModelFolders
     {        
         string GamesFName { get; set; }
+
+
     }
 }

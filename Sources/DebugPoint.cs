@@ -41,14 +41,13 @@ namespace SPR
             };
             //meD.AddCaller(prefix: "Debug >>>");
 
-            MeSimpleLog meSL = new MeSimpleLog()
+            MeSimpleLog meSL = new MeSimpleLog(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, prop.Default.LogFolder, prop.Default.LogFile))
             {
                 LogLevel = Global.Config.LogLvl,
                 ByPass = true,
                 FuncPrefix = Hermes.Cont.EPrefix.Horodating | Hermes.Cont.EPrefix.Prefixing
 
             };
-            meSL.ActivateFileLog(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, prop.Default.LogFolder, prop.Default.LogFile));
             meSL.AddCaller(prefix: "DeDebug >>>");
 
             HeTrace.AddMessenger("Debug", meD);

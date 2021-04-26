@@ -1,15 +1,11 @@
-﻿using DxTBoxCore.Box_Progress;
+﻿using DxTBoxCore.Box_MBox;
 using DxTBoxCore.Languages;
-using DxTBoxCore.MBox;
 using SPR.Languages;
 using SPR.Models;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Unbroken.LaunchBox.Plugins.Data;
 
 namespace SPR.Graph
 {
@@ -27,6 +23,8 @@ namespace SPR.Graph
 
         private MigrateModel _Model;
 
+        private bool ActiveApply;
+
         #region Pages
         /// <summary>
         /// Page pour charger la source
@@ -41,7 +39,7 @@ namespace SPR.Graph
         /// <summary>
         /// Page pour modifier les sous-dossiers pour la source
         /// </summary>
-        private P_SubFolders srcSubFolders;
+        private P_SubFolders srcSubFolders { get; set; }
 
         /// <summary>
         /// Page pour modifier les sous-dossiers pour la destination
@@ -110,27 +108,20 @@ namespace SPR.Graph
 
 
             InitializeComponent();
-            DataContext = _Model;
-
-
 
             // Chemin source
             srcPageLoadFolder = new P_LoadFolder()
             {
-                Info = SPRLang.Choose_Source_Folder,
-                StartingFolder = System.IO.Path.Combine(Global.LaunchBoxRoot, Properties.Settings.Default.AppsFolder)
-
+                Model = new M_MigSrc()
             };
-            srcPageLoadFolder.ResultFolderChanged += ((x) => _Model.Source = x);
+            srcPageLoadFolder.Model.ResultFolderChanged += ((x) => _Model.Source = x);
 
             // Chemin destination
             destPageLoadFolder = new P_LoadFolder()
             {
-                Info = SPRLang.Choose_Dest_Folder,
-                StartingFolder = System.IO.Path.Combine(Global.LaunchBoxRoot, Properties.Settings.Default.AppsFolder)
-
+                Model = new M_MigDest()
             };
-            destPageLoadFolder.ResultFolderChanged += ((x) => _Model.Destination = x);
+            destPageLoadFolder.Model.ResultFolderChanged += ((x) => _Model.Destination = x);
 
             // Subfolders Src
             srcSubFolders = new P_SubFolders();
@@ -143,6 +134,8 @@ namespace SPR.Graph
             destSubFolders.Model.Info = SPRLang.Dest_Sub;
             destSubFolders.Model.ToolTipInfo = SPRLang.TT_Sub;
             _Model.DestSub = destSubFolders.Model;
+
+            DataContext = _Model;
         }
 
         /// <summary>
@@ -163,6 +156,11 @@ namespace SPR.Graph
         private void Load_ConfigSrc(object sender, ExecutedRoutedEventArgs e)
         {
             ActivePage = srcPageLoadFolder;
+        }
+
+        private void Can_ShowDestPath(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = !string.IsNullOrEmpty(_Model.Source);
         }
 
         /// <summary>
@@ -209,8 +207,7 @@ namespace SPR.Graph
         {
             /* Pour que la simulation puisse débuter:
                 - il ne doit pas y avoir d'erreurs dans les pages
-                - Destination et source ne doivent pas être null
-                
+                - Destination et source ne doivent pas être null               
 
              */
 
@@ -241,12 +238,12 @@ namespace SPR.Graph
             ActivePage = null;
             if (_Model.Verifications())
             {
-                  DxMBox.ShowDial(SPRLang.SimuSuccess);
+                DxMBox.ShowDial(SPRLang.SimuSuccess);
                 ActiveApply = true;
             }
             else
             {
-                DxTBoxCore.MBox.DxMBox.ShowDial(SPRLang.SimuFail, title: DxTBLang.Warning);
+                DxMBox.ShowDial(SPRLang.SimuFail, title: DxTBLang.Warning);
                 //optMessage: chemin
                 ActiveApply = false;
             }
@@ -257,12 +254,12 @@ namespace SPR.Graph
         {
             if (_Model.Apply() == true)
             {
-                    DxMBox.ShowDial(SPRLang.Transfert_Success);
+                DxMBox.ShowDial(SPRLang.Transfert_Success);
             }
 
             else
             {
-                  DxMBox.ShowDial(SPRLang.Transfert_Fail);
+                DxMBox.ShowDial(SPRLang.Transfert_Fail);
             }
 
             // Todo afficher un relevé d'informations
@@ -276,10 +273,12 @@ namespace SPR.Graph
 
         }
 
-        private bool ActiveApply;
+
         private void Can_Apply(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = ActiveApply;
         }
+
+
     }
 }

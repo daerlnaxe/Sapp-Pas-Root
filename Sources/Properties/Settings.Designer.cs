@@ -124,5 +124,29 @@ namespace SPR.Properties {
                 return ((string)(this["ConfigFile"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MigDestPath {
+            get {
+                return ((string)(this["MigDestPath"]));
+            }
+            set {
+                this["MigDestPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MigSrcPath {
+            get {
+                return ((string)(this["MigSrcPath"]));
+            }
+            set {
+                this["MigSrcPath"] = value;
+            }
+        }
     }
 }

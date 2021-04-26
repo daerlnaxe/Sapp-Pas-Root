@@ -4,7 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SPR.Graph"
+             d:Width="500" d:Height="100"
              mc:Ignorable="d" >
+    <UserControl.Resources>
+        <Style TargetType="TextBox" >
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </UserControl.Resources>
     <Border CornerRadius="4" BorderBrush="Black" BorderThickness="1">
         <Border.Background>
             <LinearGradientBrush EndPoint="0,0" StartPoint="1,0">
@@ -13,12 +19,6 @@
             </LinearGradientBrush>
         </Border.Background>
         <StackPanel>
-            <!--
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        -->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="35"/>
@@ -39,7 +39,7 @@
                                 </DataTrigger>
                                 -->
                                 <DataTrigger Binding="{Binding Validity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
-                                    <Setter Property="Source" Value="/SPR;component/Resources/cross_256.png"/>                                    
+                                    <Setter Property="Source" Value="/SPR;component/Resources/cross_256.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Validity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="True">
                                     <Setter Property="Source" Value="/SPR;component/Resources/check_256.png"/>
@@ -48,53 +48,51 @@
                         </Style>
                     </Image.Style>
                 </Image>
-              
+
             </Grid>
-            <!--
-                
-        -->
-            <!--
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-
-
-        </StackPanel>
-        -->
             <!-- Contenu -->
-
             <Grid Grid.Row="1" x:Name="InfosSup" Background="White"
                   HorizontalAlignment="Stretch" >
                 <Grid.Style>
                     <Style TargetType="Grid">
-
-                        <Setter Property="Visibility" Value="Collapsed"/>
-
+                        <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding PanelOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="true">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                        </Grid.Style>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <!-- Old Hard Link -->
-                        <Label Grid.Column="1" Grid.Row="0" Content="{Binding OHardLink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
-                        <!-- Old Relat Link -->
-                        <Label Grid.Column="1" Grid.Row="1" Content="{Binding ORelatLink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
-                        <!-- Image -->
-                        <Label Grid.Row="2" Grid.RowSpan="2" Content="ret"/>
-                        <!-- New Hard Link -->
-                        <Label Grid.Column="1" Grid.Row="2" Content="{Binding NHardLink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Background="#FF5CA611"/>
-                        <!-- New Relat Link -->
-                        <Label Grid.Column="1" Grid.Row="3" Content="{Binding NRelatLink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <!-- Old Hard Link -->
+                <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True"
+                    Text="{Binding OHardLink, FallbackValue=OldHard,
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
+                <!-- Old Relat Link -->
+                <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True"
+                    Text="{Binding ORelatLink, FallbackValue=OldRelat,
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                <Separator Grid.Row="2" Grid.ColumnSpan="2"/>
+                <!-- Image -->
+                <Label Grid.Row="3" Grid.RowSpan="2" Content="ret"/>
+                <!-- New Hard Link -->
+                <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True"
+                    Text="{Binding NHardLink, FallbackValue=NHard,
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Background="#FF5CA611"/>
+                <!-- New Relat Link -->
+                <TextBox Grid.Column="1" Grid.Row="4"
+                    Text="{Binding NRelatLink, FallbackValue=NRelat,
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
 
             </Grid>
             <!-- Barre de séparation -->

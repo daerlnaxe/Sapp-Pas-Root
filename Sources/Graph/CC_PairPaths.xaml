@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:SPR.Graph.Rules"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Validation.ErrorTemplate="{x:Null}" Loaded="UserControl_Loaded"
+             Validation.ErrorTemplate="{x:Null}"
+             Loaded="UserControl_Loaded"
              >
     <Grid >
         <Grid.Resources>
@@ -17,7 +18,7 @@
                         <Border.Style >
                             <Style TargetType="Border">
                                 <Style.Triggers>
-                                    <Trigger Property="Validation.HasError" Value="False">
+                                    <Trigger Property="Validation.HasError" Value="True">
                                         <Setter Property="ToolTip" Value="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" />
                                     </Trigger>
                                 </Style.Triggers>

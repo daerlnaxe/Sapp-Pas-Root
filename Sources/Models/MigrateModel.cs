@@ -1,4 +1,15 @@
-﻿using SPR.Containers;
+﻿using AsyncProgress;
+using AsyncProgress.Tools;
+using DxLocalTransf;
+using DxLocalTransf.Cont;
+using DxLocalTransf.Copy;
+using DxTBoxCore.Box_Decisions;
+using DxTBoxCore.Box_MBox;
+using DxTBoxCore.Box_Progress;
+using DxTBoxCore.Common;
+using HashCalc;
+using Hermes;
+using SPR.Containers;
 using SPR.Languages;
 using System;
 using System.Collections;
@@ -7,23 +18,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Unbroken.LaunchBox.Plugins.Data;
-using SPR.Enums;
-using System.Threading;
-using HashCalc;
-using System.Security.Cryptography;
-using System.Windows;
-using SPR.Graph;
 using System.Windows.Controls;
-using DxLocalTransf;
-using DxLocalTransf.Cont;
-using DxTBoxCore.Box_Progress;
-using DxTBoxCore.MBox;
-using DxTBoxCore.Box_Decisions;
-using DxTBoxCore.Common;
-using Hermes;
 #if DEBUG
-using System.Diagnostics;
 #endif
 
 namespace SPR.Models
@@ -38,6 +34,20 @@ namespace SPR.Models
         }
 
         #region Avec notifications
+        private string _Platform;
+        public string Platform
+        {
+            get => _Platform;
+            set
+            {
+                _Platform = value;
+                OnPropertyChanged();
+                Simulate_DestPaths();
+            }
+        }
+
+
+
         private string _Source;
         public string Source
         {
@@ -126,14 +136,6 @@ namespace SPR.Models
         #endregion
 
 
-        /// <summary>
-        /// Représente les chemins principaux
-        /// </summary>
-        /*public HashSet<ModelSD> MainPaths 
-        {
-            get;
-            set;
-        } = new HashSet<ModelSD>();*/
 
         public ModelSD GamesPaths { get; set; } = new ModelSD(SPRLang.Games);
 
@@ -144,6 +146,15 @@ namespace SPR.Models
         public ModelSD MusicsPaths { get; set; } = new ModelSD(SPRLang.Musics);
 
         public ModelSD VideosPaths { get; set; } = new ModelSD(SPRLang.Videos);
+
+
+        private Page IHM;
+
+        public MigrateModel(Page w)
+        {
+            IHM = w;
+        }
+
 
         internal void Initialize()
         {
@@ -212,10 +223,14 @@ namespace SPR.Models
         {
             if (string.IsNullOrEmpty(Source))
                 return;
+            
+
 
             string[] arrSrcPath = Source.Split("\\");
             string rootSrc = String.Join('\\', arrSrcPath, 0, arrSrcPath.Length - 2);
             string sysName = arrSrcPath.Last();
+
+            Platform = sysName;
 
             // SrcMPaths.Games = Path.Combine(rootSrc, SrcSub.GamesFName, sysName);
             GamesPaths.Source = Path.Combine(rootSrc, SrcSub.GamesFName, sysName);
@@ -224,38 +239,28 @@ namespace SPR.Models
             MusicsPaths.Source = Path.Combine(rootSrc, SrcSub.MusicsFName, sysName);
             VideosPaths.Source = Path.Combine(rootSrc, SrcSub.VideosFName, sysName);
 
-            /*            foreach (var elem in MainPaths)
-                            switch (elem.PathType)
-                            {
-                                case PathType.ImagePath:
-                                    elem.Source = Path.Combine(rootSrc, SrcSub.MusicsFName, sysName);
-                                    break;
-                            }*/
-
         }
 
 
         private void Simulate_DestPaths()
         {
-            string[] arrDestPath = Destination.Split("\\");
-            string rootDest = String.Join('\\', arrDestPath, 0, arrDestPath.Length - 2);
-            string sysName = arrDestPath.Last();
+            if (string.IsNullOrEmpty(Destination))
+                return;
 
-            GamesPaths.Destination = Path.Combine(rootDest, DestSub.GamesFName, sysName);
-            ManualsPaths.Destination = Path.Combine(rootDest, DestSub.ManualsFName, sysName);
+            //string[] arrDestPath = Destination.Split("\\");
+            // string rootDest = String.Join('\\', arrDestPath, 0, arrDestPath.Length - 2);
+            string rootDest = Destination;
+            string platform = Platform.Trim();
+            //string sysName = arrDestPath.Last();
+
+            GamesPaths.Destination = Path.Combine(rootDest, DestSub.GamesFName, platform);
+            ManualsPaths.Destination = Path.Combine(rootDest, DestSub.ManualsFName, platform);
             //DestMPaths.Images = Path.Combine(rootDest, DestSub.ImagesFName, sysName);
-            ImagesPaths.Destination = Path.Combine(rootDest, DestSub.ImagesFName, sysName);
-            MusicsPaths.Destination = Path.Combine(rootDest, DestSub.MusicsFName, sysName);
-            VideosPaths.Destination = Path.Combine(rootDest, DestSub.VideosFName, sysName);
-
-            /* foreach (var elem in MainPaths)
-                 switch (elem.PathType)
-                 {
-                     case PathType.ImagePath:
-                         elem.Source = Path.Combine(rootDest, DestSub.MusicsFName, sysName);
-                         break;
-                 }*/
+            ImagesPaths.Destination = Path.Combine(rootDest, DestSub.ImagesFName, platform);
+            MusicsPaths.Destination = Path.Combine(rootDest, DestSub.MusicsFName, platform);
+            VideosPaths.Destination = Path.Combine(rootDest, DestSub.VideosFName, platform);
         }
+
 
         #endregion Simulation
 
@@ -266,18 +271,6 @@ namespace SPR.Models
         /// </summary>
         internal bool Verifications()
         {
-            // Vérifie que les chemins de la source existent
-            /* foreach (KeyValuePair<string, string> chemin in SrcMPaths.GetPairs())
-             {
-                 if (!Directory.Exists(chemin.Value))
-                 {
-                     SrcMPaths.AddError(SPRLang.DirDontExist, chemin.Key);
-
-
-                     return false;
-                 }
-             }*/
-
             // Vérification de l'existence des dossiers source
             bool v = true;
 
@@ -292,6 +285,11 @@ namespace SPR.Models
             return v;
         }
 
+        /// <summary>
+        /// Vérification que les dossiers existent
+        /// </summary>
+        /// <param name="modelPaths"></param>
+        /// <returns></returns>
         internal bool Verif_Source(ModelSD modelPaths)
         {
             if (Directory.Exists(modelPaths.Source))
@@ -306,17 +304,27 @@ namespace SPR.Models
         internal bool? Apply()
         {
             HeTrace.WriteLine($"\nMigrating files");
-
+            /*
             List<ModelSD> files = new List<ModelSD>();
+            
             files.Add(GamesPaths);
             files.Add(ManualsPaths);
             files.Add(ImagesPaths);
             files.Add(MusicsPaths);
-            files.Add(VideosPaths);
+            files.Add(VideosPaths);*/
 
-            /*
+
+            HeTrace.WriteLine("Apply - Copy begin");
+            List<DataTrans> files = new List<DataTrans>();
+            files.AddRange(PrepareFiles(GamesPaths));
+            files.AddRange(PrepareFiles(ImagesPaths));
+            files.AddRange(PrepareFiles(ManualsPaths));
+            files.AddRange(PrepareFiles(MusicsPaths));
+            files.AddRange(PrepareFiles(VideosPaths));
+
+            
             // Liste des fichiers
-            string[] fsGames = Directory.GetFiles(GamesPaths.Source, "*.*", SearchOption.AllDirectories);
+           /* string[] fsGames = Directory.GetFiles(GamesPaths.Source, "*.*", SearchOption.AllDirectories);
             string[] fsManuals = Directory.GetFiles(ManualsPaths.Source, "*.*", SearchOption.AllDirectories);
             string[] fsImages = Directory.GetFiles(ImagesPaths.Source, "*.*", SearchOption.AllDirectories);
             string[] fsMusics = Directory.GetFiles(MusicsPaths.Source, "*.*", SearchOption.AllDirectories);
@@ -324,19 +332,38 @@ namespace SPR.Models
 
             // Nombre total de fichiers
             int TotalFiles = fsGames.Length + fsManuals.Length + fsImages.Length + fsMusics.Length + fsVideos.Length;
-            */
-
-
-            DxAsCollecProgress dxApply = new DxAsCollecProgress(SPRLang.Files_Migration)
+           */
+            
+            HeTrace.WriteLine("Apply - Copy begin");
+            HashCopy hashCopy = new HashCopy();
+            hashCopy.UpdateStatus += (x,y ) => HeTrace.WriteLine(y.Message);
+            PersistProgressD mee = new PersistProgressD(hashCopy);
+            
+            TaskLauncher launcher = new TaskLauncher()
             {
-                TaskToRun = new Maou<List<ModelSD>, object>()
-                {
-                    ToRun = Categ_Apply,
-                    Param = files
-                },
+                ProgressIHM = new DxDoubleProgress(mee),
+                AutoCloseWindow = false,
+                MethodToRun = () => hashCopy.VerifSevNCopy(files),
+
+
             };
-            dxApply.TaskToRun.UpdateStatus += (x) => HeTrace.WriteLine(x);
-            return dxApply.ShowDialog();
+            launcher.Launch(hashCopy);
+            /*
+
+            MawEvo<PersisProgressD> mawmaw = new MawEvo<PersisProgressD>();
+
+            TaskLauncher launcher = new TaskLauncher()
+            {
+                AutoCloseWindow = false,
+                ProgressIHM = new DxDoubleProgress(mawmaw.Parler),
+                MethodToRun = () => Categ_Apply(mawmaw, files),
+            };
+
+
+
+            return launcher.Launch(mawmaw);*/
+
+            //            dxApply.TaskToRun.UpdateStatus += (x) => HeTrace.WriteLine(x);
 
 
             return true;
@@ -356,13 +383,24 @@ namespace SPR.Models
             }*/
         }
 
-
-        private Page IHM;
-
-        public MigrateModel(Page w)
+        private IEnumerable<DataTrans> PrepareFiles(ModelSD modelSD)
         {
-            IHM = w;
+            List<DataTrans> files = new List<DataTrans>();
+            foreach (string f in Directory.EnumerateFiles(modelSD.Source, "*.*", SearchOption.AllDirectories))
+            {
+                DataTrans dt = new DataTrans()
+                {
+                    Name = Path.GetFileName(f),
+                    CurrentPath = f,
+                    DestPath = f.Replace(modelSD.Source, modelSD.Destination)
+                };
+                files.Add(dt);
+
+                HeTrace.WriteLine($"Prepare { dt.CurrentPath}\r\nto {dt.DestPath}");
+            }
+            return files;
         }
+
 
         /// <summary>
         /// 
@@ -370,9 +408,9 @@ namespace SPR.Models
         /// <param name="tP"></param>
         /// <param name="models"></param>
         /// <returns></returns>
-        private object Categ_Apply(I_ASBaseC tP, List<ModelSD> models)
+        private object Categ_Apply(I_ASBase tP, List<ModelSD> models)
         {
-            Maou<List<ModelSD>, object> encaps = (Maou<List<ModelSD>, object>)tP;
+         //   MawEvo<PersistProgressD> encaps = (MawEvo<PersistProgressD>)tP;
             /*
                 - Je veux dissocier les tâches une List String ne me le permet pas.
                 - Ce que je veux faire apparaitre c'est le nombre de fichier pour chaque catégorie
@@ -380,88 +418,90 @@ namespace SPR.Models
 
             */
 
-            Dictionary<ModelSD, string[]> tasksOnFiles = new Dictionary<ModelSD, string[]>();
+           /* Dictionary<ModelSD, string[]> tasksOnFiles = new Dictionary<ModelSD, string[]>();
             int TotalFiles = 0;
 
-
-            encaps.SayUpdateStatusT("Initialize the list of files");
+            // Récupération des fichiers
+            encaps.Parler.SetStatus(this, new StateArg("Initialize the list of files"));
             foreach (ModelSD mSD in models)
             {
-                string[] tmp = Directory.GetFiles(mSD.Source, "*.*", SearchOption.AllDirectories);
+                string[] tmp = Directory.GetFiles(mSD.CurrentPath, "*.*", SearchOption.AllDirectories);
                 tasksOnFiles.Add(mSD, tmp);
                 TotalFiles += tmp.Count();
             }
+
+            */
+
+
 
             // Nombre total de fichiers
             //  int TotalFiles = fsGames.Length + fsManuals.Length + fsImages.Length + fsMusics.Length + fsVideos.Length;
 
             // Signaler le maximum pour la barre du Total
-            encaps.SayMaximumProgressT(models.Count);
 
             // Préparation du système de vérification
-            OpDFilesExt opfSys = new OpDFilesExt();
-            opfSys.NotSimul = true;
-            opfSys.AskToUser += this.AskWhatToDo;
-            opfSys.SumError += this.InformErrorSum;
-            opfSys.SignalProgression += (x, y) => encaps.SayUpdateProgress(y);
-            opfSys.IWriteLine += (x) => encaps.SayUpdateStatus(x);
+            /* OpDFilesExt opfSys = new OpDFilesExt();
+             opfSys.NotSimul = true;
+             opfSys.AskToUser += this.AskWhatToDo;
+             opfSys.SumError += this.InformErrorSum;
+             opfSys.UpdateProgress += encaps.Parler.SetProgress;
+             opfSys.IWriteLine += (x, y) => encaps.Parler.SetStatus(x, new StateArg(y, false));*/
 
-            int i = 0; // Là selon on pourrait changer un peu la progression
-
+            /*int i = 0; // Là selon on pourrait changer un peu la progression
+            int max = models.Count;
+            */
             // On va lire tous les fichiers donc de 0 au nombre total
             //for (int i = 0; i < tasksOnFiles.Count; i++)
-            foreach (var tof in tasksOnFiles)
-            {
-                //ModelSD Element = tasksOnFiles[i];
-                ModelSD Element = tof.Key;
-                string[] files = tof.Value;
+            /* foreach (var tof in tasksOnFiles)
+             {
+                 //ModelSD Element = tasksOnFiles[i];
+                 ModelSD Element = tof.Key;
+                 string[] files = tof.Value;
 
 
-                // Signal position 0 & statuts pour la progression totale
-                encaps.SayUpdateProgressT(i);
-                encaps.SayUpdateStatusT(Element.Title);
+                 // Signal position 0 & statuts pour la progression totale
+                 encaps.Parler.SetTotalProgress(this, new ProgressArg(i, max, false));
+                 encaps.Parler.SetStatus(this, new StateArg(Element.Title));
 
-                // Signal paramétrage de progress part
-                encaps.SayUpdateProgress(0);
-                encaps.SayMaximumProgress(files.Length * 3);
+                 // Signal paramétrage de progress part
+                 encaps.Parler.SetProgress(this, new ProgressArg(0, 100, false));
 
-                // Pour chaque portion on va lire chaque fichier
-                for (int j = 0; j < files.Length; j++)
-                {
-                    // Raz
-                    opfSys.RazSums();
+                 // Pour chaque catégorie on va lire chaque fichier
+                 for (int j = 0; j < files.Length; j++)
+                 {
+                     // Raz
+                     opfSys.RazSums();
 
-                    string sourceFile = files[j];
+                     string sourceFile = files[j];
 
-                    // Transformation du fichier
-                    string destFile = sourceFile.Replace(Element.Source, Element.Destination);
-                    
-                    //HeTrace.WriteLine($"\tSrcFile: '{sourceFile}'");
-                    //HeTrace.WriteLine($"\tDestFile: '{destFile}'");
+                     // Transformation du fichier
+                     string destFile = sourceFile.Replace(Element.Source, Element.Destination);
 
-                    encaps.SayUpdateStatus(sourceFile);
-                    encaps.SayUpdateProgress(j * 3);
+                     encaps.Parler.SetStatus(this, new StateArg(sourceFile));
+                     encaps.Parler.SetProgress(this, new ProgressArg(j, 100, false));
 
-                    // On met en pause (pourquoi ?)
-                    tP.Pause(10);
+                     // On met en pause (pourquoi ?)
+                     tP.Pause(10);
 
-                    // Gestion de l'état stop
-                    if (opfSys.DecisionByDefault == E_Decision.Stop || opfSys.DecisionByDefault == E_Decision.PassAll)
-                        tP.TokenSource.Cancel();
+                     // Gestion de l'état stop
+                 /*    if (opfSys.DecisionByDefault == E_Decision.Stop || opfSys.DecisionByDefault == E_Decision.PassAll)
+                         tP.TokenSource.Cancel();
 
-                    // On arrête
-                    if (tP.CancelToken.IsCancellationRequested)
-                        return null;
+                     // On arrête
+                     if (tP.CancelToken.IsCancellationRequested)
+                         return null;
 
-                    bool ff = opfSys.ManageCopy(sourceFile, destFile, j * 3);
-                    //HeTrace.WriteLine($"Result: {ff}");
+                     // --- Travail
+                     opfSys.CalculateSum();
 
-                }
+                     bool ff = opfSys.ManageCopy(sourceFile, destFile, j * 3);*/
 
-            }
+            /* }
 
-            encaps.SayUpdateProgressT(models.Count);
-            encaps.SayUpdateStatusT("Finished");
+         }*/
+
+            /*encaps.Parler.SetTotalProgress(this, new ProgressArg(max, max, false));
+            encaps.Parler.SetTotalStatus(this, new StateArg("Finished"));
             /* 
             * On décide de conserver par défaut toutes les structures filles des dossiers
             */
@@ -478,7 +518,7 @@ namespace SPR.Models
         /// <param name="opSender"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        private E_Decision AskWhatToDo(OpDFiles opSender, EFileResult state, FileArgs srcFA, FileArgs destFA)
+        private E_Decision? AskWhatToDo(object opSender, EFileResult state, FileArgs srcFA, FileArgs destFA)
         {
             string m = string.Empty;
 
@@ -511,21 +551,16 @@ namespace SPR.Models
                     return E_Decision.Stop;
             };
 
-            //() =>  MBDecision.Get_Answer();
-
             return decis = IHM.Dispatcher.Invoke(box);
-            /*( System.Windows.Threading.DispatcherPriority.Normal,
-box
 
-);*/
-            //ThreadStart threadDelegate = new ThreadStart
-
-            //return decis;
         }
-        private void InformErrorSum(OpDFiles opSender, string message)
+
+
+
+        private void InformErrorSum(object opSender, AsyncProgress.Cont.MessageArg arg)
         {
-              IHM.Dispatcher.Invoke(
-              () => DxMBox.ShowDial("Copy problem", "Error", E_DxButtons.Ok, optMessage: message));
+            IHM.Dispatcher.Invoke(
+                  () => DxMBox.ShowDial("Copy problem", "Error", E_DxButtons.Ok, optMessage: arg.Message));
 
         }
 

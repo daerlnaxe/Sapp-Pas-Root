@@ -20,13 +20,15 @@ namespace SPR.Graph
 
         public P_SubFolders()
         {
+            Model = new SubFolderModel();
             InitializeComponent();
 
-            Model = new SubFolderModel();
 
-            DataContext = Model;
         }
 
-    
+        private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DataContext = Model;
+        }
     }
 }

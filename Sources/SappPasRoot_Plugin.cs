@@ -56,14 +56,13 @@ namespace SPR
                 Trace.AutoFlush = true;
                 Trace.WriteLine($"\n {new string('=', 10)} Initialization {new string('=', 10)}");*/
 
-                MeSimpleLog meSL = new MeSimpleLog()
+                MeSimpleLog meSL = new MeSimpleLog(Path.Combine(Global.LaunchBoxRoot, Sett.Default.LogFolder, Sett.Default.LogFile))
                 {
                     //Prefix
                     LogLevel = Global.Config.LogLvl,
                     ByPass = true,
                     FuncPrefix = EPrefix.Prefixing | EPrefix.Horodating
                 };
-                meSL.ActivateFileLog(Path.Combine(Global.LaunchBoxRoot, Sett.Default.LogFolder, Sett.Default.LogFile));
 
                 HeTrace.AddLogger("Logger", meSL);
                 HeTrace.WriteLine("Init ok", callerName: "Logger");

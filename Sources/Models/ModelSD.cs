@@ -1,4 +1,5 @@
-﻿using SPR.Enums;
+﻿using DxLocalTransf.Copy;
+using SPR.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace SPR.Models
         public ModelSD(string title)
         {
             if (!string.IsNullOrEmpty(title))
-                Title = title;
+                Name = title;
         }
         /*
         public ModelSD(PathType pathTtype, string title)
@@ -34,7 +35,7 @@ namespace SPR.Models
         }*/
 
         private string _title;
-        public string Title 
+        public string Name 
         {
             get { return _title; }
             set
@@ -88,7 +89,7 @@ namespace SPR.Models
             set
             {
                 _errSource = value;
-                OnErrorChanged(nameof(Source));
+                OnErrorChanged("Source");// Ne pas changer c'est le nom du bind dans le control
             }
         }
 
@@ -99,11 +100,12 @@ namespace SPR.Models
             set
             {
                 _errDestination = value;
-                OnErrorChanged(nameof(Destination));
+                OnErrorChanged("SecondPath"); // Ne pas changer c'est le nom du bind dans le control
             }
         }
 
         public bool HasErrors => !(string.IsNullOrEmpty(Error_Source) && string.IsNullOrEmpty(Error_Destination));
+
 
         public IEnumerable GetErrors(string propertyName)
         {

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <Copyright>Copyright ©  2018-2020 Daerlnaxe Software</Copyright>
@@ -11,7 +11,7 @@ Free of distribution and using.
 </Description>
     <NeutralLanguage>en</NeutralLanguage>
     <Company>Daerlnaxe Software</Company>
-    <AssemblyVersion>2.0.0.4</AssemblyVersion>
+    <AssemblyVersion>2.0.0.5</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
@@ -117,12 +117,13 @@ Free of distribution and using.
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Clouds\GDrive - Dx\Programmation\CSharp\DxPaths\DxPaths.csproj" />
     <ProjectReference Include="..\..\DxLocalTrans\DxLocalTrans\DxLocalTransf.csproj" />
+    <ProjectReference Include="..\..\HashCalc\Source\HashCalc.csproj" />
     <ProjectReference Include="..\..\Hermes\Sources\Hermes.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="DxTBoxCore">
-      <HintPath>..\..\DxTBoxCore\Packages\DxTBoxCore - Core3.1 - Comp 3.1.1\DxTBoxCore.dll</HintPath>
+      <HintPath>..\..\DxTBoxCore\Packages\.net core3 - Common 3.1.1\DxTBoxCore.dll</HintPath>
     </Reference>
     <Reference Include="Unbroken.LaunchBox.Plugins">
       <HintPath>G:\Frontend\LaunchBox - Test\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>

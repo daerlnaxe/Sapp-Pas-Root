@@ -188,7 +188,7 @@
                     <GroupBox Header="Modes" Grid.Column="2">
                         <StackPanel >
                             <ComboBox x:Name="cbModes" VerticalAlignment="Top" HorizontalAlignment="Left" Width="150"
-                                      SelectedIndex="{Binding ChosenMode, Converter={StaticResource gmConv}}"                                      
+                                      SelectedIndex="{Binding ChosenMode, Converter={StaticResource gmConv}, UpdateSourceTrigger=PropertyChanged}"                                      
                                       Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"
                                       SelectionChanged="cbModes_SelectionChanged"                                      
                                       

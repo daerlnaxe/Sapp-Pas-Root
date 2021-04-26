@@ -192,7 +192,7 @@ namespace SPR
             {
                 Id = "5",
                 Title = "Flashback",
-
+                ApplicationPath = @"..\..\Plateformes\Sega Mega Drive\Sega Mega Drive\FlashBack\Flashback.zip",
             };
 
             // ---

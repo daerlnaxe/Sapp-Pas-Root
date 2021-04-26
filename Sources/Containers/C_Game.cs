@@ -130,7 +130,7 @@ namespace SPR.Containers
             this.Id = game.Id;
             this.Title = game.Title;
 
-            HeTrace.WriteLine($"- {game.Title}");
+            HeTrace.WriteLine($">>> {game.Title}");
         }
 
 

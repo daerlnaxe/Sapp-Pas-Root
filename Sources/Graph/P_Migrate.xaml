@@ -12,14 +12,19 @@
     <Page.CommandBindings>
         <CommandBinding Command="local:P_Migrate.Preview" Executed="SetPage_Null"/>
         <CommandBinding Command="local:P_Migrate.Open_ConfSrcPath" Executed="Load_ConfigSrc"/>
-        <CommandBinding Command="local:P_Migrate.Open_ConfDestPath" Executed="Load_ConfigDest"/>
+        <CommandBinding Command="local:P_Migrate.Open_ConfDestPath" CanExecute="Can_ShowDestPath" Executed="Load_ConfigDest"/>
         <CommandBinding Command="local:P_Migrate.Open_ConfSrcSub" CanExecute="Can_ShowSrcSub" Executed="Load_ConfigSrcSub"/>
         <CommandBinding Command="local:P_Migrate.Open_ConfDestSub" CanExecute="Can_ShowDestSub" Executed="Load_ConfigDestSub"/>
         <CommandBinding Command="comm:ComCommands.Simulate" CanExecute="Can_Simulate" Executed="Exec_Simulate"/>
         <CommandBinding Command="comm:ComCommands.Apply" CanExecute="Can_Apply" Executed="Exec_Apply"/>
     </Page.CommandBindings>
     <Page.Resources>
-
+        <Style TargetType="Label" >
+            <Setter Property="ContentStringFormat" Value="{}{0}:"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5,3"/>
+        </Style>
     </Page.Resources>
 
     <DockPanel>
@@ -32,14 +37,13 @@
         </DockPanel.Resources>
         <Label Content="{x:Static t:SPRLang.Migrate_Files}" DockPanel.Dock="Top"/>
         <!-- Menu -->
-        <StackPanel DockPanel.Dock="Left">
-            <StackPanel.Resources>
-                
-            </StackPanel.Resources>
+        <StackPanel DockPanel.Dock="Left">                
             <Button Content="{x:Static t:SPRLang.Preview}" Command="local:P_Migrate.Preview"/>
+            <Separator/>
             <Button Content="{x:Static t:SPRLang.Source}" Command="local:P_Migrate.Open_ConfSrcPath"/>
-            <Button Content="{x:Static t:SPRLang.Destination}" Command="local:P_Migrate.Open_ConfDestPath"/>
             <Button Content="{x:Static t:SPRLang.Source_Sub}" Command="local:P_Migrate.Open_ConfSrcSub"/>
+            <Separator/>
+            <Button Content="{x:Static t:SPRLang.Destination}" Command="local:P_Migrate.Open_ConfDestPath"/>
             <Button Content="{x:Static t:SPRLang.Dest_Sub}" Command="local:P_Migrate.Open_ConfDestSub"/>
         </StackPanel>
         <!-- Process -->
@@ -54,6 +58,8 @@
         <!-- Centre -->
         <Grid Margin="10,0,10,0" >
             <Grid.RowDefinitions>
+                <RowDefinition  Height="Auto"/>
+                <RowDefinition  Height="Auto"/>
                 <RowDefinition  Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -70,8 +76,16 @@
  
                 </Style>
             </Grid.Resources>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="{Binding TopHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:P_Migrate}}">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{x:Static t:SPRLang.Platform}"/>
+                <TextBox Text="{Binding Platform, FallbackValue='Sega Mega Drive', UpdateSourceTrigger=PropertyChanged}" MinWidth="300"/>
+            </StackPanel>
+            <Rectangle Fill="#FF4C68E2" Grid.Row="1" Height="1" Margin="20,10" VerticalAlignment="Center" DockPanel.Dock="Top"  />
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Height="{Binding TopHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:P_Migrate}}">
                 <StackPanel>
+                    
+
                     <!-- Games -->
                     <local:CC_PairPaths
                         FirstPathName="{x:Static t:SPRLang.Source}"
@@ -79,7 +93,7 @@
                         
                         DataContext="{Binding GamesPaths}"
                         
-                        Title="{Binding Title}"
+                        Title="{Binding Name}"
                         Source="{Binding Source}"            
                         SecondPath="{Binding Destination}"
                         />
@@ -89,24 +103,25 @@
                         SecondPathName="{x:Static t:SPRLang.Destination}"
                                                 
                         DataContext="{Binding ManualsPaths}"
-                        Title="{Binding Title}"
+                        Title="{Binding Name}"
                         Source="{Binding Source}"            
                         SecondPath="{Binding Destination}"
                         />
-                    <!-- Images -->
+                    <!-- Images, les notify d'erreurs sont là pour tester uniquement, normalement 
+                            ça ne doit pas signaler une erreur -->
                     <local:CC_PairPaths
                         FirstPathName="{x:Static t:SPRLang.Source}"
                         SecondPathName="{x:Static t:SPRLang.Destination}"
                         
                         DataContext="{Binding ImagesPaths}"
                         
-                        Title="{Binding Title}"
+                        Title="{Binding Name}"
                         Source="{Binding Source, 
                             NotifyOnValidationError=True,
                             ValidatesOnDataErrors=True,
                             ValidatesOnExceptions=True,
                             ValidatesOnNotifyDataErrors=True}"
-                        SecondPath="{Binding Destination}"
+                        SecondPath="{Binding Destination, NotifyOnValidationError=True}"
 
                         />
                     <!-- Musics -->
@@ -116,7 +131,7 @@
                         
                         DataContext="{Binding MusicsPaths}"
                         
-                        Title="{Binding Title}"
+                        Title="{Binding Name}"
                         Source="{Binding Source, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
                         SecondPath="{Binding Destination}"
                         />
@@ -127,14 +142,14 @@
                                                 
                         DataContext="{Binding VideosPaths}"
 
-                        Title="{Binding Title}"
+                        Title="{Binding Name}"
                         Source="{Binding Source}"
                         SecondPath="{Binding Destination}"
                         />
 
                 </StackPanel>
             </ScrollViewer>
-            <DockPanel Grid.Row="1" >
+            <DockPanel Grid.Row="3" >
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -145,7 +160,7 @@
                         </Style.Triggers>
                     </Style>
                 </DockPanel.Style>
-                <Rectangle Fill="#FF4C68E2" Height="1" VerticalAlignment="Center" DockPanel.Dock="Top" Margin="0,0,0,10" />
+                <Rectangle Fill="#FF4C68E2" Height="1" Margin="20,10" VerticalAlignment="Center" DockPanel.Dock="Top"  />
                 <Frame Grid.Row="2" NavigationUIVisibility="Hidden"
                     Content="{Binding ActivePage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" >
                     <Frame.Style>

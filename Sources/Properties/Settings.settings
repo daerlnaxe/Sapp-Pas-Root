@@ -35,5 +35,11 @@
     <Setting Name="ConfigFile" Type="System.String" Scope="Application">
       <Value Profile="(Default)">SPR.cfg</Value>
     </Setting>
+    <Setting Name="MigDestPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MigSrcPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
