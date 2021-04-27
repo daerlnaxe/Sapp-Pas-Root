@@ -1,6 +1,7 @@
 ﻿using Hermes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -37,8 +38,8 @@ namespace SPR.Containers
         #endregion
 
         #region Avec Notifs
-        private bool _IsValide;
-        public bool IsValide
+        private bool? _IsValide;
+        public bool? IsValide
         {
             get { return _IsValide; }
             set
@@ -78,7 +79,16 @@ namespace SPR.Containers
         /// </summary>
        // public C_PathsCollec ThemeVideoPath { get; private set; }
 
-
+        private ObservableCollection<CState> _States = new ObservableCollection<CState>();
+        public ObservableCollection<CState> States
+        {
+            get => _States;
+            set
+            {
+                _States = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// Paths for Images
@@ -117,10 +127,6 @@ namespace SPR.Containers
                 //   yield return ThemeVideoPath;
             }
         }
-
-
-
-
 
         public C_Game(IGame game)
         {

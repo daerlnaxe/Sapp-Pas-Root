@@ -97,7 +97,7 @@ namespace SPR.Models
                 }
 
                 _ChosenMode = value;
-             //   CheckAllGames();
+                //   CheckAllGames();
 
                 OnPropertyChanged();
             }
@@ -190,7 +190,8 @@ namespace SPR.Models
         /// <summary>
         /// Liste des chemins de la plateforme
         /// </summary>
-        public Dictionary<MediaType, C_Paths> DicSystemPaths { get; private set; } = new Dictionary<MediaType, C_Paths>();
+        public Dictionary<MediaType, C_Paths> DicSystemPaths { get; private set; } =
+                                                            new Dictionary<MediaType, C_Paths>();
 
 
         public GamesModel()
@@ -312,7 +313,7 @@ namespace SPR.Models
                 tmpGame.BuildPaths(game);
 
                 // --- Check de la validité du jeu
-                tmpGame.IsValide = CheckGame(tmpGame);
+                //  tmpGame.IsValide = CheckGame(tmpGame);
 
                 ExtPlatformGames.Add(tmpGame);
 
@@ -431,6 +432,9 @@ namespace SPR.Models
 
 
             bool isValide = false;
+
+            mvGame.States.Clear();
+
             // Check des paths principaux (ne gère pas les images)
             foreach (C_PathsDouble pathO in mvGame.EnumGetPaths)
             {
@@ -438,31 +442,39 @@ namespace SPR.Models
                 if (pathO == null)
                     continue;
 
+
                 HeTrace.WriteLine($"\t[CheckGame] {pathO.Type}: {pathO.RelatPath}");
                 switch (pathO.Type)
                 {
-
                     // Le premier initialise 'valide'
                     case nameof(PathType.ApplicationPath):
                         //isValide = pathO.OldRelatPath.Contains(DicSystemPaths["Application"]);
-                        isValide = Test_Path(DicSystemPaths[MediaType.Application].RelatPath, pathO.RelatPath);
+                        bool resPath = Test_Path(DicSystemPaths[MediaType.Application].RelatPath, pathO.RelatPath);
+                        mvGame.States.Add(new CState("Main Application", resPath));
+                        isValide = resPath;
                         break;
 
                     // Les autres font une opération de bit
                     case nameof(PathType.ManualPath):
                         //isValide &= pathO.OldRelatPath.Contains(DicSystemPaths["Manual"]);
-                        isValide &= Test_Path(DicSystemPaths[MediaType.Manual].RelatPath, pathO.RelatPath);
+                        bool resMan = Test_Path(DicSystemPaths[MediaType.Manual].RelatPath, pathO.RelatPath);
+                        mvGame.States.Add(new CState("Manual", resMan));
+                        isValide &= resMan;
                         //HeTrace.EndLine($"{isValide} (Manual): {DicSystemPaths["Manual"]}", 10);
                         break;
 
                     case nameof(PathType.MusicPath):
                         //isValide &= pathO.OldRelatPath.Contains(DicSystemPaths["Music"]);
-                        isValide &= Test_Path(DicSystemPaths[MediaType.Music].RelatPath, pathO.RelatPath);
+                        bool resMusic = Test_Path(DicSystemPaths[MediaType.Music].RelatPath, pathO.RelatPath);
+                        mvGame.States.Add(new CState("Music", resMusic));
+                        isValide &= resMusic;
                         //HeTrace.EndLine($"{isValide} (Music): {DicSystemPaths["Music"]}", 10);
                         break;
 
                     case nameof(PathType.VideoPath):
-                        isValide &= Test_Path(DicSystemPaths[MediaType.Video].RelatPath, pathO.RelatPath);
+                        bool resVideo = Test_Path(DicSystemPaths[MediaType.Video].RelatPath, pathO.RelatPath);
+                        mvGame.States.Add(new CState("Video", resVideo));
+                        isValide &= resVideo;
                         break;
                 }
 
@@ -474,7 +486,9 @@ namespace SPR.Models
             if (AddAppPaths)
                 foreach (AAppPath pathO in mvGame.AddiRomPaths)
                 {
-                    isValide &= Test_Path(DicSystemPaths[MediaType.Application].RelatPath, pathO.RelatPath);
+                    bool test = Test_Path(DicSystemPaths[MediaType.Application].RelatPath, pathO.RelatPath);
+                    mvGame.States.Add(new CState($"Clone id: {pathO.Id}", test));
+                    isValide &= test;
                 }
 
             HeTrace.WriteLine($"\tValidity of the game: {isValide}");
@@ -932,9 +946,9 @@ namespace SPR.Models
                 pathO.NewHardPath = SPRLang.No_Modif;
                 pathO.NewRelatPath = SPRLang.No_Modif;
             }
-            
+
             // Double condition très importante pour quelques cas exceptionnels
-            if ( rootPath.Equals(toReplace))
+            if (rootPath.Equals(toReplace))
             {
                 HeTrace.WriteLine($"\tPath contains already rootpath ({pathO.RelatPath})");
                 return;
@@ -980,7 +994,7 @@ namespace SPR.Models
             foreach (var game in ExtPlatformGames)
             {
                 //
-                if (game.IsValide)
+                if (game.IsValide == true)
                 {
                     HeTrace.WriteLine($"\tGame already valid -> pass: {game.Title}");
                     continue;

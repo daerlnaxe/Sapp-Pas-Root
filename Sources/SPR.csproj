@@ -4,15 +4,15 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Copyright>Copyright ©  2018-2020 Daerlnaxe Software</Copyright>
+    <Copyright>Copyright ©  2018-2038 Daerlnaxe Software</Copyright>
     <Authors>Alexandre CODOUL aka Daerlnaxe, Axenn</Authors>
     <Description>SapPasRoot: Help to change paths for plateforms and games.
 Free of distribution and using.
 </Description>
     <NeutralLanguage>en</NeutralLanguage>
     <Company>Daerlnaxe Software</Company>
-    <AssemblyVersion>2.0.0.5</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
@@ -67,6 +67,9 @@ Free of distribution and using.
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Graph\CC_GamePlus.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Languages\SPRLang.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -128,6 +131,13 @@ Free of distribution and using.
     <Reference Include="Unbroken.LaunchBox.Plugins">
       <HintPath>G:\Frontend\LaunchBox - Test\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Graph\CC_GamePlus.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

@@ -1,15 +1,17 @@
-﻿<UserControl x:Class="SPR.Graph.CC_Game"
+﻿<UserControl x:Class="SPR.Graph.CC_GamePlus"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SPR.Graph"
+             xmlns:conv ="clr-namespace:DxTBoxCore.Converters;assembly=DxTBoxCore"
              d:Width="500" d:Height="100"
              mc:Ignorable="d" >
     <UserControl.Resources>
         <Style TargetType="TextBox" >
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
+        <conv:BoolColorConverter x:Key="boolconv"/>
     </UserControl.Resources>
     <Border CornerRadius="4" BorderBrush="Black" BorderThickness="1">
         <Border.Background>
@@ -38,6 +40,7 @@
                                     <Setter Property="Source" Value="/SPR;component/Resources/question.png"/>
                                 </DataTrigger>
                                 -->
+                                
                                 <DataTrigger Binding="{Binding Validity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="False">
                                     <Setter Property="Source" Value="/SPR;component/Resources/cross_256.png"/>
                                 </DataTrigger>
@@ -55,7 +58,7 @@
                   HorizontalAlignment="Stretch" >
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding PanelOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="true">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -66,12 +69,14 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="20"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <!-- Old Hard Link -->
@@ -93,7 +98,27 @@
                 <TextBox Grid.Column="1" Grid.Row="4"
                     Text="{Binding NRelatLink, FallbackValue=NRelat,
                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
-
+                <!-- Leds -->
+                <ItemsControl Grid.RowSpan="5" Grid.Column="3"
+                    ItemsSource="{Binding Source,
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Ellipse Grid.Column="1" Stroke="WhiteSmoke"                                 
+                                 Width="15" Height="15" HorizontalAlignment="Center" ToolTip="{Binding Name}">
+                                    <Ellipse.Fill>
+                                        <MultiBinding Converter="{StaticResource boolconv}">
+                                            <Binding Path="State"></Binding>
+                                            <Binding Path="TrueColor" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:CC_GamePlus}"/>
+                                            <Binding Path="FalseColor" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:CC_GamePlus}"/>
+                                        </MultiBinding>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
             <!-- Barre de séparation -->
             <Rectangle Height="1" Fill="White" />

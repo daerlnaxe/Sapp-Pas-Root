@@ -43,6 +43,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Graph\CC_GamePlus.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Graph\CC_Game.xaml">
       <SubType>Designer</SubType>
     </Page>
