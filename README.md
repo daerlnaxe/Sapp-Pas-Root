@@ -18,11 +18,4 @@
 - DxPaths - relative and hardware link makers (modification on algorithms because of previous bugs)
 - Hermes - new system for log (still in progress and testing)
 
-# Todo
-- [ ] Add a new mode for games paths 'Forced SubFolders', validity wrong if path point to the root for app folders and/or additionnal apps.
-- [ ] When stop copy, say copy successfull.
-- [x] L'upgrade total ne se fait pas
-- [x] See if 100ms pause is useful
-- [x] Modified starting folder for migration (2.0.0.4)
-- [x] Remove 500ms pause on migration part. (2.0.0.4)
-- [x] Correction for DxLocalTransf, there were an error for special char in the path (2.0.0.4)
+
