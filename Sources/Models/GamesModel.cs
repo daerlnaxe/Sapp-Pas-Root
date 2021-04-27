@@ -644,17 +644,17 @@ namespace SPR.Models
                         #region Forced mode
                         case nameof(PathType.ManualPath):
                             rootPath = DicSystemPaths[MediaType.Manual].RelatPath;
-                            ForcedMode(pathO, rootPath);
+                            KeepSubFolderMode(pathO, rootPath);
                             break;
 
                         case nameof(PathType.MusicPath):
                             rootPath = DicSystemPaths[MediaType.Music].RelatPath;
-                            ForcedMode(pathO, rootPath);
+                            KeepSubFolderMode(pathO, rootPath);
                             break;
 
                         case nameof(PathType.VideoPath):
                             rootPath = DicSystemPaths[MediaType.Video].RelatPath;
-                            ForcedMode(pathO, rootPath);
+                            KeepSubFolderMode(pathO, rootPath);
                             break;
                         #endregion Forced mode
 
