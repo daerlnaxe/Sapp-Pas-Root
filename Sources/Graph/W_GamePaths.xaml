@@ -9,7 +9,7 @@
         xmlns:t="clr-namespace:SPR.Languages"
         mc:Ignorable="d"
         Title="W_GamePaths" MinHeight="600" MinWidth="800"
-        Closing="Window_Closing"   
+        Closing="Window_Closing"  Loaded="Window_Loaded" 
         >
     <Window.Resources>
         <!-- Validation error template -->
@@ -67,14 +67,20 @@
             <Setter Property="Padding" Value="5"/>
             -->
         </Style>
+        <Style TargetType="Label">
+            <Setter Property="ContentStringFormat" Value="{}{0}:"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="readOnly">
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
         <Style TargetType="Button" x:Key="optBtn">
-
-            <Setter Property="Margin" Value="3,0,3,0"/>
-            <Setter Property="Padding" Value="5,3,5,3"/>
-            <!--
-            <Setter Property="Padding" Value="5,3,5,3"/>
-            <Setter Property="Margin" Value="3"/>
-            -->
+            <Setter Property="Margin" Value="3,0"/>
+            <Setter Property="Padding" Value="5,3"/>
         </Style>
         <Style TargetType="Button" x:Key="collBtn">
             <Setter Property="Margin" Value="3,0,3,0"/>
@@ -106,7 +112,6 @@
         <!-- Converters -->
         <conv:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />
         <conv:GameModeConverter x:Key="gmConv" />
-
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="comm:ComCommands.Simulate" CanExecute="Simulate_CanExecute" Executed="Simulate_Executed"/>
@@ -122,29 +127,73 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Border Style="{StaticResource ExtBorder}" Padding="5"  >
-                <GroupBox Header="{x:Static t:SPRLang.Infos_Platform}">
-                    <Grid HorizontalAlignment="Left">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <!-- Plateforme -->
-                        <Label Content="{x:Static t:SPRLang.Platform}" ContentStringFormat="{}{0}:"/>
-                        <Label Grid.Column="1" Content="{Binding PlatformName}"/>
-                        <!-- Current plaform Path -->
-                        <Label Grid.Row="1" Content="{x:Static t:SPRLang.Hard_Path}" ContentStringFormat="{}{0}:"/>
-                        <Label Grid.Row="1" Grid.Column="1" Content="{Binding PlatformHardPath}"/>
-                        <!-- Current Relative Platform Path -->
-                        <Label Content="{x:Static t:SPRLang.Relative_Path}" ContentStringFormat="{}{0}:" Grid.Row="2"/>
-                        <Label Grid.Row="2" Grid.Column="1" Content="{Binding PlatformRelatPath}"/>
-                    </Grid>
-                </GroupBox>
-                <!-- -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Current Platform infos -->
+                    <GroupBox Header="{x:Static t:SPRLang.Infos_Platform}">
+                        <Grid HorizontalAlignment="Left">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <!-- Plateforme -->
+                            <Label Content="{x:Static t:SPRLang.Platform}"/>
+                            <TextBox Grid.Column="1" Style="{StaticResource readOnly}"
+                                   Text="{Binding PlatformName, FallbackValue=PlatformName}" />
+                            <!-- Current plaform Path -->
+                            <Label Grid.Row="1" 
+                                   Content="{x:Static t:SPRLang.Hard_Path}"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource readOnly}"
+                                   Text="{Binding PlatformHardPath, FallbackValue=PlatformHardPath}" />
+                            <!-- Current Relative Platform Path -->
+                            <Label Content="{x:Static t:SPRLang.Relative_Path}" Grid.Row="2"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource readOnly}"
+                                   Text="{Binding PlatformRelatPath, FallbackValue=PlatformRelatPath}"/>
+                        </Grid>
+                    </GroupBox>
+                    <!-- Old Platform -->
+                    <Border Grid.Column="1" >
+                        <GroupBox Header="Tools" >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <!-- Colonne des labels -->
+                                <StackPanel>
+                                    <Label Content="Platform to replace"/>
+                                    <Label Content="Substring to remove"/>
+                                    <!--
+                                    <Label Content="Games"/>
+                                    <Label Content="Images"/>
+                                    <Label Content="Manuals"/>
+                                    <Label Content="Musics"/>
+                                    <Label Content="Videos"/>
+                                    -->
+                                </StackPanel>
+                                <!-- Colonne des textbox -->
+                                <StackPanel Grid.Column="1">
+                                    <TextBox Grid.Column="1"
+                                             PreviewTextInput="PlatformToReplace_PreviewTextInput"
+                                             Text="{Binding PlatformToReplace, FallbackValue=OldPlatformName}" />
+                                    <TextBox Grid.Column="1"
+                                             PreviewTextInput="SubstringToRemove_PreviewTextInput"
+                                             Text="{Binding SubStringToRemove, FallbackValue=SubStringToRemove}"/>
+                                    <!--
+                                    -->
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+                    </Border>
+                </Grid>
             </Border>
             <Border Grid.Row="1" Padding="5" Style="{StaticResource ExtBorder}" >
                 <Grid>
@@ -198,7 +247,7 @@
                                 <ComboBoxItem Content="Keep SubFolder Mode" ToolTip="Keep path with subfolders"/>
 
                             </ComboBox>
-                            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Loaded="StackPanel_Loaded" >
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
                                 <StackPanel.Style>
                                     <Style TargetType="StackPanel">
                                         <Setter Property="Visibility" Value="Collapsed"/>

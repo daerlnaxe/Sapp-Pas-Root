@@ -13,6 +13,12 @@ using Unbroken.LaunchBox.Plugins.Data;
 
 namespace SPR.Graph
 {
+    /*
+     * Locked migrate and migrate sont différents
+     *  - le premier se fait entre les dossiers d'une veille plateforme et d'une nouvelle, automatiquement.
+     *  - le second se fait sur manipulations par l'utilisateur.
+     */
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -22,16 +28,20 @@ namespace SPR.Graph
 
         #region commandes
         /// <summary>
-        /// 
+        /// Edition des chemins d'une plateforme
         /// </summary>
         public static readonly RoutedCommand EditPlatRC = new RoutedCommand("Edit_Platform", typeof(W_PlateformsList));
         /// <summary>
-        /// 
+        /// Edition des chemins des jeux
         /// </summary>
         public static readonly RoutedCommand EditGames = new RoutedCommand("Edit_Games", typeof(W_PlateformsList));
 
         /// <summary>
-        /// 
+        /// Migration de fichiers entre les anciens dossiers d'une plateforme et les nouveaux
+        /// </summary>
+        public static readonly RoutedCommand LockedMigrateCommand = new RoutedCommand("Migrate", typeof(W_PlateformsList));
+        /// <summary>
+        /// Migration de fichiers entre deux dossiers
         /// </summary>
         public static readonly RoutedCommand MigrateCommand = new RoutedCommand("Migrate", typeof(W_PlateformsList));
         #endregion
@@ -42,8 +52,8 @@ namespace SPR.Graph
         }
 
 
-
         PlateformsListModel _Model;
+
 
         public W_PlateformsList()
         {
@@ -69,8 +79,7 @@ namespace SPR.Graph
         {
 
         }
-
-
+        /*
         /// <summary>
         /// 
         /// </summary>
@@ -78,21 +87,17 @@ namespace SPR.Graph
         /// <param name="e"></param>
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-
             MessageBox.Show(e.OriginalSource.ToString());
             this.Hide();
-            W_PlatformPaths wpp = new W_PlatformPaths();
+            W_PlatformPaths wpp = new W_PlatformPaths()
+            {
+                Model = new PlatformModel(),
+            };
             wpp.ShowDialog();
             this.Show();
+        }*/
 
-        }
-
-
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-
-        }
-
+        /*
         #region Edit platform
         /// <summary>
         /// Left double click
@@ -108,13 +113,13 @@ namespace SPR.Graph
                 Edit_Platforme(_Model.SelectedPlatform);
             }
 
-        }
-
+        }*/
+        /*
         private void ModifyPlatform_LeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Edit_Platforme(_Model.SelectedPlatform);
-        }
-
+        }*/
+        /*
         /// <summary>
         /// Show form to edit a platform
         /// </summary>
@@ -126,14 +131,18 @@ namespace SPR.Graph
 
             this.Hide();
 
-            W_PlatformPaths wp = new W_PlatformPaths();
+            W_PlatformPaths wp = new W_PlatformPaths()
+            {
+                Model = new PlatformModel(),
+            };
             wp.ShowDialog();
 
             this.Show();
         }
-
-
         #endregion
+        */
+
+
 
         private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -159,48 +168,8 @@ namespace SPR.Graph
         /// <param name="e"></param>
         private void CommandEditPlat_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
-            try
-            {
-                //this.Hide();
-
-                string oldPath = _Model.SelectedPlatform.Folder;
-
-                // Lancement de la modification des paths
-                W_PlatformPaths wPP = new W_PlatformPaths(_Model.SelectedPlatform)
-                {
-                };
-
-                //wp.Model.InitializeEdition(SelectedPlatform) ;
-
-
-                wPP.ShowDialog();
-
-                // Rafraichissement
-                if (!Global.DebugMode)// && !wp.Model.PlatformObject.Folder.Equals(oldPath))
-                {
-                    _Model.Initialize();
-                }
-
-                // Si la plateforme n'a pas le même dossier on va proposer une reconstruction pour les jeux
-                if (!oldPath.Equals(_Model.SelectedPlatform.Folder) &&
-                    DxMBox.ShowDial(SPRLang.QChange_GamesPaths, SPRLang.Question, E_DxButtons.Yes | E_DxButtons.No) == true)
-                {
-                    W_GamePaths wGP = new W_GamePaths(_Model.SelectedPlatform);
-                    wGP.ShowDialog();
-
-                }
-
-
-
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show(exc.Message);
-                HeTrace.WriteLine(exc.Message);
-                HeTrace.WriteLine(exc.StackTrace);
-            }
-
+            //this.Hide();
+            _Model.EditPlatform();
 
             //this.Show();
         }
@@ -214,10 +183,26 @@ namespace SPR.Graph
 
         private void CommandEditGames_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            W_GamePaths wp = new W_GamePaths(_Model.SelectedPlatform);
-            wp.ShowDialog();
+            _Model.EditGames();
+
         }
 
+        #endregion
+
+        #region Locked Migrate
+        private void LockedMigrate_Executed(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (_Model != null)
+                e.CanExecute =
+                        _Model.CBAckupPlatform != null
+                        && _Model.CBAckupPlatform.PlatformName.Equals(_Model.SelectedPlatform.Name)
+                        /*&& !_Model.SelectedPlatform.Folder.Equals(_Model.PreviousPlatformState.Folder)*/;
+        }
+
+        private void LockedMigrate_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            _Model.LockedMigrate();
+        }
         #endregion
 
         #region Open in explorer
@@ -234,6 +219,9 @@ namespace SPR.Graph
                 e.CanExecute = true;
         }
 
+
+
+
         #region Migration
         private void CommandMigrate_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -245,6 +233,9 @@ namespace SPR.Graph
             //W_Migrate wMig = new W_Migrate(_Model.SelectedPlatform);
             //wMig.ShowDialog();
         }
+
         #endregion
+
+
     }
 }

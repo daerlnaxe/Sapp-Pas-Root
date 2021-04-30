@@ -1,6 +1,8 @@
 ﻿using SPR.Models;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -61,34 +63,29 @@ namespace SPR.Graph
         #endregion
 
 
-        GamesModel _Model;
+        internal GamesModel Model { get; set; }
 
-        public W_GamePaths()
-        {
-            InitializeComponent();
-        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="selectedPlatform"></param>
-        public W_GamePaths(IPlatform selectedPlatform)
+        public W_GamePaths()
         {
-            _Model = new GamesModel()
-            {
-
-            };
-            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-            _Model.InitializeEdition(selectedPlatform);
+            Mouse.OverrideCursor = Cursors.Wait;
+            //  Model.InitializeEdition(selectedPlatform);
 
             Mouse.OverrideCursor = null;
 
             InitializeComponent();
 
-            this.DataContext = _Model;
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.DataContext = Model;
 
+        }
 
         /// <summary>
         /// Action when a game element is clicked.
@@ -120,8 +117,8 @@ namespace SPR.Graph
         private void ModesChecked(object sender, RoutedEventArgs e)
         {
             // Reinitialisation pour la simulation
-            _Model.ActiveSimulate = true;
-            _Model.ActiveApply = false;
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
 
             // Recherche du dossier pivot pour déterminer ce que l'on garde
             /*
@@ -137,13 +134,6 @@ namespace SPR.Graph
             }*/
         }
 
-        /// <summary>
-        /// Remet à zéro la visibilité des boutons
-        /// </summary>
-        private void ResetButtons()
-        {
-
-        }
 
         #region Simulate
         /// <summary>
@@ -153,24 +143,19 @@ namespace SPR.Graph
 
         private void Simulate_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _Model.ActiveSimulate && !_Model.HasErrors;
+            if (Model != null)
+                e.CanExecute = Model.ActiveSimulate && !Model.HasErrors;
         }
 
         private void Simulate_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //GamePathMode mode = GamePathMode.None;
-            // ---
-            /*if (ChosenMode == 1)
-                mode = GamePathMode.Forced;
-            else if (ChosenMode == 2)
-                mode = GamePathMode.KeepSubFolders;
-            */
-            // ---
-            _Model.Simulation();
 
             // ---
-            _Model.ActiveSimulate = false;
-            _Model.ActiveApply = true;
+            Model.Simulation();
+
+            // ---
+            Model.ActiveSimulate = false;
+            Model.ActiveApply = true;
         }
         #endregion Simulate
 
@@ -178,15 +163,16 @@ namespace SPR.Graph
 
         private void Apply_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _Model.ActiveApply;
+            if(Model != null)
+            e.CanExecute = Model.ActiveApply;
         }
 
         private void Apply_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _Model.ApplyChanges();
+            Model.ApplyChanges();
 
-            _Model.ActiveSimulate = true;
-            _Model.ActiveApply = false;
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
         }
         #endregion Apply
 
@@ -211,8 +197,8 @@ namespace SPR.Graph
         private void HidGames_Checked(object sender, RoutedEventArgs e)
         {
             _ActiveRescan = true;
-            _Model.ActiveSimulate = true;
-            _Model.ActiveApply = false;
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
 
         }
 
@@ -224,71 +210,62 @@ namespace SPR.Graph
         private void AAP_Checked(object sender, RoutedEventArgs e)
         {
             // Revérification des games 
-            _Model.CheckAllGames();
+            Model.CheckAllGames();
 
             /*if (ChosenMode == 0)
                 return;*/
 
-            _Model.ActiveSimulate = true;
-            _Model.ActiveApply = false;
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
         }
 
         private void AAP_UnChecked(object sender, RoutedEventArgs e)
         {
             // Revérification des games 
-            _Model.CheckAllGames();
+            Model.CheckAllGames();
 
-            /*  if (ChosenMode == 0)
-                  return;*/
-
-            _Model.ActiveSimulate = true;
-            _Model.ActiveApply = false;
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        [Obsolete]
-        private void tbReplace_KeyDown(object sender, KeyEventArgs e)
-        {
-            RemoveLastASlash((TextBox)sender);
-            _Model.ActiveSimulate = true;
-            _Model.ActiveApply = false;
-        }
 
-        /// <summary>
-        /// Vérifie que le dernier caractère n'est pas un 
-        /// </summary>
-        [Obsolete]
-        private void RemoveLastASlash(TextBox tb)
-        {
-            char c = tb.Text[tb.Text.Length - 1];
-            if (c == '\\')
-            {
-                _Model.ToReplace = tb.Text.Substring(0, tb.Text.Length - 2);
 
-                tb.Select(tb.Text.Length, 0);
-            }
-        }
 
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            _Model.Dispose();
-        }
 
-        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void cbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            _Model.CheckAllGames();
-            _Model.ActiveSimulate = true;
-            _Model.ActiveApply = false;
-            
+            Model.CheckAllGames();
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
+
         }
+
+
+
+        private void PlatformToReplace_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (Global.VerifString(e.Text, Common.StringFormat.Folder))
+                e.Handled = true;
+
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
+        }
+        private void SubstringToRemove_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (Global.VerifString(e.Text, Common.StringFormat.Path))
+                e.Handled = true;
+
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            Model.Dispose();
+        }
+
+
     }
 }

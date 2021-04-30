@@ -1,4 +1,6 @@
-﻿using SPR.Languages;
+﻿using DxTBoxCore.BoxChoose;
+using DxTBoxCore.Languages;
+using SPR.Languages;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,11 +22,28 @@ namespace SPR.Models
                 StartingFolder = System.IO.Path.Combine(Global.LaunchBoxRoot, Default.AppsFolder);
         }
 
-        public override void Browse_Executed(string linkResult)
+        public override void Browse_Executed()
         {
-            ResultFolder = linkResult;
-            Default.MigSrcPath = System.IO.Path.GetFileName( linkResult); // on redescend d'un cran pour obliger l'utilisateur à choisir)
-            Default.Save();
+            TreeChoose cf = new TreeChoose()
+            {
+                SaveButtonName = DxTBLang.Select,
+                CancelButtonName = DxTBLang.Cancel,
+                Model = new M_ChooseFolder()
+                {
+                    Info = DxTBLang.Select,
+                    HideWindowsFolder = true,
+                    PathCompareason = System.StringComparison.CurrentCultureIgnoreCase,
+                    StartingFolder = StartingFolder
+                }
+            };
+
+            if (cf.ShowDialog() == true)
+            {
+                ResultFolder = cf.LinkResult;
+                Default.MigSrcPath = System.IO.Path.GetFileName(cf.LinkResult); // on redescend d'un cran pour obliger l'utilisateur à choisir)
+                Default.Save();
+            }
+
 
         }
     }

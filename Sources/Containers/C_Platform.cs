@@ -45,6 +45,15 @@ namespace SPR.Containers
         }
 
         /// <summary>
+        /// Path for Video
+        /// </summary>
+        public C_PathsDouble ThemeVideoPath
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
         /// Paths for images
         /// </summary>
         public ObservableCollection<C_PathsDouble> ImagePaths { get; set; } = new ObservableCollection<C_PathsDouble>();
@@ -62,22 +71,19 @@ namespace SPR.Containers
         /// <summary>
         /// Platform Name
         /// </summary>
-        public string PlatformName { get; }
+        public string PlatformName { get; private set; }
 
-        public C_Platform()
-        {
-            /*ApplicationPath = new C_PathsCollec("apppath", "Appapath") ;
-            ManuelPath = new C_PathsCollec("manuelpath", "");*/
-        }
-
+        /*  public C_Platform()
+          {
+          }
+        */
         /// <summary>
         /// construit un objet C_Platform à l'aide d'un objet d'interface IPlatform
         /// </summary>
         /// <param name="platform"></param>
-        public C_Platform(IPlatform platform)
+        /*public C_Platform(IPlatform platform)
         {
-            PlatformName = platform.Name;
-        }
+        }*/
 
         #region Initialisation
 
@@ -85,34 +91,25 @@ namespace SPR.Containers
         /// Initialise le folder Games
         /// </summary>
         /// <param name="platform"></param>
-        public void BuildGamesFolder(IPlatform platform)
+        public static C_Platform Platform_Maker(IPlatform platform, IPlatformFolder[] platformFolders)
         {
-            string oldPath = string.Empty;
-            //  throw new Exception();
             // Attribution en fonction de l'allure du chemin
+            string oldPath = string.Empty;
             if (string.IsNullOrEmpty(platform.Folder))
                 oldPath = Path.Combine(Global.LaunchBoxRoot, "Games");
             else
                 oldPath = platform.Folder;
 
-            this.ApplicationPath = new C_PathsDouble(oldPath, "Games");
 
-            /*
-            //2020 levé pour unifier
-            // Pour l'instant le chemin relatif aura une allure de chemin absolu si les lecteurs sont différents
-            if (ApplicationPath.OldPath.StartsWith('.'))
+            C_Platform visP = new C_Platform()
             {
-                ApplicationPath.HardPath = Path.GetFullPath(ApplicationPath.OldPath, Global.LaunchBoxRoot);
-                ApplicationPath.RelatPath = ApplicationPath.OldPath;
-            }
-            else
-            {
-                ApplicationPath.HardPath = ApplicationPath.OldPath;
-                ApplicationPath.RelatPath = DxPath.To_Relative(Global.LaunchBoxRoot, ApplicationPath.OldPath);
-                //ApplicationPath.OldRelatPath = Path.GetRelativePath(Global.LaunchBoxPath, ApplicationPath.OldPath);
-            }
+                PlatformName = platform.Name,
+                ApplicationPath = new C_PathsDouble(oldPath, "Games"),
+            };
 
-            ApplicationPath.Raz_NewPaths();*/
+            visP.BuildCategsFolders(platformFolders);
+
+            return visP;
         }
 
 
@@ -120,29 +117,8 @@ namespace SPR.Containers
         /// Initialise les folders en fonction dun tableau des platformFolders
         /// </summary>
         /// <param name="platformFolders"></param>
-        public void BuildCategsFolders(IPlatformFolder[] platformFolders)
+        private void BuildCategsFolders(IPlatformFolder[] platformFolders)
         {
-            // CheatCodes non traité
-
-            // Manuels
-            /*IPlatformFolder iplManual = platformFolders.FirstOrDefault(x => x.MediaType.Equals("Manual"));
-            if (iplManual != null)
-                this.ManuelPath = new C_PathsCollec(iplManual.FolderPath, iplManual.MediaType);*/
-
-            // Musics
-            /*IPlatformFolder iplMusic = platformFolders.FirstOrDefault(x => x.MediaType.Equals("Music"));
-            if (iplMusic != null)
-                this.MusicPath = new C_PathsCollec(iplMusic.FolderPath, iplMusic.MediaType);*/
-
-            // Videos
-            /*IPlatformFolder iplVideo = platformFolders.FirstOrDefault(x => x.MediaType.Equals("Video"));
-            if (iplVideo != null)
-                this.VideoPath = new C_PathsCollec(iplVideo.FolderPath, iplVideo.MediaType);*/
-
-            // On sait que c'est là que la catégorie aura le nom le plus long            
-            // Images            
-            //foreach (var p in _PlatformFolders)
-            //for (int i = 3; i < platformFolders.Length; i++)
 
             // 
             for (int i = 0; i < platformFolders.Length; i++)
@@ -162,6 +138,10 @@ namespace SPR.Containers
 
                     case "Video":
                         this.VideoPath = Get_PlatformFolder(p/*latformFolders*/, "Video");
+                        break;
+
+                    case "Theme Video":
+                        this.ThemeVideoPath = Get_PlatformFolder(p, "Theme Video");
                         break;
 
                     default:
@@ -206,21 +186,6 @@ namespace SPR.Containers
 
 
         #region iterators
-        /*
-        // Implementation for the GetEnumerator method.
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            yield return ApplicationPath;
-            yield return ManuelPath;
-            yield return MusicPath;
-            yield return VideoPath;
-
-            foreach (var imageP in ImagePaths)
-            {
-                yield return imageP;
-            }
-        }*/
-
 
         internal IEnumerable<C_PathsDouble> GetPaths()
         {
@@ -228,6 +193,7 @@ namespace SPR.Containers
             yield return ManuelPath;
             yield return MusicPath;
             yield return VideoPath;
+            yield return ThemeVideoPath;
 
             foreach (var imageP in ImagePaths)
             {
@@ -241,6 +207,7 @@ namespace SPR.Containers
             yield return ManuelPath;
             yield return MusicPath;
             yield return VideoPath;
+            yield return ThemeVideoPath;
 
             foreach (var imageP in ImagePaths)
             {

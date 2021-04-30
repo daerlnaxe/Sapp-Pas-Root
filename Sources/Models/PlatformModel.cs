@@ -1,10 +1,10 @@
 ﻿using DxPaths.Windows;
 using DxTBoxCore.Box_MBox;
+using DxTBoxCore.BoxChoose;
 using Hermes;
 using Hermes.Messengers;
 using SPR.Containers;
 using SPR.Languages;
-using SPR.Properties;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +15,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Unbroken.LaunchBox.Plugins;
 using Unbroken.LaunchBox.Plugins.Data;
+using static SPR.Properties.Settings;
 
 namespace SPR.Models
 {
@@ -272,8 +273,6 @@ namespace SPR.Models
         /// </summary>
         public IPlatform PlatformObject { get; private set; }
 
-
-
         /*
          * Sans event, ne fonctionne pas si la propriété n'est pas mise à jour directement (sur un contrôle après par ex)
          * NotifyOnTargetUpdated=True ne sert pas à l'event
@@ -284,16 +283,6 @@ namespace SPR.Models
             AddError(nameof(ChosenFolder), "bzzz");
             this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(ChosenFolder)));
         }
-
-
-
-
-        /*
-        /// <summary>
-        /// Tableau des chemins de la plateforme
-        /// </summary>
-        [Obsolete]
-        public List<C_PathsCollec> ExtPlatformPaths { get; set; } = new List<C_PathsCollec>();*/
 
         private string previousFolderPath;
 
@@ -317,6 +306,17 @@ namespace SPR.Models
         {
         }
 
+        /// <summary>
+        /// Constructeur pour l'édition
+        /// </summary>
+        /// <param name="platform"></param>
+        public PlatformModel(string platformName)
+        {
+            InitializeEdition(platformName);
+        }
+
+
+
         #region Initialization Functions
 
         /// <summary>
@@ -324,13 +324,23 @@ namespace SPR.Models
         /// </summary>
         /// <param name="platform"></param>
         /// <returns></returns>
-        public void InitializeEdition(IPlatform platform)
+        public void InitializeEdition(string platformName)
         {
-            if (platform == null)
+            if (string.IsNullOrEmpty(platformName))
                 throw new NullReferenceException("Object Plateform is null !");
 
 
-            PlatformObject = platform;
+            if (Global.DebugMode)
+            {
+                HeTrace.WriteLine("Debug Mode Activé");
+                PlatformObject = DebugPoint.FakePlatforms.First(x => x.Name.Equals(platformName));
+            }
+            else
+            {
+                PlatformObject = PluginHelper.DataManager.GetPlatformByName(platformName);
+                HeTrace.WriteLine("Plugin Mode Activé");
+            }
+
 
             // Messenger
             Mev = new MeVerbose()
@@ -340,34 +350,18 @@ namespace SPR.Models
             };
             HeTrace.AddMessenger("Verbose", Mev);
 
-            /*
-            PlatformName = plateform.Name;
-            */
-
             // on récupère le dernier dossier visité
             ChosenFolder = Properties.Settings.Default.LastKPath;
-
-            if (Global.DebugMode)
-                HeTrace.WriteLine("Debug Mode Activé");
-            else
-                HeTrace.WriteLine("Plugin Mode Activé");
 
 
             HeTrace.WriteLine("Initialisation");
             HeTrace.WriteLine($@"LaunchBox main path: {Global.LaunchBoxPath}");
             HeTrace.WriteLine($"Identified System: {PlatformObject.Name}");
 
-            // 
+            // Initialization of paths
             this.InitializePaths();
 
-            /*
-            // Assignation du dernier chemin visité
-            if (string.IsNullOrEmpty(Properties.Settings.Default.LastKPath))
-            {
-                Properties.Settings.Default.LastKPath = _CHardLink;
-            }*/
-
-            // Detection du nom du dossier system
+            // Detection du nom du dossier system (vérifié le 29/04/2021)
             if (string.IsNullOrEmpty(PlatformObject.Folder))
             {
                 SystemFolderName = PlatformObject.Name;
@@ -376,72 +370,17 @@ namespace SPR.Models
             {
                 // On prend le dernier dossier
                 SystemFolderName = PlatformObject.Folder.Substring(PlatformObject.Folder.LastIndexOf(@"\") + 1);
-
             }
+
             HeTrace.WriteLine($"Identified Folder System: {SystemFolderName}");
 
-
             // Initialisation des folders name            
-            GamesFName = Settings.Default.AppsFolder;
-            ImagesFName = Settings.Default.ImagesFolder;
-            ManualsFName = Settings.Default.ManualsFolder;
-            MusicsFName = Settings.Default.MusicsFolder;
-            VideosFName = Settings.Default.VideosFolder;
+            GamesFName = Default.AppsFolder;
+            ImagesFName = Default.ImagesFolder;
+            ManualsFName = Default.ManualsFolder;
+            MusicsFName = Default.MusicsFolder;
+            VideosFName = Default.VideosFolder;
 
-            //
-
-            // MvFolder[] _AMVFolders = MvFolder.Convert(_IPFolders, PlatformFolder, AppPath);
-            // Conversion des dossiers de la plateforme plus facilement exploitable 
-            //todo voir pour le folder de l'app
-            //AMVFolders = MvFolder.Convert(_PlatformFolders, OldPlatformObject.Folder, _AppPath);
-
-            // On ajoute une place en plus pour le game
-            // ExtPlatformPaths = new PathsCollec[_PlatformFolders.Length +1];
-
-
-            // Jeux
-            /*C_PathsCollec gameP = new C_PathsCollec(plateform);
-            ExtPlatformPaths.Add(gameP);*/
-
-            // CheatCodes non traité
-            // Manuels
-            /*C_PathsCollec manualsP = new C_PathsCollec(_PlatformFolders.FirstOrDefault(x => x.MediaType.Equals("Manual")));
-            ExtPlatformPaths.Add(manualsP);*/
-
-            // Musics
-            /*C_PathsCollec musicsP = new C_PathsCollec(_PlatformFolders.FirstOrDefault(x => x.MediaType.Equals("Music")));
-            ExtPlatformPaths.Add(musicsP);*/
-
-            // Videos
-            /*C_PathsCollec videosP = new C_PathsCollec(_PlatformFolders.FirstOrDefault(x => x.MediaType.Equals("Video")));
-            ExtPlatformPaths.Add(videosP);*/
-
-            // On sait que c'est là que la catégorie aura le nom le plus long            
-            // Images            
-            //foreach (var p in _PlatformFolders)
-            /*
-            for (int i = 3; i < _PlatformFolders.Length; i++)
-
-            {
-                var p = _PlatformFolders[i];
-                switch (p.MediaType)
-                {
-                    case "Manuals":
-                    case "Musics":
-                    case "Videos":
-                        continue;
-                    default:
-                        C_PathsCollec tmp = new C_PathsCollec(p);
-                        if (tmp.Type.Length * 6 > SizeCateg)
-                            SizeCateg = tmp.Type.Length * 6;
-                        //            ExtPlatformPaths.Add(tmp);
-                        PlatformPaths.AddImagePaths(tmp);
-
-                        break;
-                }
-
-            }
-            */
         }
 
         /// <summary>
@@ -454,7 +393,6 @@ namespace SPR.Models
             // Initialization according to the mode (debug/plugin)
             if (Global.DebugMode)
                 // Utilisation de pseudos dossiers
-                //_PlatformFolders = DebugResources.Get_PlatformPaths();
                 _PlatformFolders = ((MvPlatform)PlatformObject).GetAllPlatformFolders();
             else
                 // Récupération de tous les dossiers + tri
@@ -462,45 +400,15 @@ namespace SPR.Models
                                         .OrderBy(x => x.MediaType).ToArray();
 
             //
-            C_Platform tmp = new C_Platform(PlatformObject);
-
             HeTrace.WriteLine($"Dossier de jeu: {PlatformObject.Folder}");
-
-            // Construction du dossier pour la catégorie Games
-            tmp.BuildGamesFolder(PlatformObject);
-
-            // Construction des dossiers pour les différentes catégories (sauf games)
-            tmp.BuildCategsFolders(_PlatformFolders);
+            C_Platform tmp = C_Platform.Platform_Maker(PlatformObject, _PlatformFolders);
 
             PlatformPaths = tmp;
             GC.Collect();
         }
 
-
-        /// <summary>
-        /// Initialize with parameters Required entries
-        /// </summary>
-        [Obsolete]
-        private void NormalInit()
-        {
-
-            // Récupération de tous les dossiers + tri
-            _PlatformFolders = PlatformObject.GetAllPlatformFolders()
-                                                    .OrderBy(x => x.MediaType).ToArray();
-
-
-        }
-
         #endregion
 
-
-        /// <summary>
-        /// Fill informations of the left top part like Name, Path...
-        /// </summary>
-        private void FillInformation()
-        {
-            //IPlatform
-        }
 
         /// <summary>
         /// Format paths to seek the main and show him as hard and relative
@@ -534,9 +442,6 @@ namespace SPR.Models
             HeTrace.WriteLine($@"PlatformFolder: '{PlatformObject.Folder}'"); // Envnew
             HeTrace.WriteLine(@"Search main paths"); // Envnew
 
-            // string tmp = null;     // Variable temporaire
-
-            //tmp = platformPath;
 
             #region Recherche du dossier hard
             HeTrace.Write(@"--- Seek of HardLink: ");
@@ -577,8 +482,37 @@ namespace SPR.Models
 
             #endregion Remplace FillInformation de l'ancienne version
 
-
         }
+
+
+
+        internal void Browse()
+        {
+            // ChooseFolder cf = new ChooseFolder()            
+            TreeChoose tf = new TreeChoose
+            {
+                Model = new M_ChooseFolder()
+                {
+                    HideWindowsFolder = true,
+                    PathCompareason = StringComparison.CurrentCultureIgnoreCase,
+                    StartingFolder = Properties.Settings.Default.LastKPath,
+                },
+                SaveButtonName = "Select",
+            };
+
+            if (tf.ShowDialog() != true)
+                return;
+
+            string tmpPath;
+            Default.LastKPath = tmpPath = tf.Model.LinkResult;
+            Default.Save();
+
+            VerifPath(tf.Model.LinkResult, nameof(ChosenFolder));
+
+            // Assignation 
+            ChosenFolder = tf.Model.LinkResult;
+        }
+
 
 
         #region Simulation
@@ -596,15 +530,6 @@ namespace SPR.Models
             if (!VerifPath(ChosenFolder, nameof(ChosenFolder)))
                 return false;
 
-            /*  // Verifier que le chemin existe
-              if (!Directory.Exists(ChosenFolder))
-              {
-                  DxMBox.ShowDial("Chosen Folder doesn't exist", "Error", DxButtons.Ok);
-                  return false;
-              }*/
-
-            /* if (String.IsNullOrEmpty(SystemFolderName))
-                 DxMBox.ShowDial("System Folder Name is empty !");*/
 
             // --- Mettre à jour les chemins
             InitializePaths();
@@ -618,38 +543,31 @@ namespace SPR.Models
             // foreach (var ecp in ExtPlatformPaths)
             foreach (C_PathsDouble ecp in PlatformPaths)
             {
+
                 HeTrace.WriteLine($"\t[AlterPath] {ecp.Type}", level: 10);
 
                 // Choix de filtrer que videos / games / manuals / music et ... ?
                 string hardPath;
-                switch (ecp.Type)
-                {
-                    case "Games":
-                        // hardPath = Path.Combine(_chosenFolder, GamesFName, PlatformPaths.PlatformName);
-                        hardPath = Path.Combine(_chosenFolder, GamesFName, SystemFolderName);
-                        break;
 
-                    case "Manual":
-                        //hardPath = Path.Combine(_chosenFolder, ManualsFName, PlatformPaths.PlatformName);
-                        hardPath = Path.Combine(_chosenFolder, ManualsFName, SystemFolderName);
-                        break;
+                // Games
+                if (ecp.Type.Equals("Games", StringComparison.OrdinalIgnoreCase))
+                    hardPath = Path.Combine(_chosenFolder, GamesFName, SystemFolderName);
+                // Manual
+                else if (ecp.Type.Equals("Manual", StringComparison.OrdinalIgnoreCase))
+                    hardPath = Path.Combine(_chosenFolder, ManualsFName, SystemFolderName);
+                // Music
+                else if (ecp.Type.Equals("Music", StringComparison.OrdinalIgnoreCase))
+                    hardPath = Path.Combine(_chosenFolder, MusicsFName, SystemFolderName);
+                // Video
+                else if (ecp.Type.Equals("Video", StringComparison.OrdinalIgnoreCase))
+                    hardPath = Path.Combine(_chosenFolder, VideosFName, SystemFolderName);
+                // Other type of video
+                else if (ecp.Type.Equals("Theme Video", StringComparison.OrdinalIgnoreCase))
+                    hardPath = Path.Combine(_chosenFolder, VideosFName, SystemFolderName, "Theme" );
+                // Images
+                else
+                    hardPath = Path.Combine(_chosenFolder, ImagesFName, SystemFolderName, ecp.Type);
 
-                    case "Music":
-                        //hardPath = Path.Combine(_chosenFolder, MusicsFName, PlatformPaths.PlatformName);
-                        hardPath = Path.Combine(_chosenFolder, MusicsFName, SystemFolderName);
-                        break;
-
-                    case "Video":
-                        //hardPath = Path.Combine(_chosenFolder, VideosFName, PlatformPaths.PlatformName);
-                        hardPath = Path.Combine(_chosenFolder, VideosFName, SystemFolderName);
-                        break;
-
-                    default:
-                        //hardPath = Path.Combine(_chosenFolder, ImagesFName, PlatformPaths.PlatformName, ecp.Type);
-                        hardPath = Path.Combine(_chosenFolder, ImagesFName, SystemFolderName, ecp.Type);
-                        break;
-
-                }
 
                 //string relatPath = Path.GetRelativePath(Global.LaunchBoxPath, hardPath);
                 string relatPath = DxPath.To_Relative(Global.LaunchBoxRoot, hardPath);
@@ -669,7 +587,6 @@ namespace SPR.Models
             #endregion AlterPath
 
             HeTrace.WriteLine(">>> End of Simulation"); // Envnew
-            //HeTrace.WriteLine(@"Ready, click on proceed to save this modifications."); // Envnew
 
             return true;
 
@@ -749,7 +666,6 @@ namespace SPR.Models
                 //
                 if (pFolder != null)
                 {
-
                     // Assignation au platform Path de Launchbox
                     ipFolder.FolderPath = pFolder.NewRelatPath;
 
@@ -760,7 +676,6 @@ namespace SPR.Models
                     // Raz new
                     pFolder.Raz_NewPaths();
                 }
-
             }
             Trace.Unindent();
         }
@@ -775,11 +690,11 @@ namespace SPR.Models
             HeTrace.WriteLine("Reset to factory parameters");
 
             // Remise à zéro des paramètres
-            GamesFName = Settings.Default.AppsFolder;
-            ImagesFName = Settings.Default.ImagesFolder;
-            ManualsFName = Settings.Default.ManualsFolder;
-            MusicsFName = Settings.Default.MusicsFolder;
-            VideosFName = Settings.Default.VideosFolder;
+            GamesFName = Default.AppsFolder;
+            ImagesFName = Default.ImagesFolder;
+            ManualsFName = Default.ManualsFolder;
+            MusicsFName = Default.MusicsFolder;
+            VideosFName = Default.VideosFolder;
             SystemFolderName = PlatformObject.Name;
 
             ChosenFolder = Global.LaunchBoxRoot;
@@ -799,82 +714,6 @@ namespace SPR.Models
 
 
         #region Validation
-
-        /*
-        public string Error { get; }
-
-
-        public string this[string columnName]
-        {
-            get
-            {
-                Debug.WriteLine($"IDataErrorInfo: {columnName}");
-
-                string res = string.Empty;
-
-                switch (columnName)
-                {
-                    case "GamesFName":
-                        return VerifyFolderFormat(GamesFName, "GamesFName");
-
-                    case "ManualsFName":
-                        return VerifyFolderFormat(ManualsFName, "ManualsFName");
-
-                    case "ImagesFName":
-                        return VerifyFolderFormat(ImagesFName, "ImagesFName");
-
-                    case "MusicsFName":
-                        return VerifyFolderFormat(MusicsFName, "MusicsFName");
-
-                    case "VideosFName":
-                        return VerifyFolderFormat(VideosFName, "MusicsFName");
-
-                    case "SystemFolderName":
-                        return VerifyFolderFormat(SystemFolderName, "SystemFolderName");
-
-                    case "ChosenFolder":
-                        if (string.IsNullOrEmpty(ChosenFolder))
-                            res = "Enter a valid path";
-                        break;
-                }
-
-                return res;
-            }
-        }
-
-        /// <summary>
-        /// Vérifie, pour le système de validation si un nom de dossier est correctement entré
-        /// </summary>
-        /// <param name="txt"></param>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// met à jour la liste des erreurs
-        /// </remarks>
-        private string VerifyFolderFormat(string txt, string propertyName)
-        {
-            RemoveError(propertyName);
-
-
-            string err = string.Empty;
-            if (string.IsNullOrEmpty(txt))
-                err = "Enter a folder name";
-
-
-            if (Global.VerifString(txt, Common.StringFormat.Folder))
-                err = @"Folder can't containt '?/*\:<|>' character";
-
-            // Ajout s'il y a une erreur
-            if (!string.IsNullOrEmpty(err))
-                AddError(propertyName, err);
-
-            return err;
-        }
-        */
-
-
-
-
 
 
         /// <summary>
@@ -947,12 +786,6 @@ namespace SPR.Models
                 AddError(propertyName, @"Folder name can't contain ?:/*\<|> charcacter");
                 //   needupdate = true;
             }
-
-
-            // On notifie si nécessaire
-            /* if (needupdate)
-                 ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));*/
-
         }
 
 

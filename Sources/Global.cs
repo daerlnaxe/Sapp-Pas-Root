@@ -139,7 +139,9 @@ namespace SPR
                 case StringFormat.Folder:
                     r = new Regex("[*?\\\\:/|<>]");
                     break;
-
+                case StringFormat.Path:
+                    r = new Regex("[*?|<>:/]");
+                    break;
             }
 
 

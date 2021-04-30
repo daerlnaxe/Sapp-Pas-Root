@@ -11,7 +11,9 @@
         xmlns:be="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:t="clr-namespace:SPR.Languages"
         mc:Ignorable="d"
-        Title="W_EditPlatform" Height="640" Width="800"  MinHeight="600" MinWidth="800" Closing="Window_Closing">
+        Title="W_EditPlatform"
+        Height="640" Width="800" MinHeight="600" MinWidth="800"
+        Loaded="Window_Loaded" Closing="Window_Closing">
     <Window.CommandBindings>
         <CommandBinding Command="comm:ComCommands.Browse" CanExecute="CommandBrowse_CanExecute" Executed="CommandBrowse_Executed"/>
         <CommandBinding Command="local:W_PlatformPaths.ResetFactory" CanExecute="CommandResetFac_CanExecute" Executed="CommandResetFac_Executed" />

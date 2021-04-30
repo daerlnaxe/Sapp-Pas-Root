@@ -155,7 +155,6 @@ namespace SPR.Models
             IHM = w;
         }
 
-
         internal void Initialize()
         {
             /*
@@ -177,7 +176,6 @@ namespace SPR.Models
         // Todo vérifier les fichiers sources
         internal void SrcFoldersChanged(string value, string property)
         {
-
             HandleFoldersChange(value, property, SrcMPaths);
 
             Simulate_SrcPaths();
@@ -223,8 +221,6 @@ namespace SPR.Models
         {
             if (string.IsNullOrEmpty(Source))
                 return;
-            
-
 
             string[] arrSrcPath = Source.Split("\\");
             string rootSrc = String.Join('\\', arrSrcPath, 0, arrSrcPath.Length - 2);
@@ -274,13 +270,12 @@ namespace SPR.Models
             // Vérification de l'existence des dossiers source
             bool v = true;
 
-            v &= Verif_Source(GamesPaths);
+            // Plus de vérifications car on met un système en palimpseste
+            /*v &= Verif_Source(GamesPaths);
             v &= Verif_Source(ManualsPaths);
             v &= Verif_Source(ImagesPaths);
             v &= Verif_Source(MusicsPaths);
-            v &= Verif_Source(VideosPaths);
-
-            // Faut il vérifier
+            v &= Verif_Source(VideosPaths);*/
 
             return v;
         }
@@ -304,15 +299,6 @@ namespace SPR.Models
         internal bool? Apply()
         {
             HeTrace.WriteLine($"\nMigrating files");
-            /*
-            List<ModelSD> files = new List<ModelSD>();
-            
-            files.Add(GamesPaths);
-            files.Add(ManualsPaths);
-            files.Add(ImagesPaths);
-            files.Add(MusicsPaths);
-            files.Add(VideosPaths);*/
-
 
             HeTrace.WriteLine("Apply - Copy begin");
             List<DataTrans> files = new List<DataTrans>();
@@ -321,18 +307,6 @@ namespace SPR.Models
             files.AddRange(PrepareFiles(ManualsPaths));
             files.AddRange(PrepareFiles(MusicsPaths));
             files.AddRange(PrepareFiles(VideosPaths));
-
-            
-            // Liste des fichiers
-           /* string[] fsGames = Directory.GetFiles(GamesPaths.Source, "*.*", SearchOption.AllDirectories);
-            string[] fsManuals = Directory.GetFiles(ManualsPaths.Source, "*.*", SearchOption.AllDirectories);
-            string[] fsImages = Directory.GetFiles(ImagesPaths.Source, "*.*", SearchOption.AllDirectories);
-            string[] fsMusics = Directory.GetFiles(MusicsPaths.Source, "*.*", SearchOption.AllDirectories);
-            string[] fsVideos = Directory.GetFiles(VideosPaths.Source, "*.*", SearchOption.AllDirectories);
-
-            // Nombre total de fichiers
-            int TotalFiles = fsGames.Length + fsManuals.Length + fsImages.Length + fsMusics.Length + fsVideos.Length;
-           */
             
             HeTrace.WriteLine("Apply - Copy begin");
             HashCopy hashCopy = new HashCopy();
@@ -342,45 +316,15 @@ namespace SPR.Models
             TaskLauncher launcher = new TaskLauncher()
             {
                 ProgressIHM = new DxDoubleProgress(mee),
-                AutoCloseWindow = false,
+                AutoCloseWindow = true,
                 MethodToRun = () => hashCopy.VerifSevNCopy(files),
 
 
             };
             launcher.Launch(hashCopy);
-            /*
-
-            MawEvo<PersisProgressD> mawmaw = new MawEvo<PersisProgressD>();
-
-            TaskLauncher launcher = new TaskLauncher()
-            {
-                AutoCloseWindow = false,
-                ProgressIHM = new DxDoubleProgress(mawmaw.Parler),
-                MethodToRun = () => Categ_Apply(mawmaw, files),
-            };
-
-
-
-            return launcher.Launch(mawmaw);*/
-
-            //            dxApply.TaskToRun.UpdateStatus += (x) => HeTrace.WriteLine(x);
-
 
             return true;
 
-            /*
-            try
-            {
-                // -- Games 
-                Categ_Apply(GamesPaths);
-
-                return true;
-            }
-            catch (Exception exc)
-            {
-
-                return false;
-            }*/
         }
 
         private IEnumerable<DataTrans> PrepareFiles(ModelSD modelSD)
@@ -399,115 +343,6 @@ namespace SPR.Models
                 HeTrace.WriteLine($"Prepare { dt.CurrentPath}\r\nto {dt.DestPath}");
             }
             return files;
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tP"></param>
-        /// <param name="models"></param>
-        /// <returns></returns>
-        private object Categ_Apply(I_ASBase tP, List<ModelSD> models)
-        {
-         //   MawEvo<PersistProgressD> encaps = (MawEvo<PersistProgressD>)tP;
-            /*
-                - Je veux dissocier les tâches une List String ne me le permet pas.
-                - Ce que je veux faire apparaitre c'est le nombre de fichier pour chaque catégorie
-                - Il faudrait considérer la copie comme un tiers du travail, et la comparaison comme deux tiers.    
-
-            */
-
-           /* Dictionary<ModelSD, string[]> tasksOnFiles = new Dictionary<ModelSD, string[]>();
-            int TotalFiles = 0;
-
-            // Récupération des fichiers
-            encaps.Parler.SetStatus(this, new StateArg("Initialize the list of files"));
-            foreach (ModelSD mSD in models)
-            {
-                string[] tmp = Directory.GetFiles(mSD.CurrentPath, "*.*", SearchOption.AllDirectories);
-                tasksOnFiles.Add(mSD, tmp);
-                TotalFiles += tmp.Count();
-            }
-
-            */
-
-
-
-            // Nombre total de fichiers
-            //  int TotalFiles = fsGames.Length + fsManuals.Length + fsImages.Length + fsMusics.Length + fsVideos.Length;
-
-            // Signaler le maximum pour la barre du Total
-
-            // Préparation du système de vérification
-            /* OpDFilesExt opfSys = new OpDFilesExt();
-             opfSys.NotSimul = true;
-             opfSys.AskToUser += this.AskWhatToDo;
-             opfSys.SumError += this.InformErrorSum;
-             opfSys.UpdateProgress += encaps.Parler.SetProgress;
-             opfSys.IWriteLine += (x, y) => encaps.Parler.SetStatus(x, new StateArg(y, false));*/
-
-            /*int i = 0; // Là selon on pourrait changer un peu la progression
-            int max = models.Count;
-            */
-            // On va lire tous les fichiers donc de 0 au nombre total
-            //for (int i = 0; i < tasksOnFiles.Count; i++)
-            /* foreach (var tof in tasksOnFiles)
-             {
-                 //ModelSD Element = tasksOnFiles[i];
-                 ModelSD Element = tof.Key;
-                 string[] files = tof.Value;
-
-
-                 // Signal position 0 & statuts pour la progression totale
-                 encaps.Parler.SetTotalProgress(this, new ProgressArg(i, max, false));
-                 encaps.Parler.SetStatus(this, new StateArg(Element.Title));
-
-                 // Signal paramétrage de progress part
-                 encaps.Parler.SetProgress(this, new ProgressArg(0, 100, false));
-
-                 // Pour chaque catégorie on va lire chaque fichier
-                 for (int j = 0; j < files.Length; j++)
-                 {
-                     // Raz
-                     opfSys.RazSums();
-
-                     string sourceFile = files[j];
-
-                     // Transformation du fichier
-                     string destFile = sourceFile.Replace(Element.Source, Element.Destination);
-
-                     encaps.Parler.SetStatus(this, new StateArg(sourceFile));
-                     encaps.Parler.SetProgress(this, new ProgressArg(j, 100, false));
-
-                     // On met en pause (pourquoi ?)
-                     tP.Pause(10);
-
-                     // Gestion de l'état stop
-                 /*    if (opfSys.DecisionByDefault == E_Decision.Stop || opfSys.DecisionByDefault == E_Decision.PassAll)
-                         tP.TokenSource.Cancel();
-
-                     // On arrête
-                     if (tP.CancelToken.IsCancellationRequested)
-                         return null;
-
-                     // --- Travail
-                     opfSys.CalculateSum();
-
-                     bool ff = opfSys.ManageCopy(sourceFile, destFile, j * 3);*/
-
-            /* }
-
-         }*/
-
-            /*encaps.Parler.SetTotalProgress(this, new ProgressArg(max, max, false));
-            encaps.Parler.SetTotalStatus(this, new StateArg("Finished"));
-            /* 
-            * On décide de conserver par défaut toutes les structures filles des dossiers
-            */
-
-
-            return null;
         }
 
 

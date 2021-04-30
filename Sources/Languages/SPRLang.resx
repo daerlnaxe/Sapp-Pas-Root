@@ -136,7 +136,7 @@
   </data>
   <data name="Choose_Dest_Folder" xml:space="preserve">
     <value>Select the destination folder of your system.
-By example you can select "E:\Platforms\Games\Nintendo Entertainment System".</value>
+By example you can select "E:\Platforms\Games\</value>
   </data>
   <data name="Choose_Platform" xml:space="preserve">
     <value>Choose a Platform</value>

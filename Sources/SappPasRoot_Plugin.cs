@@ -66,6 +66,8 @@ namespace SPR
 
                 HeTrace.AddLogger("Logger", meSL);
                 HeTrace.WriteLine("Init ok", callerName: "Logger");
+                HeTrace.WriteLine($"LaunchBox Path: {Global.LaunchBoxPath}");
+                HeTrace.WriteLine($"LaunchBox Root (found): {Global.LaunchBoxRoot}");
 
                 //PluginHelper. .LaunchBoxMainForm.FormClosing += new FormClosingEventHandler(Fermeture);
 

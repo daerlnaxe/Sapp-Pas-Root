@@ -3,6 +3,7 @@ using DxTBoxCore.Box_MBox;
 using Hermes;
 using Hermes.Messengers;
 using SPR.Containers;
+using SPR.Cores;
 using SPR.Enums;
 using SPR.Languages;
 using System;
@@ -39,20 +40,7 @@ namespace SPR.Models
         #region Avec Notifications
 
         public MeVerbose Mev { get; private set; }
-        /*
-        private string _Log;
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Log
-        {
-            get { return _Log; }
-            set
-            {
-                _Log = value;
-                OnPropertyChanged();
-            }
-        }*/
+
 
         private string _PlatformName;
         /// <summary>
@@ -68,6 +56,23 @@ namespace SPR.Models
             }
         }
 
+        private string _PlatformToReplace;
+        public string PlatformToReplace
+        {
+            get => _PlatformToReplace;
+            set
+            {
+
+
+                _PlatformToReplace = value;
+
+                OnPropertyChanged();
+                // .... Enclencher un retest
+            }
+        }
+
+        public string SubStringToRemove { get; set; }
+
         /// <summary>
         /// Tables des jeux de la plateforme
         /// </summary>
@@ -79,9 +84,6 @@ namespace SPR.Models
             get { return _ChosenMode; }
             set
             {
-                /*  if (value == _ChosenMode)
-                      return;*/
-
                 RemoveError();
 
                 switch (value)
@@ -90,14 +92,15 @@ namespace SPR.Models
                         AddError(SPRLang.Err_SelectMode);
                         break;
 
-                    case GamePathMode.KeepSubFolders:
-                        FindPivot();
-                        break;
+                        /*   case GamePathMode.KeepSubFolders:
+                               //NewFindPivot();
+                               break;
+                        */
 
                 }
 
                 _ChosenMode = value;
-                //   CheckAllGames();
+                //CheckAllGames();
 
                 OnPropertyChanged();
             }
@@ -105,39 +108,32 @@ namespace SPR.Models
 
 
         //bool ToReplaceGiven = false;
-        private string _ToReplace;
-        /// <summary>
-        /// Permet d'affiner les modifications
-        /// </summary>
-        public string ToReplace
-        {
-            get { return _ToReplace; }
-            set
-            {
-                if (value.Equals(_ToReplace))
-                    return;
+        /*     private string _ToReplace;
+             /// <summary>
+             /// Permet d'affiner les modifications
+             /// </summary>
+             public string ToReplace
+             {
+                 get { return _ToReplace; }
+                 set
+                 {
+                     if (value.Equals(_ToReplace))
+                         return;
 
-                _ToReplace = value;
-                ActiveApply = false;
-                ActiveSimulate = true;
+                     _ToReplace = value;
+                     ActiveApply = false;
+                     ActiveSimulate = true;
 
-                RemoveError();
+                     RemoveError();
 
-                //if(ChosenMode)
 
-                /*if (!value.StartsWith(".\\") && !value.StartsWith("..\\"))
-                    AddError(SPRLang.Err_MustRelat);*/
+                     if (value.EndsWith('\\'))
+                         AddError(SPRLang.Err_FinishSlash);
 
-                /*if (string.IsNullOrEmpty(value))
-                    AddError("is null");*/
+                     OnPropertyChanged();
 
-                if (value.EndsWith('\\'))
-                    AddError(SPRLang.Err_FinishSlash);
-
-                OnPropertyChanged();
-
-            }
-        }
+                 }
+             }*/
 
         #endregion
 
@@ -147,6 +143,8 @@ namespace SPR.Models
         /// </summary>
         internal bool ActiveApply { get; set; }
         internal bool ActiveSimulate { get; set; } = true;
+
+        //public IPlatform PreviousPlatform { get; private set; }
 
         /// <summary>
         /// Object plateforme passé
@@ -193,32 +191,20 @@ namespace SPR.Models
         public Dictionary<MediaType, C_Paths> DicSystemPaths { get; private set; } =
                                                             new Dictionary<MediaType, C_Paths>();
 
-
-        public GamesModel()
-        {
-
-        }
-
-
-        #endregion
-
         /// <summary>
-        /// Initialization with a platform (edition)
+        /// 
         /// </summary>
-        /// <param name="selectedPlatform"></param>
-        /// <remarks>
-        /// #1
-        /// </remarks>
-        internal void InitializeEdition(IPlatform selectedPlatform)
+        /// <param name="platform"></param>
+        /// <param name="previousPlatformState">Etat précédent, si disponible</param>
+        public GamesModel(IPlatform selectedPlatform, string previousPlatformName = null)
         {
             if (selectedPlatform == null)
                 throw new NullReferenceException("Object Plateform is null !");
 
+            // PreviousPlatform = previousPlatformState;
             SelectedPlatform = selectedPlatform;
-            PlatformName = selectedPlatform.Name;
-
+            PlatformName = SelectedPlatform.Name;
             ChosenMode = GamePathMode.None;
-
 
             // Messenger
             Mev = new MeVerbose()
@@ -232,9 +218,38 @@ namespace SPR.Models
             HeTrace.WriteLine($"[CGamePaths] [InitializeEdition] Initialisation");
 
             HeTrace.WriteLine($@"LaunchBox main path: {Global.LaunchBoxPath}"); // NewLine
-
             HeTrace.WriteLine($@"Platform '{PlatformName}' selected"); // NewLine
 
+
+            // --- Initialisation de la plateforme actuelle
+            InitializePlatform(selectedPlatform);
+
+
+            // --- Récupération des jeux
+            InitializeGames();
+
+            // --- Initialisation des champs grâce à l'ancienne plateforme            
+            if (!string.IsNullOrEmpty(previousPlatformName))
+                PlatformToReplace = previousPlatformName;
+            else
+                PlatformToReplace = FindBadPlatform();
+
+
+            //    ToReplace = Platform_Tools.GetRoot_ByFolder(PreviousPlatform.Folder);
+        }
+
+
+        #endregion
+
+        /// <summary>
+        /// Initialization with a platform (edition)
+        /// </summary>
+        /// <param name="selectedPlatform"></param>
+        /// <remarks>
+        /// #1
+        /// </remarks>
+        internal void InitializePlatform(IPlatform selectedPlatform)
+        {
             // --- Remplissage des informations de la plateforme
             HeTrace.WriteLine(@"Filling information fields"); // NewLine
 
@@ -255,9 +270,6 @@ namespace SPR.Models
 
             // --- Récupération des dossiers de la plateforme
             InitializePlateformFolders();
-
-            // --- Récupération des jeux
-            InitializeGames();
         }
 
         /// <summary>
@@ -281,15 +293,7 @@ namespace SPR.Models
                 platformFolders = SelectedPlatform.GetAllPlatformFolders();
             }
 
-
-            /*DicSystemPaths.Add("Application", new C_Paths(ObjectPlatform.Folder, nameof(PathType.ApplicationPath)));
-            //
-            foreach (var plat in platformFolders)
-                DicSystemPaths.Add(plat.MediaType,new C_Paths(plat.FolderPath, nameof());*/
-
-
             DicSystemPaths = Global.Make_DicPlatformPaths(SelectedPlatform.Folder, platformFolders);
-
         }
 
 
@@ -312,32 +316,25 @@ namespace SPR.Models
                 C_Game tmpGame = new C_Game(game);
                 tmpGame.BuildPaths(game);
 
-                // --- Check de la validité du jeu
-                //  tmpGame.IsValide = CheckGame(tmpGame);
+                // --- Check de la validité du jeu (29/04/2021)
+                tmpGame.IsValide = CheckGame(tmpGame);
 
                 ExtPlatformGames.Add(tmpGame);
 
             }
         }
 
-        /// <summary>
-        /// 
-        /// <summary>
-        /// <remarks>
-        /// La prédiction est trop difficile, car il y a trop d'incertitudes.
-        /// Remplacé par une vérification si le premier jeu à modifier contiendrait le nom du système pour déterminer la chaine à remplacer
-        /// Si ce n'est pas le cas on ne mettra rien, il y a une boite pour choisir à la main le dossier
-        /// </remarks>
-        internal void FindPivot()
-        {
-            // Mise en place du système pivot/tail, on donne un mot, on conservera ce qu'il y a après
-            //string[] arr = _IPlatformGames[0].ApplicationPath.Split(@"\");
+        // ----
 
-            // Récupération du premier qui n'a pas le bon chemin (pour travailler dessus)
-            //C_Game chosenGame = null;
-            for (int i = 0; i < ExtPlatformGames.Count; i++)
+        /// <summary>
+        /// Récupère une éventuelle mauvaise plateforme sinon renvoie la plateforme actuelle
+        /// </summary>
+        internal string FindBadPlatform()
+        {
+            string tmp = string.Empty;
+            string previous = string.Empty;
+            foreach (var game in ExtPlatformGames)
             {
-                C_Game game = ExtPlatformGames[i];
 
                 // Gestion d'éventuelle erreur
                 if (game.ApplicationPath == null)
@@ -347,56 +344,145 @@ namespace SPR.Models
                 if (game.ApplicationPath.RelatPath.Contains(PlatformRelatPath))
                     continue;
 
-                string[] arr = game.ApplicationPath.RelatPath.Split(@"\");
+                tmp = Path.GetFileName(Path.GetDirectoryName(game.ApplicationPath.OldPath));
 
-                // on peut éventuellement trouver via le nom du systeme.
-                if (arr.Contains(SelectedPlatform.Name))
+                //
+                if (tmp.Equals(previous, StringComparison.OrdinalIgnoreCase))
                 {
-                    HeTrace.WriteLine($"[Pivot] ObjectPlatfotme choice");
-                    var posPlatName = Array.IndexOf(arr, SelectedPlatform.Name);
-                    // Détermination de la position du nom de la plateforme
-
-                    ToReplace = String.Join(@"\", arr, 0, posPlatName + 1);
-
-                    return;
-                }
-
-                // Voir si dossier null 
-                // On récupère le nom du dernier dossier de la plateforme
-                string lastDir = Path.GetFileName(SelectedPlatform.Folder);
-                if (!string.IsNullOrEmpty(SelectedPlatform.Folder) && game.ApplicationPath.RelatPath.Contains(lastDir))
-                {
-                    HeTrace.WriteLine($"[Pivot] Last folder from platform choice");
-                    var posPlatName = Array.IndexOf(arr, lastDir);
-                    ToReplace = String.Join(@"\", arr, 0, posPlatName + 1); // +1 Pour prendre aussi le dernier dossier
-                    return;
-
-                }
-
-                // On peut eventuellement trouver via le nom du dernier dossier utilisé dans le path actuel
-
-
-                /*
-                // En dernier choix on prend l'avant dernier dossier
-                string[] arr = _IPlatformGames[i].ApplicationPath.Split(@"\");
-                if (arr.Length >= 3)
-                {
-                    ToReplace = arr[arr.Length - 3];
-
                     break;
                 }
-                */
-
-                // Dernier cas on prend le premier application path qui ne correspond pas
-                ToReplace = Path.GetDirectoryName(game.ApplicationPath.RelatPath);
-                HeTrace.WriteLine("[Pivot] Last choice - Edit is strongly recommended");
-                return;
+                else
+                {
+                    previous = tmp;
+                    tmp = string.Empty;
+                }
             }
 
-            ToReplace = SelectedPlatform.Folder;
-            HeTrace.WriteLine($"[Pivot] No predict");
+            if (string.IsNullOrEmpty(tmp))
+                tmp = PlatformName;
+
+            return tmp;
         }
 
+
+        /*
+                internal void NewFindPivot()
+                {
+                    for (int i = 0; i < ExtPlatformGames.Count; i++)
+                    {
+                        C_Game game = ExtPlatformGames[i];
+
+                        // Gestion d'éventuelle erreur
+                        if (game.ApplicationPath == null)
+                            continue;
+
+                        // On passe les jeux déjà ok
+                        if (game.ApplicationPath.RelatPath.Contains(PlatformRelatPath))
+                            continue;
+
+                        string[] arr = game.ApplicationPath.RelatPath.Split(@"\");
+
+                        // Test avec le nom de plateforme
+                        if (arr.Contains(PlatformToReplace))
+                        {
+                            HeTrace.WriteLine($"[Pivot] OldObject choice");
+                            var posPlatName = Array.LastIndexOf(arr, SelectedPlatform.Name);
+                            ToReplace = String.Join(@"\", arr, 0, posPlatName + 1);
+                            return;
+                        }
+
+                        // Test pour essayer via le nom du système
+                        if (arr.Contains(SelectedPlatform.Name))
+                        {
+                            HeTrace.WriteLine($"[Pivot] ObjectPlatfotme choice");
+                            var posPlatName = Array.LastIndexOf(arr, SelectedPlatform.Name);
+                            // Détermination de la position du nom de la plateforme
+
+                            ToReplace = String.Join(@"\", arr, 0, posPlatName + 1);
+
+                            return;
+                        }
+
+                        // Voir si dossier null 
+                        // On récupère le nom du dernier dossier de la plateforme
+                        string lastDir = Path.GetFileName(SelectedPlatform.Folder);
+                        if (!string.IsNullOrEmpty(SelectedPlatform.Folder) && game.ApplicationPath.RelatPath.Contains(lastDir))
+                        {
+                            HeTrace.WriteLine($"[Pivot] Last folder from platform choice");
+                            var posPlatName = Array.LastIndexOf(arr, lastDir);
+                            ToReplace = String.Join(@"\", arr, 0, posPlatName - 1); // +1 Pour prendre aussi le dernier dossier
+
+                            return;
+
+                        }
+
+                        ToReplace = SelectedPlatform.Folder;
+                        HeTrace.WriteLine($"[Pivot] No predict");
+                    }
+                }
+
+                /// <summary>
+                /// 
+                /// <summary>
+                /// <remarks>
+                /// La prédiction est trop difficile, car il y a trop d'incertitudes.
+                /// Remplacé par une vérification si le premier jeu à modifier contiendrait le nom du système pour déterminer la chaine à remplacer
+                /// Si ce n'est pas le cas on ne mettra rien, il y a une boite pour choisir à la main le dossier
+                /// </remarks>
+                [Obsolete]
+                internal void FindPivot()
+                {
+                    // Mise en place du système pivot/tail, on donne un mot, on conservera ce qu'il y a après
+
+                    // Récupération du premier qui n'a pas le bon chemin (pour travailler dessus)
+                    //C_Game chosenGame = null;
+                    for (int i = 0; i < ExtPlatformGames.Count; i++)
+                    {
+                        C_Game game = ExtPlatformGames[i];
+
+                        // Gestion d'éventuelle erreur
+                        if (game.ApplicationPath == null)
+                            continue;
+
+                        // On passe les jeux déjà ok
+                        if (game.ApplicationPath.RelatPath.Contains(PlatformRelatPath))
+                            continue;
+
+                        string[] arr = game.ApplicationPath.RelatPath.Split(@"\");
+
+                        // Test pour essayer via le nom du système
+                        if (arr.Contains(SelectedPlatform.Name))
+                        {
+                            HeTrace.WriteLine($"[Pivot] ObjectPlatfotme choice");
+                            var posPlatName = Array.IndexOf(arr, SelectedPlatform.Name);
+                            // Détermination de la position du nom de la plateforme
+
+                            ToReplace = String.Join(@"\", arr, 0, posPlatName + 1);
+
+                            return;
+                        }
+
+                        // Voir si dossier null 
+                        // On récupère le nom du dernier dossier de la plateforme
+                        string lastDir = Path.GetFileName(SelectedPlatform.Folder);
+                        if (!string.IsNullOrEmpty(SelectedPlatform.Folder) && game.ApplicationPath.RelatPath.Contains(lastDir))
+                        {
+                            HeTrace.WriteLine($"[Pivot] Last folder from platform choice");
+                            var posPlatName = Array.IndexOf(arr, lastDir);
+                            ToReplace = String.Join(@"\", arr, 0, posPlatName + 1); // +1 Pour prendre aussi le dernier dossier
+                            return;
+
+                        }
+
+                        // Dernier cas on prend le premier application path qui ne correspond pas
+                        ToReplace = Path.GetDirectoryName(game.ApplicationPath.RelatPath);
+                        HeTrace.WriteLine("[Pivot] Last choice - Edit is strongly recommended");
+                        return;
+                    }
+
+                    ToReplace = SelectedPlatform.Folder;
+                    HeTrace.WriteLine($"[Pivot] No predict");
+                }*/
 
         /// <summary>
         /// Vérifie l'intégrité des jeux (pas de renouvellement des jeux)
@@ -441,7 +527,6 @@ namespace SPR.Models
                 //  if (String.IsNullOrEmpty(pathO.OldRelatPath))
                 if (pathO == null)
                     continue;
-
 
                 HeTrace.WriteLine($"\t[CheckGame] {pathO.Type}: {pathO.RelatPath}");
                 switch (pathO.Type)
@@ -512,12 +597,6 @@ namespace SPR.Models
                 return false;
             }
 
-            /* 05/03/2021
-            if (toTest.Contains(referent))
-            {
-                HeTrace.WriteLine($"\t\tResult: true", 10);
-                return true;
-            }*/
             #region 05/03/2021
             // dans le cas forcé on n'accepte pas les sous dossiers
             if (ChosenMode == GamePathMode.Forced)
@@ -553,19 +632,6 @@ namespace SPR.Models
         }
 
 
-        /// <summary>
-        /// Initialize with parameters required
-        /// </summary>
-        [Obsolete]
-        private void NormalInit()
-        {
-            HeTrace.WriteLine("Plugin Mode Activé"); // NewLine
-
-            // Récupération des jeux ;avec tri        
-            _IPlatformGames = SelectedPlatform.GetAllGames(IncludeHidden, true)//(false, false)
-                                                 ;//         .OrderBy(x => x.Title).ToArray();
-
-        }
 
         /// <summary>
         /// Simulation
@@ -575,11 +641,11 @@ namespace SPR.Models
             HeTrace.WriteLine("Simulation"); // NewLine
 
             // On verifie que ToReplace n'est pas null (peut arriver)
-            if (ChosenMode == GamePathMode.KeepSubFolders && string.IsNullOrEmpty(ToReplace))
-            {
-                AddError("Is Null", nameof(ToReplace));
-                return;
-            }
+            /*         if (ChosenMode == GamePathMode.KeepSubFolders && string.IsNullOrEmpty(ToReplace))
+                     {
+                         AddError("Is Null", nameof(ToReplace));
+                         return;
+                     }*/
 
             #region remplace alterpath
             // say mode
@@ -588,7 +654,6 @@ namespace SPR.Models
             // Refresh les chemins de la plateforme
             HeTrace.WriteLine("Refresh for platform Paths"); // NewLine
             this.InitializePlateformFolders();
-
 
             // Refresh des jeux pour avoir la dernière version
             HeTrace.WriteLine("Refresh for game Paths"); // NewLine
@@ -609,13 +674,14 @@ namespace SPR.Models
                 // On examine tous les chemins, et en fonction du type on modifie les destinations                
                 foreach (C_PathsDouble pathO in game.EnumGetPaths)
                 {
+                    string rootPath = "";
+
                     // Cas où pathO est null
                     if (pathO == null)
                     {
                         HeTrace.WriteLine($"\tPath O == null");
                         continue;
                     }
-
 
                     HeTrace.Write($"\t-- {pathO.Type}: ");
 
@@ -627,10 +693,8 @@ namespace SPR.Models
                     }
 
                     HeTrace.EndLine(pathO.RelatPath);
-                    //HeTrace.WriteLine($"\tModification for {pathO.Type}: {pathO.OldRelatPath}"); // NewLine
 
                     // Assignation du root path pour reconstruire
-                    string rootPath = "";
 
                     // On va commencer par chercher le chemin auquel rataché les informations
                     switch (pathO.Type)
@@ -638,18 +702,18 @@ namespace SPR.Models
                         // On peut utiliser le keep ou le forcer grâce à AppPathsBuilder
                         case nameof(PathType.ApplicationPath):
                             rootPath = DicSystemPaths[MediaType.Application].RelatPath;
-                            AppPathsBuilder(pathO, rootPath, ChosenMode);
+                            PathsBuilder(pathO, rootPath);
                             break;
 
                         #region Forced mode
                         case nameof(PathType.ManualPath):
                             rootPath = DicSystemPaths[MediaType.Manual].RelatPath;
-                            KeepSubFolderMode(pathO, rootPath);
+                            PathsBuilder(pathO, rootPath);
                             break;
 
                         case nameof(PathType.MusicPath):
                             rootPath = DicSystemPaths[MediaType.Music].RelatPath;
-                            KeepSubFolderMode(pathO, rootPath);
+                            PathsBuilder(pathO, rootPath);
                             break;
 
                         case nameof(PathType.VideoPath):
@@ -700,9 +764,6 @@ namespace SPR.Models
                             continue;
 
                     }
-
-
-
 
                     // Création des chemins
 
@@ -760,40 +821,15 @@ namespace SPR.Models
                         HeTrace.WriteLine($"\t-- AdditionnalApplication: {addiApp.RelatPath}");
 
                         // Conversions des / en \
-                        //addiApp.Paths.OldRelatPath = addiApp.Paths.OldRelatPath.Replace('/', '\\');
                         addiApp.RelatPath = addiApp.RelatPath.Replace('/', '\\');
-                        //addiApp.Paths.OldHardPath = addiApp.Paths.OldHardPath.Replace('/', '\\');
                         addiApp.HardPath = addiApp.HardPath.Replace('/', '\\');
 
                         // Assignation du root
-                        //PathsBuilder(addiApp.Paths, DicSystemPaths["Application"], mode);
-                        AppPathsBuilder(addiApp, DicSystemPaths[MediaType.Application].RelatPath, ChosenMode);
-                        //rootPath = Path.Combine(dicSystemPaths["Application"], fichier);
+                        PathsBuilder(addiApp, DicSystemPaths[MediaType.Application].RelatPath);
 
-                        /*
-                        // modes
-                        string fichier = "";    // Récupération du nom du fichier ?
-                        if (rbForced.Checked)       // mode forcé
-                        {
-                            int pos = addiAppPath.Original_RLink.LastIndexOf('\\');
-                            fichier = addiAppPath.Original_RLink.Substring(pos + 1); //+1 pour lever le \
-                        }
-                        else if (rbKeepSub.Checked) // Mode conservant les sous-dossiers 
-                        {
-                            int pos = addiAppPath.Original_RLink.IndexOf($@"\{PlatformName}\");
-                            fichier = addiAppPath.Original_RLink.Substring(pos + PlatformName.Length + 2);
-                        }*/
 
-                        //HeTrace.WriteLine($"$2020 : {fichier}";
-                        //  addiApp.Destination_RLink = fileDest;
-                        //addiApp.Destination_HLink = Path.GetFullPath(Path.Combine(AppPath, fileDest));
-
-                        //HeTrace.WriteLine($"2020 Additionnal App: {addiApp.Paths.OldRelatPath} => {addiApp.Paths.NewRelatPath}"); // NewLine
-                        #region 04/03/2021
-                        //Check_IfModifyRequired(addiApp);
                         gameValidity &= !addiApp.ToModify; //addiApp.Test_Validity();
 
-                        #endregion
                     }
                 } // End additional app
                 #endregion --- 2020
@@ -850,62 +886,49 @@ namespace SPR.Models
         ///     - Cas du keep qui n'a pas le pivot inclus, on passe pour laisser l'utilisateur faire d'autres modifs
         ///     
         /// </remarks>
-        private void AppPathsBuilder(C_PathsDouble pathO, string rootPath, GamePathMode mode)
+        private void PathsBuilder(C_PathsDouble pathO, string rootPath)
         {
             HeTrace.WriteLine($"\tUtilisation du rootpath {rootPath}", 10); // NewLine
+            pathO.NewRelatPath = pathO.RelatPath;
+            pathO.NewHardPath = pathO.HardPath;
 
             // modes
-            if (mode == GamePathMode.Forced)
+            if (ChosenMode == GamePathMode.Forced)
             {
                 ForcedMode(pathO, rootPath);
             }
-            else if (mode == GamePathMode.KeepSubFolders)
             // Mode conservant les sous-dossiers - Doit fonctionner normalement avec les fichiers à la racine aussi
+            else if (ChosenMode == GamePathMode.KeepSubFolders)
             {
                 KeepSubFolderMode(pathO, rootPath);
+                RemoveSubString(pathO, rootPath);
             }
 
-
             if (!pathO.ToModify)
+            {
+                pathO.NewHardPath = SPRLang.No_Modif;
+                pathO.NewRelatPath = SPRLang.No_Modif;
                 HeTrace.WriteLine($"\tAppPathsBuilder no modification: {pathO.RelatPath} ");
+            }
 
         }
+
 
         /// <summary>
         /// Mode forcé on ne va récupérer que le nom du fichier
         /// </summary>
         /// <param name="pathO"></param>
-        /// <param name="rootPath"></param>
-        private void ForcedMode(C_PathsDouble pathO, string rootPath)
+        /// <param name="categPath"></param>
+        private void ForcedMode(C_PathsDouble pathO, string categPath)
         {
 
-            /*
-            #region 05/03/2021
-            // Dans les deux cas si le chemin contient déjà l'ancien rootpath on passe puisque c'est ce par quoi on remplacerait
-
-            if (pathO.RelatPath.Contains(rootPath))
-            {
-                HeTrace.WriteLine($"\tPath contains already rootpath ({pathO.RelatPath})");
-                pathO.ToModify = false;
-                pathO.NewHardPath = SPRLang.No_Modif;
-                pathO.NewRelatPath = SPRLang.No_Modif;
-                return;
-            }
-
-
-
-            pathO.ToModify = true;
-            #endregion 05/03/2021
-            */
-            string tmp = Path.Combine(rootPath, Path.GetFileName(pathO.RelatPath));
+            string tmp = Path.Combine(categPath, Path.GetFileName(pathO.NewRelatPath));
 
             #region 26/04/2021
-            if (pathO.RelatPath.Equals(tmp))
+            if (pathO.NewRelatPath.Equals(tmp))
             {
-                HeTrace.WriteLine($"\tPath use already ForcedMode: '{pathO.RelatPath}'");
+                HeTrace.WriteLine($"\tPath use already ForcedMode: '{pathO.NewRelatPath}'");
                 pathO.ToModify = false;
-                pathO.NewHardPath = SPRLang.No_Modif;
-                pathO.NewRelatPath = SPRLang.No_Modif;
                 return;
 
             }
@@ -928,59 +951,84 @@ namespace SPR.Models
         /// Mode Keep, on conserve la structure
         /// </summary>
         /// <param name="pathO"></param>
-        /// <param name="rootPath"></param>
-        private void KeepSubFolderMode(C_PathsDouble pathO, string rootPath)
+        /// <param name="categPath"></param>
+        private void KeepSubFolderMode(C_PathsDouble pathO, string categPath)
         {
-            string toReplace = ToReplace.Trim();
-            HeTrace.WriteLine($"\tKeepSubFolderMode, trying to replace '{toReplace}'");
-            HeTrace.WriteLine($"\tKeepSubFolderMode, by '{rootPath}'");
+            //string toReplace = ToReplace.Trim();
+            HeTrace.WriteLine($"\tCheck {pathO.NewRelatPath}");
 
 
-            #region 05/03/2021
             // Si le chemin contient déjà l'ancien rootpath ou qu'il ne contient pas ce qu'on doit remplacer on passe
-            bool cond1 = pathO.RelatPath.Contains(rootPath);
-            bool cond2 = pathO.RelatPath.Contains(toReplace);
-            if (cond1 || !cond2)
+            bool cond1 = pathO.NewRelatPath.Contains(categPath);
+            bool cond2 = pathO.NewRelatPath.Contains(PlatformToReplace);
+
+
+            // Le chemin a déjà la bonne racine
+            if (cond1)
             {
+                HeTrace.WriteLine($"\tPath is Good");
+
                 pathO.ToModify = false;
-                pathO.NewHardPath = SPRLang.No_Modif;
-                pathO.NewRelatPath = SPRLang.No_Modif;
-            }
 
-            // Double condition très importante pour quelques cas exceptionnels
-            if (rootPath.Equals(toReplace))
-            {
-                HeTrace.WriteLine($"\tPath contains already rootpath ({pathO.RelatPath})");
                 return;
             }
 
-            if (!cond2)
+            // Le chemin ne contient pas l'ancienne plateforme
+            else if (!cond2)
             {
-                HeTrace.WriteLine($"\tPath doesn't contain {toReplace}");
+                HeTrace.WriteLine($"\tPath is bad, but doesn't contain '{PlatformName}'");
+
+                pathO.ToModify = false;
                 return;
             }
+
+            if (cond2)
+            {
+                HeTrace.WriteLine($"\tPath is bad and contains '{PlatformToReplace}'");
+
+                // On récupère la mauvaise partie
+                string badPart = pathO.NewRelatPath.Substring(0, pathO.NewRelatPath.IndexOf(PlatformToReplace) + PlatformToReplace.Length);
+                HeTrace.WriteLine($"\tFound bad part: {badPart}");
+
+                string tmp = pathO.NewRelatPath.Replace(badPart, categPath);
+
+                pathO.NewHardPath = Path.GetFullPath(tmp, Global.LaunchBoxRoot);
+
+            }
+
 
 
             pathO.ToModify = true;
-            #endregion 05/03/2021
-
-
-
-            string mee = pathO.RelatPath.Replace($"{toReplace}", "");
-            string tmp = Path.Combine(rootPath, mee.Substring(1));
-            //int pos = pathO.OldRelatPath.IndexOf($@"\{PlatformName}\");
-
-            //string tmp = pathO.OldRelatPath.Substring(pos + PlatformName.Length + 2);
-            pathO.NewHardPath = Path.GetFullPath(tmp, Global.LaunchBoxRoot);
             pathO.NewRelatPath = DxPath.To_Relative(Global.LaunchBoxRoot, pathO.NewHardPath);
-
-            #region 24/12/2020
-            // 05/03/2021 pathO.ToModify = true;
-            #endregion 
-
             HeTrace.WriteLine($"\tKeepSubFolderMode: {pathO.NewHardPath}");
             HeTrace.WriteLine($"\tKeepSubFolderMode: {pathO.NewRelatPath}");
         }
+
+        private void RemoveSubString(C_PathsDouble pathO, string categPath)
+        {
+            if (string.IsNullOrEmpty(SubStringToRemove))
+                return;
+
+            string tail = pathO.NewRelatPath.Replace(categPath, string.Empty);
+
+            string substringToRemove = SubStringToRemove.Replace('/', '\\');
+
+            if (!tail.Contains(substringToRemove, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            // Le chemin nécessite une modification sur la tail
+            HeTrace.WriteLine($"\tPath need to remove '{substringToRemove}'");
+
+            string target = tail.Replace(substringToRemove, string.Empty, StringComparison.OrdinalIgnoreCase)
+                                    .Replace(@"\\", @"\");
+
+            pathO.NewHardPath = Path.GetFullPath(Path.Combine(categPath, target.TrimStart('\\')),
+                                        Global.LaunchBoxPath);
+            pathO.NewRelatPath = DxPath.To_Relative(Global.LaunchBoxRoot, pathO.NewHardPath);
+            pathO.ToModify = true;
+
+        }
+
 
 
 
@@ -1226,6 +1274,8 @@ namespace SPR.Models
                 // On enlève de la file
                 _erreurs.Remove(propertyName);
         }
+
+
 
         #endregion
     }

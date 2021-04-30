@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SPR.Graph"
         mc:Ignorable="d"
-        Title="Main_Window" MinHeight="450" Height="480" MinWidth="640" Width="800">
+        SizeToContent="WidthAndHeight"
+        Title="Main_Window">
     <Grid>
         <Frame Source="P_Migrate.xaml" NavigationUIVisibility="Hidden"/>
     </Grid>

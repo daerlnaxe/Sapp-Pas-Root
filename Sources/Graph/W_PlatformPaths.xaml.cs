@@ -91,7 +91,7 @@ namespace SPR.Graph
 
 
 
-        public PlatformModel Model { get; private set; }
+        public PlatformModel Model { get; internal set; }
 
 
         //private bool _OutPath
@@ -147,44 +147,13 @@ namespace SPR.Graph
         public W_PlatformPaths()
         {
             InitializeComponent();
-            DataContext = new PlatformModel();
         }
 
-        /// <summary>
-        /// Constructeur pour l'édition
-        /// </summary>
-        /// <param name="platform"></param>
-        public W_PlatformPaths(IPlatform platform)
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Model = new PlatformModel()
-            {
-                //Platform = platform,
-            };
-            Model.InitializeEdition(platform);
-
-            // Calcul de la largeur de
-
-            InitializeComponent();
-
             this.DataContext = Model;
-
-            // "tb" is a TextBox
-            //  DataObject.AddPastingHandler(tb, OnPaste);
-
         }
-
-
-        /*
-        private void ASlashRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            _Model.FormatMainPaths(@"\");
-        }
-
-        private void ShlashRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-
-            _Model.FormatMainPaths(@"/");
-        }*/
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
@@ -206,44 +175,9 @@ namespace SPR.Graph
 
         private void CommandBrowse_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // ChooseFolder cf = new ChooseFolder()            
-            TreeChoose tf = new TreeChoose
-            {
-                Model = new M_ChooseFolder()
-                {
-                    HideWindowsFolder = true,
-                    PathCompareason = StringComparison.CurrentCultureIgnoreCase,
-                    //2021 StartingFolder = Properties.Settings.Default.LastKPath,
-                    StartingFolder = Properties.Settings.Default.LastKPath,
-                },
-                SaveButtonName = "Select",
-            };
+            Model.Browse();
 
 
-            if (tf.ShowDialog() != true)
-                return;
-            
-            /*
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.Description = Lang.FB_Description;*/
-            //fait fbd.SelectedPath = Properties.Settings.Default.LastKPath;
-
-            /*
-            // fait if (fbd.ShowDialog() != DialogResult.OK) return;*/
-
-            // Memorisation lastKnowPath
-            
-            
-            string tmpPath;
-            Properties.Settings.Default.LastKPath = tmpPath = tf.Model.LinkResult;
-            Properties.Settings.Default.Save();
-
-            // Assignation 
-            Model.ChosenFolder = tf.Model.LinkResult;
-            
-            /*
-            this.tbMainPath.Text = _NewRoot = tmpPath;
-*/
         }
 
         #endregion Browse
@@ -256,16 +190,8 @@ namespace SPR.Graph
         /// <param name="e"></param>
         private void CommandSimulate_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-
-            //    Debug.WriteLine($"Can ex {this.Model.HasErrors}");
-            e.CanExecute = !this.Model.HasErrors && !SimulationOk;
-
-
-            // e.CanExecute = this.Model.HasErrors; ;
-            /*
-             if (ActiveSimulate == false)
-            else
-                e.CanExecute = false;*/
+            if (Model != null)
+                e.CanExecute = !this.Model.HasErrors && !SimulationOk;
         }
 
 
@@ -291,7 +217,7 @@ namespace SPR.Graph
                 ActiveBox = true;
                 //
                 SimulationOk = false;
-                 DxMBox.ShowDial(SPRLang.SimuFail);
+                DxMBox.ShowDial(SPRLang.SimuFail);
 
             }
 
@@ -327,8 +253,7 @@ namespace SPR.Graph
 
                 Model.FormatMainPaths(separator);
 
-                // Opérations de masquage des boutons
-                //ActiveApply = false;
+                DialogResult = true;
             }
 
             else
@@ -466,5 +391,6 @@ namespace SPR.Graph
         {
             Model.Dispose();
         }
+
     }
 }

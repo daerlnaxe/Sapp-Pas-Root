@@ -18,6 +18,7 @@ namespace SPR.Containers
     /// </remarks>
     public class C_PathsDouble : C_Paths
     {
+
         private string _newHardPath;
         /// <summary>
         /// Hard Path after modification

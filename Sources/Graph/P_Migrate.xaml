@@ -7,7 +7,8 @@
       xmlns:t="clr-namespace:SPR.Languages"
       xmlns:comm="clr-namespace:SPR.Graph.Commands"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="600" d:DesignWidth="800"
+      MinHeight="600" MinWidth="800"
       Title="P_Migrate">
     <Page.CommandBindings>
         <CommandBinding Command="local:P_Migrate.Preview" Executed="SetPage_Null"/>
@@ -25,16 +26,24 @@
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="5,3"/>
         </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="3,10,3,10"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="MinWidth" Value="75"/>
+        </Style>
+        <Style TargetType="local:CC_Game">
+            <!-- 
+                    En mettant le validation control à null j'évite un contour rouge inutile 
+                    car géré en interne
+                    -->
+            <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
+            <!-- Labels -->
+
+        </Style>
     </Page.Resources>
 
     <DockPanel>
-        <DockPanel.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Padding" Value="3,10,3,10"/>
-                <Setter Property="Margin" Value="2"/>
-                <Setter Property="MinWidth" Value="75"/>
-            </Style>
-        </DockPanel.Resources>
+
         <Label Content="{x:Static t:SPRLang.Migrate_Files}" DockPanel.Dock="Top"/>
         <!-- Menu -->
         <StackPanel DockPanel.Dock="Left">                
@@ -47,16 +56,18 @@
             <Button Content="{x:Static t:SPRLang.Dest_Sub}" Command="local:P_Migrate.Open_ConfDestSub"/>
         </StackPanel>
         <!-- Process -->
-        <StackPanel DockPanel.Dock="Right" Background="#FF001A72" >
+        <StackPanel DockPanel.Dock="Right" Background="#FF001047" >
+           <!--
             <Button Content="{x:Static t:SPRLang.Verif}"
                     Command="comm:ComCommands.Simulate"
                     />
             <Button Content="{x:Static t:SPRLang.Process}"
                     Command="comm:ComCommands.Apply"
                     />
+            -->
         </StackPanel>
         <!-- Centre -->
-        <Grid Margin="10,0,10,0" >
+        <Grid Margin="10,0" >
             <Grid.RowDefinitions>
                 <RowDefinition  Height="Auto"/>
                 <RowDefinition  Height="Auto"/>
@@ -65,34 +76,21 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="20" />
             </Grid.RowDefinitions>
-            <Grid.Resources>
-                <Style TargetType="local:CC_Game">
-                    <!-- 
-                    En mettant le validation control à null j'évite un contour rouge inutile 
-                    car géré en interne
-                    -->
-                    <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
-                    <!-- Labels -->
- 
-                </Style>
-            </Grid.Resources>
+
             <StackPanel Orientation="Horizontal">
                 <Label Content="{x:Static t:SPRLang.Platform}"/>
                 <TextBox Text="{Binding Platform, FallbackValue='Sega Mega Drive', UpdateSourceTrigger=PropertyChanged}" MinWidth="300"/>
             </StackPanel>
             <Rectangle Fill="#FF4C68E2" Grid.Row="1" Height="1" Margin="20,10" VerticalAlignment="Center" DockPanel.Dock="Top"  />
 
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Height="{Binding TopHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:P_Migrate}}">
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" 
+                          Height="{Binding TopHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:P_Migrate}}">
                 <StackPanel>
-                    
-
                     <!-- Games -->
                     <local:CC_PairPaths
                         FirstPathName="{x:Static t:SPRLang.Source}"
                         SecondPathName="{x:Static t:SPRLang.Destination}"
-                        
                         DataContext="{Binding GamesPaths}"
-                        
                         Title="{Binding Name}"
                         Source="{Binding Source}"            
                         SecondPath="{Binding Destination}"
@@ -139,16 +137,14 @@
                     <local:CC_PairPaths
                         FirstPathName="{x:Static t:SPRLang.Source}"
                         SecondPathName="{x:Static t:SPRLang.Destination}"
-                                                
                         DataContext="{Binding VideosPaths}"
-
                         Title="{Binding Name}"
                         Source="{Binding Source}"
                         SecondPath="{Binding Destination}"
                         />
-
                 </StackPanel>
             </ScrollViewer>
+            <!-- Partie basse -->
             <DockPanel Grid.Row="3" >
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
@@ -161,6 +157,7 @@
                     </Style>
                 </DockPanel.Style>
                 <Rectangle Fill="#FF4C68E2" Height="1" Margin="20,10" VerticalAlignment="Center" DockPanel.Dock="Top"  />
+                <!-- Frame du bas -->
                 <Frame Grid.Row="2" NavigationUIVisibility="Hidden"
                     Content="{Binding ActivePage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" >
                     <Frame.Style>

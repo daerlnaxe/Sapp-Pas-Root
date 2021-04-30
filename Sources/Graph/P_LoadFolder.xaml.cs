@@ -31,24 +31,8 @@ namespace SPR.Graph
 
         private void Browse_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            TreeChoose cf = new TreeChoose()
-            {
-                SaveButtonName = DxTBLang.Select,
-                CancelButtonName = DxTBLang.Cancel,
-                Model = new M_ChooseFolder()
-                {
-                    HideWindowsFolder = true,
-                    PathCompareason = System.StringComparison.CurrentCultureIgnoreCase,
-                    StartingFolder = Model.StartingFolder
-                }
-            };
+            Model.Browse_Executed();
 
-            cf.ShowDialog();
-
-            if (cf.DialogResult == true)
-            {
-                Model.Browse_Executed(cf.Model.LinkResult);
-            }
 
         }
 

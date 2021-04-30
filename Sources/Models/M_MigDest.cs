@@ -1,4 +1,6 @@
-﻿using SPR.Languages;
+﻿using DxTBoxCore.BoxChoose;
+using DxTBoxCore.Languages;
+using SPR.Languages;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +15,7 @@ namespace SPR.Models
 
 
         public M_MigDest()
-        {            
+        {
             StartingFolder = Default.MigDestPath;
 
             if (string.IsNullOrEmpty(StartingFolder))
@@ -21,11 +23,27 @@ namespace SPR.Models
 
         }
 
-        public override void Browse_Executed(string linkResult)
+        public override void Browse_Executed()
         {
-            ResultFolder = linkResult;
-            Default.MigDestPath = linkResult;
-            Default.Save();
+            TreeChoose cf = new TreeChoose()
+            {
+                SaveButtonName = DxTBLang.Select,
+                CancelButtonName = DxTBLang.Cancel,
+                Model = new M_ChooseFolder()
+                {
+                    Info = DxTBLang.Select,
+                    HideWindowsFolder = true,
+                    PathCompareason = System.StringComparison.CurrentCultureIgnoreCase,
+                    StartingFolder = StartingFolder
+                }
+            };
+
+            if (cf.ShowDialog() == true)
+            {
+                ResultFolder = cf.LinkResult;
+                Default.MigDestPath = cf.LinkResult;
+                Default.Save();
+            }
         }
     }
 }

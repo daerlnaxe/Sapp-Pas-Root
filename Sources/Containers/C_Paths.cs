@@ -21,14 +21,15 @@ namespace SPR.Containers
         }
 
         /// <summary>
+        /// Type de chemin
+        /// </summary>
+        public string Type { get; set; }
+
+        /// <summary>
         /// Chemin passé en paramètre
         /// </summary>
         public string OldPath { get; private set; }
 
-        /// <summary>
-        /// Type de chemin
-        /// </summary>
-        public string Type { get; set; }
 
         private string _HardPath;
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <Copyright>Copyright ©  2018-2038 Daerlnaxe Software</Copyright>
@@ -11,7 +11,7 @@ Free of distribution and using.
 </Description>
     <NeutralLanguage>en</NeutralLanguage>
     <Company>Daerlnaxe Software</Company>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <AssemblyVersion>2.0.1.1</AssemblyVersion>
     <FileVersion>2.0.0.1</FileVersion>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>

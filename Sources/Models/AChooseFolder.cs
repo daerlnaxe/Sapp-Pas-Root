@@ -25,7 +25,7 @@ namespace SPR.Models
         /// </summary>
         public abstract string StartingFolder { get; set; }
 
-        public abstract void Browse_Executed(string linkResult);
+        public abstract void Browse_Executed();
 
 
         private string _resultFolder;

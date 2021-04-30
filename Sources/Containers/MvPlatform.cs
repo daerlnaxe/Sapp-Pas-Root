@@ -105,6 +105,8 @@ namespace SPR.Containers
                     return DebugResources.Get_PlatformPaths(folderCont, @"G:", "Plateformes");
 
             }
+
+            
         }
 
         public IList<IPlatform> GetChildren()

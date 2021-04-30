@@ -1,0 +1,180 @@
+﻿<Window
+      x:Class="SPR.Graph.W_LockedMigrate"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SPR.Graph"
+          xmlns:t="clr-namespace:SPR.Languages"
+      xmlns:comm="clr-namespace:SPR.Graph.Commands"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Height="450" Width="800"
+        Loaded="Window_Loaded"
+      Title="LockedMigrate">
+    <Window.CommandBindings>
+        <CommandBinding Command="comm:ComCommands.Apply"  Executed="Exec_Apply"/>
+    </Window.CommandBindings>
+    <Window.Resources>
+        <Style TargetType="Label" >
+            <Setter Property="ContentStringFormat" Value="{}{0}:"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5,3"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="readOnly">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="5,3"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="3,10,3,10"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="MinWidth" Value="75"/>
+        </Style>
+        <Style TargetType="{x:Type local:CC_Game}">
+            <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
+        </Style>
+    </Window.Resources>
+    <DockPanel Margin="10" LastChildFill="True" >
+        <!-- Buttons -->
+        <StackPanel DockPanel.Dock="Right" Background="#FF001047" Width="100" >
+            <Button Content="{x:Static t:SPRLang.Verif}"
+                Command="comm:ComCommands.Simulate" Visibility="Collapsed"/>
+            <Button Content="{x:Static t:SPRLang.Process}"
+                Command="comm:ComCommands.Apply"/>
+        </StackPanel>
+        <!-- Centre -->
+        <DockPanel >
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <!-- Old platform-->
+                <Label Grid.Row="0" Content="Old Platform"/>
+                <TextBox Grid.Row="0" Grid.Column="1" MinWidth="300" IsReadOnly="True"
+                         Text="{Binding OldPlatform.Name, FallbackValue='Sega Mega Drive', UpdateSourceTrigger=PropertyChanged}"/>
+                <!-- Current platform -->
+                <Label Grid.Row="1" Content="Current Platform"/>
+                <TextBox Grid.Row="1" Grid.Column="1" MinWidth="300" IsReadOnly="True"
+                         Text="{Binding CurrentPlatform.Name, FallbackValue='Sega - Mega Drive', UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+            <Rectangle Fill="#FF4C68E2" Grid.Row="1" Height="1" Margin="20,10" VerticalAlignment="Center" DockPanel.Dock="Top"  />
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Visible" >
+                <ItemsControl ItemsSource="{Binding VisPlatform}" >
+                    <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                <Rectangle Grid.ColumnSpan="2" >
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White" Offset="1"/>
+                                            <GradientStop Color="#FFA1A1DD" Offset="0"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <TextBlock Grid.ColumnSpan="2" Margin="200,0" Text="{Binding Type}"/>
+
+                                <Label Grid.Row="1" Content="{x:Static t:SPRLang.Source}"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1"
+                                             Style="{StaticResource readOnly}" Text="{Binding HardPath, Mode=OneWay}"/>
+                                    <Label Grid.Row="2" Content="{x:Static t:SPRLang.Destination}"/>
+                                    <TextBox Grid.Row="2" Grid.Column="1"
+                                             Style="{StaticResource readOnly}"  Text="{Binding NewHardPath}"/>
+                                </Grid>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                        
+                <!-- <StackPanel>-->
+                    <!-- Games 
+                    <local:CC_PairPaths
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                        DataContext="{Binding GamesPaths}"
+                        Title="{Binding Name}"
+                        Source="{Binding Source}"            
+                        SecondPath="{Binding Destination}"
+                        />
+                    -->
+                    <!-- Manuels
+                    <local:CC_PairPaths 
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                                                
+                        DataContext="{Binding ManualsPaths}"
+                        Title="{Binding Name}"
+                        Source="{Binding Source}"            
+                        SecondPath="{Binding Destination}"
+                        />
+                    -->
+                    <!-- Images, les notify d'erreurs sont là pour tester uniquement, normalement 
+                            ça ne doit pas signaler une erreur 
+                    <local:CC_PairPaths
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                        
+                        DataContext="{Binding ImagesPaths}"
+                        
+                        Title="{Binding Name}"
+                        Source="{Binding Source, NotifyOnValidationError=True, ValidatesOnNotifyDataErrors=True, ValidatesOnExceptions=True, ValidatesOnDataErrors=True}"
+                        SecondPath="{Binding Destination, NotifyOnValidationError=True}"
+
+                        />
+                    -->
+                    <!-- Musics 
+                    <local:CC_PairPaths
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                        
+                        DataContext="{Binding MusicsPaths}"
+                        
+                        Title="{Binding Name}"
+                        Source="{Binding Source,
+                                UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
+                        SecondPath="{Binding Destination}"
+                        />
+                    -->
+                    <!-- Videos 
+                    <local:CC_PairPaths
+                        FirstPathName="{x:Static t:SPRLang.Source}"
+                        SecondPathName="{x:Static t:SPRLang.Destination}"
+                        DataContext="{Binding VideosPaths}"
+                        Title="{Binding Name}"
+                        Source="{Binding Source, FallbackValue=OldPlatform.VideoPath}"
+                        SecondPath="{Binding Destination,FallbackValue=CurrentPlatform.VideoPath}"
+                        />
+                </StackPanel>
+                    -->
+            </ScrollViewer>
+            
+        </DockPanel>
+
+    </DockPanel>
+
+
+</Window>

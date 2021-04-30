@@ -182,7 +182,7 @@ namespace SPR
                 Id = "4",
                 Title = "Toe Jam and Earl",
                 ApplicationPath = @".\Games\Sega Mega Drive\Toe Jam & Earl\t&j.zip",
-                MusicPath = @"..\..\Plateformes\Musics\Sega Mega Drive\Toe Jame & Earl - Funkotron.mp3"
+                MusicPath = @".\Musics\Sega Mega Drive\Toe Jame & Earl - Funkotron.mp3"
 
             };
 

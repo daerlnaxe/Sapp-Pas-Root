@@ -107,7 +107,7 @@ namespace SPR.Languages {
         
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Select the destination folder of your system.
-        ///By example you can select &quot;E:\Platforms\Games\Nintendo Entertainment System&quot;..
+        ///By example you can select &quot;E:\Platforms\Games\.
         /// </summary>
         public static string Choose_Dest_Folder {
             get {
