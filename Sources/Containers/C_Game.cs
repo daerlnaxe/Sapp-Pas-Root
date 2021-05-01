@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Windows.Data;
 using Unbroken.LaunchBox.Plugins.Data;
 
 namespace SPR.Containers
@@ -35,19 +36,28 @@ namespace SPR.Containers
         }
 
         public string Id { get; private set; }
+
+        /// <summary>
+        /// Indique à l'algorithme si on doit modifier le jeu
+        /// </summary>
+        public bool ToModify { get; internal set; }
         #endregion
 
         #region Avec Notifs
-        private bool? _IsValide;
-        public bool? IsValide
+        private bool? _CheckValid;
+
+        /// <summary>
+        /// Visuel indiquant si le jeu est OU pourrait être valide (la simulation l'utilise)
+        /// </summary>
+        public bool? CheckValid
         {
-            get { return _IsValide; }
+            get { return _CheckValid; }
             set
             {
-                if (_IsValide == value)
+                if (_CheckValid == value)
                     return;
 
-                _IsValide = value;
+                _CheckValid = value;
                 OnPropertyChanged();
             }
         }
@@ -77,10 +87,17 @@ namespace SPR.Containers
         /// <summary>
         /// Path for VideoPath
         /// </summary>
-       // public C_PathsCollec ThemeVideoPath { get; private set; }
+        // public C_PathsCollec ThemeVideoPath { get; private set; }
+        private object _itemsLock = new object();
 
-        private ObservableCollection<CState> _States = new ObservableCollection<CState>();
-        public ObservableCollection<CState> States
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// Ne pas passer en ObservableCollection sinon il faudra créer l'objet avec le dispatcher
+        /// </remarks>
+        private List<CState> _States = new List<CState>();
+        public List<CState> States
         {
             get => _States;
             set
@@ -89,7 +106,23 @@ namespace SPR.Containers
                 OnPropertyChanged();
             }
         }
+        /*
+        public void ClearStates()
+        {
+            lock (_itemsLock)
+            {
+                States.Clear();
 
+            }
+        }
+        public void AddState(CState state)
+        {
+            lock (_itemsLock)
+            {
+                States.Add(state);
+            }
+        }*/
+        
         /// <summary>
         /// Paths for Images
         /// </summary>
@@ -102,6 +135,7 @@ namespace SPR.Containers
 
 
         private string _OldHardPath;
+
         public string OldHardPath
         {
             get { return _OldHardPath; }
@@ -128,8 +162,13 @@ namespace SPR.Containers
             }
         }
 
+
+
         public C_Game(IGame game)
         {
+            //BindingOperations.EnableCollectionSynchronization(States, _itemsLock);
+
+
             if (_GameClassProperty == null)
                 C_Game.InitializeProperties();
 

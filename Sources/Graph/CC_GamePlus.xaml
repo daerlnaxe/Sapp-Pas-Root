@@ -58,9 +58,9 @@
                   HorizontalAlignment="Stretch" >
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Visible"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding PanelOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="true">
+                            <DataTrigger Binding="{Binding PanelOpen, FallbackValue=true, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="true">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -86,7 +86,7 @@
                 <!-- Old Relat Link -->
                 <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True"
                     Text="{Binding ORelatLink, FallbackValue=OldRelat,
-                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:CC_GamePlus}}"/>
                 <Separator Grid.Row="2" Grid.ColumnSpan="2"/>
                 <!-- Image -->
                 <Label Grid.Row="3" Grid.RowSpan="2" Content="ret"/>
@@ -101,7 +101,7 @@
                 <!-- Leds -->
                 <ItemsControl Grid.RowSpan="5" Grid.Column="3"
                     ItemsSource="{Binding Source,
-                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:CC_GamePlus}}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>

@@ -147,16 +147,16 @@
                             <!-- Plateforme -->
                             <Label Content="{x:Static t:SPRLang.Platform}"/>
                             <TextBox Grid.Column="1" Style="{StaticResource readOnly}"
-                                   Text="{Binding PlatformName, FallbackValue=PlatformName}" />
+                                   Text="{Binding Core.PlatformName, FallbackValue=PlatformName}" />
                             <!-- Current plaform Path -->
                             <Label Grid.Row="1" 
                                    Content="{x:Static t:SPRLang.Hard_Path}"/>
                             <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource readOnly}"
-                                   Text="{Binding PlatformHardPath, FallbackValue=PlatformHardPath}" />
+                                   Text="{Binding Core.PlatformHardPath, FallbackValue=PlatformHardPath}" />
                             <!-- Current Relative Platform Path -->
                             <Label Content="{x:Static t:SPRLang.Relative_Path}" Grid.Row="2"/>
                             <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource readOnly}"
-                                   Text="{Binding PlatformRelatPath, FallbackValue=PlatformRelatPath}"/>
+                                   Text="{Binding Core.PlatformRelatPath, FallbackValue=PlatformRelatPath}"/>
                         </Grid>
                     </GroupBox>
                     <!-- Old Platform -->
@@ -183,10 +183,10 @@
                                 <StackPanel Grid.Column="1">
                                     <TextBox Grid.Column="1"
                                              PreviewTextInput="PlatformToReplace_PreviewTextInput"
-                                             Text="{Binding PlatformToReplace, FallbackValue=OldPlatformName}" />
+                                             Text="{Binding Core.PlatformToReplace, FallbackValue=OldPlatformName}" />
                                     <TextBox Grid.Column="1"
                                              PreviewTextInput="SubstringToRemove_PreviewTextInput"
-                                             Text="{Binding SubStringToRemove, FallbackValue=SubStringToRemove}"/>
+                                             Text="{Binding Core.SubStringToRemove, FallbackValue=SubStringToRemove}"/>
                                     <!--
                                     -->
                                 </StackPanel>
@@ -216,7 +216,7 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <CheckBox Content="{x:Static t:SPRLang.Hidden_Games}" ToolTip="Include Hidden Games"
-                                      IsChecked="{Binding IncludeHidden}"
+                                      IsChecked="{Binding Core.IncludeHidden}"
                                       Checked="HidGames_Checked"
                                       />
                             <Button Content="Rescan" Grid.Row="2"
@@ -229,15 +229,14 @@
                     <!-- -->
                     <GroupBox Header="{x:Static t:SPRLang.Additionnal_Options}" Width="200" Grid.Column="1" >
                         <CheckBox Content="{x:Static t:SPRLang.Additionnal_App_Paths}" ToolTip="Include Additionnal App Paths, example if you have many roms under one element in Launchbox"
-                                  Checked="AAP_Checked"
-                                  IsChecked="{Binding AddAppPaths}" Unchecked="AAP_UnChecked"
-                                  />
+                                  Checked="AAP_Checked" Unchecked="AAP_UnChecked"
+                                  IsChecked="{Binding Core.AddAppPaths}"  />
                     </GroupBox>
                     <!-- -->
                     <GroupBox Header="Modes" Grid.Column="2" Width="220">
                         <StackPanel >
                             <ComboBox x:Name="cbModes" VerticalAlignment="Top" HorizontalAlignment="Left" Width="150"
-                                      SelectedIndex="{Binding ChosenMode, Converter={StaticResource gmConv}, UpdateSourceTrigger=PropertyChanged}"                                      
+                                      SelectedIndex="{Binding Core.ChosenMode, Converter={StaticResource gmConv}, UpdateSourceTrigger=PropertyChanged}"                                      
                                       Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}"
                                       SelectionChanged="cbModes_SelectionChanged"                                      
                                       
@@ -260,7 +259,7 @@
                                 </StackPanel.Style>
                                 <Label Content="Replace this part:" BorderThickness="0" HorizontalAlignment="Left"/>
                                 <TextBox MinWidth="100" MaxWidth="200" Margin="0,3,0,0"
-                                    Text="{Binding ToReplace, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}" 
+                                    Text="{Binding Core.ToReplace, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}" 
                                          IsUndoEnabled="True"
                                          Validation.ErrorTemplate="{StaticResource ResourceKey=ValidationErrorTemplate}" 
                                     />
@@ -307,8 +306,10 @@
                     <!-- -->
                     <!-- -->
                     <StackPanel Grid.Column="4" Width="80" Margin="0,10,0,10">
-                        <Button Content="{x:Static t:SPRLang.Simulate}" Style="{StaticResource optBtn}" Command="comm:ComCommands.Simulate"/>
-                        <Button Content="{x:Static t:SPRLang.Apply}" Style="{StaticResource collBtn}" Command="comm:ComCommands.Apply"/>
+                        <Button Content="{x:Static t:SPRLang.Simulate}" Style="{StaticResource optBtn}"
+                                Command="comm:ComCommands.Simulate"/>
+                        <Button Content="{x:Static t:SPRLang.Apply}" Style="{StaticResource collBtn}"
+                                Command="comm:ComCommands.Apply"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -337,7 +338,7 @@
             <Border Grid.Row="0" CornerRadius="8" BorderThickness="1" BorderBrush="#FF5D8EE2" Margin="5,3,5,3">
                 <ScrollViewer Margin="3" VerticalScrollBarVisibility="Auto">
                     <!-- Elements -->
-                    <ItemsControl ItemsSource="{Binding ExtPlatformGames}"  >
+                    <ItemsControl ItemsSource="{Binding Core.ExtPlatformGames}"  >
                         <ItemsControl.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="8"/>
@@ -352,8 +353,10 @@
                                       ORelatLink="{Binding ApplicationPath.RelatPath}"
                                       NHardLink="{Binding ApplicationPath.NewHardPath}"   
                                       NRelatLink="{Binding ApplicationPath.NewRelatPath}"
+                                                   
                                       Source="{Binding States}"
-                                      Validity="{Binding IsValide}"
+                                                   
+                                      Validity="{Binding CheckValid}"
                                       OnClickPanel="C_Game_OnClickPanel"
                                       />
                             </DataTemplate>

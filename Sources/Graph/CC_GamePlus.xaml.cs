@@ -1,10 +1,13 @@
-﻿using SPR.Containers;
+﻿using Hermes;
+using SPR.Containers;
 using SPR.Languages;
 using SPR.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -86,16 +89,20 @@ namespace SPR.Graph
 
         #region OldRelatLink
         public static readonly DependencyProperty ORelatLinkProperty =
-            DependencyProperty.Register("ORelatLink", typeof(string), typeof(CC_GamePlus), new
-                PropertyMetadata("RelatLink", new PropertyChangedCallback(OnORelatLinkChanged)));
+            DependencyProperty.Register(nameof(ORelatLink), typeof(string), typeof(CC_GamePlus)/*, new
+                PropertyMetadata("RelatLink", new PropertyChangedCallback(OnORelatLinkChanged))*/);
 
         public string ORelatLink
         {
             get { return (string)GetValue(ORelatLinkProperty); }
-            set { SetValue(ORelatLinkProperty, value); }
+            set 
+            {
+                Debug.WriteLine("Set ORelatLink");
+                SetValue(ORelatLinkProperty, value); 
+            }
         }
 
-
+        
         private static void OnORelatLinkChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             CC_GamePlus UserControl1Control = d as CC_GamePlus;
@@ -137,8 +144,6 @@ namespace SPR.Graph
             DependencyProperty.Register("NRelatLink", typeof(string), typeof(CC_GamePlus), new
                 PropertyMetadata(SPRLang.Waiting, new PropertyChangedCallback(OnNRelatLinkChanged)));
 
-
-
         public string NRelatLink
         {
             get { return (string)GetValue(NRelatLinkProperty); }
@@ -159,18 +164,17 @@ namespace SPR.Graph
 
 
         #region
+
         public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(nameof(Source),
-                                                        typeof(ObservableCollection<CState>), typeof(CC_GamePlus)/*,
-                                                        new PropertyMetadata(null, SourceChanged)*/);
+                                                        typeof(IEnumerable<CState>), typeof(CC_GamePlus));
 
-
-        public ObservableCollection<CState> Source
+        public IEnumerable<CState> Source
         {
-            get => (ObservableCollection<CState>)GetValue(SourceProperty);
+            get => (IEnumerable<CState>)GetValue(SourceProperty);
             set => SetValue(SourceProperty, value);
 
         }
-
+        
         /*
         private static void SourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -265,6 +269,7 @@ namespace SPR.Graph
         public CC_GamePlus()
         {
             InitializeComponent();
+            // --- JAMAIS datacontext
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

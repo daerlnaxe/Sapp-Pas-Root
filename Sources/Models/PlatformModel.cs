@@ -493,6 +493,7 @@ namespace SPR.Models
             {
                 Model = new M_ChooseFolder()
                 {
+                    Info = "Select new root folder",
                     HideWindowsFolder = true,
                     PathCompareason = StringComparison.CurrentCultureIgnoreCase,
                     StartingFolder = Properties.Settings.Default.LastKPath,
@@ -503,8 +504,7 @@ namespace SPR.Models
             if (tf.ShowDialog() != true)
                 return;
 
-            string tmpPath;
-            Default.LastKPath = tmpPath = tf.Model.LinkResult;
+            Default.LastKPath = tf.Model.LinkResult;
             Default.Save();
 
             VerifPath(tf.Model.LinkResult, nameof(ChosenFolder));
@@ -563,7 +563,7 @@ namespace SPR.Models
                     hardPath = Path.Combine(_chosenFolder, VideosFName, SystemFolderName);
                 // Other type of video
                 else if (ecp.Type.Equals("Theme Video", StringComparison.OrdinalIgnoreCase))
-                    hardPath = Path.Combine(_chosenFolder, VideosFName, SystemFolderName, "Theme" );
+                    hardPath = Path.Combine(_chosenFolder, VideosFName, SystemFolderName, "Theme");
                 // Images
                 else
                     hardPath = Path.Combine(_chosenFolder, ImagesFName, SystemFolderName, ecp.Type);

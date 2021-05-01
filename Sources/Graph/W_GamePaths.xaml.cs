@@ -1,4 +1,5 @@
-﻿using SPR.Models;
+﻿using Hermes;
+using SPR.Models;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -63,7 +64,7 @@ namespace SPR.Graph
         #endregion
 
 
-        internal GamesModel Model { get; set; }
+        internal GamePathsModel Model { get; set; }
 
 
         /// <summary>
@@ -136,26 +137,20 @@ namespace SPR.Graph
 
 
         #region Simulate
-        /// <summary>
-        /// Simulation mode activated
-        /// </summary>
-        //private bool _ActiveSimulate { get; set; }
 
         private void Simulate_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             if (Model != null)
-                e.CanExecute = Model.ActiveSimulate && !Model.HasErrors;
+            {
+                HeTrace.WriteLine($"Simulate_CanExecute: {Model.ActiveSimulate} | {Model.Core.HasErrors} ");
+                e.CanExecute = Model.ActiveSimulate && !Model.Core.HasErrors;
+            }
         }
 
         private void Simulate_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
             // ---
-            Model.Simulation();
-
-            // ---
-            Model.ActiveSimulate = false;
-            Model.ActiveApply = true;
+            Model.PrepareSimulation();
         }
         #endregion Simulate
 
@@ -163,16 +158,13 @@ namespace SPR.Graph
 
         private void Apply_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if(Model != null)
-            e.CanExecute = Model.ActiveApply;
+            if (Model != null)
+                e.CanExecute = Model.ActiveApply;
         }
 
         private void Apply_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Model.ApplyChanges();
-
-            Model.ActiveSimulate = true;
-            Model.ActiveApply = false;
+            Model.PrepareApply();
         }
         #endregion Apply
 
@@ -202,6 +194,17 @@ namespace SPR.Graph
 
         }
 
+
+        #region Enclenche un test des jeux
+        private void cbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            Model.PrepareCheckAllGames();
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
+
+        }
+
         /// <summary>
         /// Additionnal Paths Checked
         /// </summary>
@@ -210,10 +213,7 @@ namespace SPR.Graph
         private void AAP_Checked(object sender, RoutedEventArgs e)
         {
             // Revérification des games 
-            Model.CheckAllGames();
-
-            /*if (ChosenMode == 0)
-                return;*/
+            Model.PrepareCheckAllGames();
 
             Model.ActiveSimulate = true;
             Model.ActiveApply = false;
@@ -222,43 +222,33 @@ namespace SPR.Graph
         private void AAP_UnChecked(object sender, RoutedEventArgs e)
         {
             // Revérification des games 
-            Model.CheckAllGames();
+            Model.PrepareCheckAllGames();
 
             Model.ActiveSimulate = true;
             Model.ActiveApply = false;
         }
 
-
-
-
-
-
-        private void cbModes_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-            Model.CheckAllGames();
-            Model.ActiveSimulate = true;
-            Model.ActiveApply = false;
-
-        }
+        #endregion
 
 
 
         private void PlatformToReplace_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            Model.ActiveSimulate = true;
+            Model.ActiveApply = false;
+
             if (Global.VerifString(e.Text, Common.StringFormat.Folder))
                 e.Handled = true;
 
-            Model.ActiveSimulate = true;
-            Model.ActiveApply = false;
+
         }
         private void SubstringToRemove_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (Global.VerifString(e.Text, Common.StringFormat.Path))
-                e.Handled = true;
-
             Model.ActiveSimulate = true;
             Model.ActiveApply = false;
+
+            if (Global.VerifString(e.Text, Common.StringFormat.Path))
+                e.Handled = true;
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

@@ -148,5 +148,17 @@ namespace SPR.Properties {
                 this["MigSrcPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool cgpAddApp {
+            get {
+                return ((bool)(this["cgpAddApp"]));
+            }
+            set {
+                this["cgpAddApp"] = value;
+            }
+        }
     }
 }

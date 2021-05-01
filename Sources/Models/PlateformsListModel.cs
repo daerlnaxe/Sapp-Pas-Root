@@ -139,7 +139,7 @@ namespace SPR.Models
                 {
                     W_GamePaths wp = new W_GamePaths()
                     {
-                        Model = new GamesModel(SelectedPlatform, CBAckupPlatform?.PlatformName),
+                        Model = new GamePathsModel(SelectedPlatform, CBAckupPlatform?.PlatformName),
                     };
                     wp.ShowDialog();
                 }
@@ -160,7 +160,7 @@ namespace SPR.Models
 
                 W_GamePaths wp = new W_GamePaths()
                 {
-                    Model = new GamesModel(SelectedPlatform),
+                    Model = new GamePathsModel(SelectedPlatform),
                 };
                 wp.ShowDialog();
             }

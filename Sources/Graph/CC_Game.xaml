@@ -57,7 +57,7 @@
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding PanelOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="true">
+                            <DataTrigger Binding="{Binding PanelOpen, FallbackValue=true, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="true">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>

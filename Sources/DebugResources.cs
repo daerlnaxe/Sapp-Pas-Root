@@ -93,7 +93,9 @@ namespace SPR
             return raoul;
         }
 
-        internal static IGame[] Get_GamesPaths()
+        internal static IGame[] GamesPaths { get; private set; }
+
+        internal static void Set_GamesPaths(string platformName)
         {
             IGame[] iPlatformGames = new IGame[7];
 
@@ -101,7 +103,7 @@ namespace SPR
             {
                 Id = "0",
                 Title = "CosmicFantasy2",
-                ApplicationPath = @"..\..\Plateformes\Games\Sega Mega Drive\Cosmic Fantasy 2 (USA)\Cosmic_Fantasy_2_(NTSC-U)_[WTG990301].cue"
+                ApplicationPath = $@"..\..\Plateformes\Games\{platformName}\Cosmic Fantasy 2 (USA)\Cosmic_Fantasy_2_(NTSC-U)_[WTG990301].cue"
             };
             iPlatformGames[0] = cosmic;
 
@@ -109,7 +111,7 @@ namespace SPR
             {
                 Id = "AddAppCosmic1",
                 GameId = "1",
-                ApplicationPath = @"..\..\Plateformes\Games\Sega Mega Drive\Cosmic Fantasy 2 (USA)\Cosmic_Fantasy_2_(FR)_[WTG990301].cue"
+                ApplicationPath = @$"..\..\Plateformes\Games\{platformName}\Cosmic Fantasy 2 (USA)\Cosmic_Fantasy_2_(FR)_[WTG990301].cue"
 
             };
 
@@ -122,9 +124,9 @@ namespace SPR
             {
                 Id = "1",
                 Title = "Exile 2",
-                ApplicationPath = @"..\..\Plateformes\Games\Sega Mega Drive\Exile 2\Exile_2_-_Wicked_Phenomenon_(NTSC-U)_[WTG990102].cue",
-                ManualPath = @"..\..\Plateformes\Manuals\Sega Mega Drive\Exile.pdf",
-                MusicPath = @"..\..\Plateformes\Musics\Sega Mega Drive\Exile.mp3",
+                ApplicationPath = @$"..\..\Plateformes\Games\{platformName}\Exile 2\Exile_2_-_Wicked_Phenomenon_(NTSC-U)_[WTG990102].cue",
+                ManualPath = @$"..\..\Plateformes\Manuals\{platformName}\Exile.pdf",
+                MusicPath = @$"..\..\Plateformes\Musics\{platformName}\Exile.mp3",
 
 
             };
@@ -133,13 +135,13 @@ namespace SPR
             {
                 Id = "addapp1",
                 GameId = "1",
-                ApplicationPath = @"..\..\Plateformes\Games\Sega Mega Drive\Exile 2\Exile_2_-_Wicked_Phenomenon_(FR).cue",
+                ApplicationPath = @$"..\..\Plateformes\Games\{platformName}\Exile 2\Exile_2_-_Wicked_Phenomenon_(FR).cue",
             });
             exile2.AddNewAdditionalApplication(new MvAdditionnalApplication()
             {
                 Id = "addapp2",
                 GameId = "1",
-                ApplicationPath = @"..\..\Plateformes\Games\Sega Mega Drive\Exile 2\Exile_2_-_Wicked_Phenomenon_(US).cue",
+                ApplicationPath = @$"..\..\Plateformes\Games\{platformName}\Exile 2\Exile_2_-_Wicked_Phenomenon_(US).cue",
             });
 
             iPlatformGames[1] = exile2;
@@ -150,9 +152,9 @@ namespace SPR
             {
                 Id = "2",
                 Title = "Gate of Thunder",
-                ApplicationPath = @"..\..\Plateformes\Games\Sega Mega Drive\Gate Of Thunder\Gate of Thunder (J).cue",
-                ManualPath = @"..\..\Plateformes\Manuals\Sega Mega Drive\Gate_of_Thunder_-_Manual_-_T16.pdf",
-                MusicPath = @"..\..\Plateformes\Musics\Sega Mega Drive\Gate of Thunder - Intro Music.mp3"
+                ApplicationPath = @$"..\..\Plateformes\Games\{platformName}\Gate Of Thunder\Gate of Thunder (J).cue",
+                ManualPath = @$"..\..\Plateformes\Manuals\{platformName}\Gate_of_Thunder_-_Manual_-_T16.pdf",
+                MusicPath = @$"..\..\Plateformes\Musics\{platformName}\Gate of Thunder - Intro Music.mp3"
 
 
             };
@@ -163,14 +165,14 @@ namespace SPR
             {
                 Id = "3",
                 Title = "Lords of Thunder",
-                ApplicationPath = @"..\..\Plateformes\Games\Sega Mega Drive\Mouais\Lords of Thunder (J).cue",
+                ApplicationPath = @$"..\..\Plateformes\Games\{platformName}\Mouais\Lords of Thunder (J).cue",
 
             };
             lOT.AddNewAdditionalApplication(new MvAdditionnalApplication()
             {
                 Id = "addapp2",
                 GameId = "1",
-                ApplicationPath = @"..\..\FauxGames\Games\Sega Mega Drive\Exile 2\Exile_2_-_Wicked_Phenomenon_(US).cue",
+                ApplicationPath = @$"..\..\FauxGames\Games\{platformName}\Exile 2\Exile_2_-_Wicked_Phenomenon_(US).cue",
             });
             iPlatformGames[3] = lOT;
 
@@ -181,8 +183,8 @@ namespace SPR
             {
                 Id = "4",
                 Title = "Toe Jam and Earl",
-                ApplicationPath = @".\Games\Sega Mega Drive\Toe Jam & Earl\t&j.zip",
-                MusicPath = @".\Musics\Sega Mega Drive\Toe Jame & Earl - Funkotron.mp3"
+                ApplicationPath = @$".\Games\{platformName}\Toe Jam & Earl\t&j.zip",
+                MusicPath = @$".\Musics\{platformName}\Toe Jame & Earl - Funkotron.mp3"
 
             };
 
@@ -192,7 +194,7 @@ namespace SPR
             {
                 Id = "5",
                 Title = "Flashback",
-                ApplicationPath = @"..\..\Plateformes\Sega Mega Drive\Sega Mega Drive\FlashBack\Flashback.zip",
+                ApplicationPath = @$"..\..\Plateformes\{platformName}\{platformName}\FlashBack\Flashback.zip",
             };
 
             // ---
@@ -206,7 +208,7 @@ namespace SPR
 
             };
 
-            return iPlatformGames;
+            GamesPaths = iPlatformGames;
         }
 
         /// <summary>
