@@ -501,7 +501,8 @@ namespace SPR.Cores
                     #region 04/03/2021
                     // On va profiter à chaque fois pour vérifier s'il y a validité
                     bool gameCheck = true;
-                    bool gameToModify = true;
+
+                    bool gameToKeep = true;
                     #endregion
 
                     List<CState> states = new List<CState>();
@@ -528,7 +529,7 @@ namespace SPR.Cores
                             continue;
                         }
 
-                        HeTrace.WriteLine(pathO.RelatPath);
+                        HeTrace.WriteLine("Existing");
 
                         // -------------------------- Vérification achevées
 
@@ -618,7 +619,8 @@ namespace SPR.Cores
                                         pathO.NewRelatPath.Contains(rootPath);
                         states.Add(new CState($"{pathO.Type}\n{pathO.RelatPath}\n{pathO.NewRelatPath}", test));
                         gameCheck &= test;
-                        gameToModify &= pathO.ToModify;
+
+                        gameToKeep &= !pathO.ToModify;
                     }
 
 
@@ -655,7 +657,7 @@ namespace SPR.Cores
                                     addiApp.NewRelatPath.Contains(rootPath);
                             states.Add(new CState($"{addiApp.Id}\n{addiApp.RelatPath}\n{addiApp.NewHardPath}", test));
                             gameCheck &= test;
-                            gameToModify &= addiApp.ToModify;
+                            gameToKeep &= !addiApp.ToModify;
 
                         }
                     } // End additional app
@@ -664,8 +666,8 @@ namespace SPR.Cores
                     game.States = states;
                     HeTrace.WriteLine($"Check test (Simulation) {game.Title}:  {gameCheck}");
 
-                    game.ToModify = gameToModify;
-                    HeTrace.WriteLine($"ToModify test {game.Title}:  {gameToModify}");
+                    game.ToModify = !gameToKeep;
+                    HeTrace.WriteLine($"ToModify test {game.Title}:  {game.ToModify}");
                 }       // Fin du parcours des jeux;
 
 
@@ -776,7 +778,7 @@ namespace SPR.Cores
             // Le chemin ne contient pas l'ancienne plateforme
             else if (!cond2)
             {
-                HeTrace.WriteLine($"\tPath is bad, but doesn't contain '{PlatformName}'");
+                HeTrace.WriteLine($"\tPath is bad, but doesn't contain '{PlatformToReplace}'");
 
                 pathO.ToModify = false;
                 return;
